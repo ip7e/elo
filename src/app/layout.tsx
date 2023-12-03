@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${robotoMono.variable} font-mono`}>
-        <div className='container mx-auto max-w-2xl'>
+        <div className='container mx-auto max-w-xl'>
           {children}
         </div>
       </body>

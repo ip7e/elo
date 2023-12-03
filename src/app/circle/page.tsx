@@ -1,6 +1,36 @@
+const data = [
+  ["Ika", 9999, 41],
+  ["Ana", 1200, 39],
+  ["Dachi", 1100, 9],
+  ["Niko", 980, 2],
+  ["Ziko", 700, 0],
+];
 
 export default function Home() {
   return (
-    <div>hello</div>
-  )
+    <div className="mt-20">
+      
+      <table className="table border-separate border-spacing-x-5 border-spacing-y-1">
+        <thead>
+          <tr className="text-sm lowercase opacity-60 align-text-top">
+            <th className="invisible">Rank</th>
+            <th className="w-full invisible">Player</th>
+            <th className="text-right">Elo</th>
+            <th className="text-right pb-2">%</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {data.map(([name, elo, wRate], i) => (
+            <tr key={i} className="text-lg">
+              <td>#{i+1}</td>
+              <td className="w-full">{name}</td>
+              <td className="text-right">{elo}</td>
+              <td className="text-right">{wRate}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
