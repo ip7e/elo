@@ -1,15 +1,14 @@
-const data = [
-  ["Ika", 9999, 41],
-  ["Ana", 1200, 39],
-  ["Dachi", 1100, 9],
-  ["Niko", 980, 2],
-  ["Ziko", 700, 0],
-];
+import { supabase } from "@/supabase";
 
-export default function Home() {
+export default async function Home() {
+  const { data: members } = await supabase.from("circle_members").select(`
+    id,
+    display_name,
+    game_results!inner(new_elo, old_elo)
+  `);
+
   return (
     <div className="mt-20">
-      
       <table className="table border-separate border-spacing-x-5 border-spacing-y-1">
         <thead>
           <tr className="text-sm lowercase opacity-60 align-text-top">
@@ -21,12 +20,12 @@ export default function Home() {
         </thead>
 
         <tbody>
-          {data.map(([name, elo, wRate], i) => (
+          {members?.map(({ display_name, game_results }, i) => (
             <tr key={i} className="text-lg">
-              <td>#{i+1}</td>
-              <td className="w-full">{name}</td>
-              <td className="text-right">{elo}</td>
-              <td className="text-right">{wRate}</td>
+              <td>#{i + 1}</td>
+              <td className="w-full">{display_name}</td>
+              <td className="text-right">{game_results[0]["new_elo"]}</td>
+              <td className="text-right">99</td>
             </tr>
           ))}
         </tbody>

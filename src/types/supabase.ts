@@ -9,7 +9,134 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      [_ in never]: never
+      circle_members: {
+        Row: {
+          circle_id: number | null
+          created_at: string
+          display_name: string | null
+          id: number
+          user_id: string | null
+        }
+        Insert: {
+          circle_id?: number | null
+          created_at?: string
+          display_name?: string | null
+          id?: number
+          user_id?: string | null
+        }
+        Update: {
+          circle_id?: number | null
+          created_at?: string
+          display_name?: string | null
+          id?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_members_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "circle_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      circles: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      game_results: {
+        Row: {
+          created_at: string
+          game_id: number | null
+          id: number
+          member_id: number | null
+          new_elo: number | null
+          old_elo: number | null
+        }
+        Insert: {
+          created_at?: string
+          game_id?: number | null
+          id?: number
+          member_id?: number | null
+          new_elo?: number | null
+          old_elo?: number | null
+        }
+        Update: {
+          created_at?: string
+          game_id?: number | null
+          id?: number
+          member_id?: number | null
+          new_elo?: number | null
+          old_elo?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_results_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_results_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "circle_members"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      games: {
+        Row: {
+          circle_id: number | null
+          created_at: string
+          id: number
+          location: string | null
+        }
+        Insert: {
+          circle_id?: number | null
+          created_at?: string
+          id?: number
+          location?: string | null
+        }
+        Update: {
+          circle_id?: number | null
+          created_at?: string
+          id?: number
+          location?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "games_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
