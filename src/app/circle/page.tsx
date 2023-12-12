@@ -1,4 +1,5 @@
 import { supabase } from "@/supabase";
+import NewGameDialog from "./new-game-dialog";
 
 export default async function Home() {
   const { data: members } = await supabase.from("circle_members").select(`
@@ -11,11 +12,11 @@ export default async function Home() {
     <div className="mt-20">
       <table className="table border-separate border-spacing-x-5 border-spacing-y-1">
         <thead>
-          <tr className="text-sm lowercase opacity-60 align-text-top">
+          <tr className="text-sm lowercase align-text-top opacity-60">
             <th className="invisible">Rank</th>
-            <th className="w-full invisible">Player</th>
+            <th className="invisible w-full">Player</th>
             <th className="text-right">Elo</th>
-            <th className="text-right pb-2">%</th>
+            <th className="pb-2 text-right">%</th>
           </tr>
         </thead>
 
@@ -30,6 +31,8 @@ export default async function Home() {
           ))}
         </tbody>
       </table>
+
+      <NewGameDialog />
     </div>
   );
 }
