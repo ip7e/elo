@@ -1,23 +1,23 @@
-import { ButtonHTMLAttributes, HTMLAttributes, PropsWithChildren } from "react";
+import { ButtonHTMLAttributes, HTMLAttributes, PropsWithChildren } from "react"
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> &
   PropsWithChildren<{
-    secondary?: boolean;
-  }>;
+    secondary?: boolean
+  }>
 
 export default function Button({ children, secondary, ...btnProps }: Props) {
-  const { disabled } = btnProps;
+  const { disabled } = btnProps
 
   const color = secondary
     ? // secondary
-      "text-gray-900 ring-gray-300 hover:text-gray-600"
+      "bg-none text-black"
     : // primary
-      "shadow-sm ring-inset ring-1 bg-white text-gray-900 ring-gray-300 hover:bg-gray-50 hover:text-gray-600";
+      "bg-black text-white "
 
   return (
     <button
       type="button"
-      className={`inline-flex justify-center px-3 py-2 mt-3 text-sm font-semibold rounded-md sm:mt-0 sm:w-auto
+      className={`inline-flex justify-center px-6 py-3 text-sm sm:mt-0 sm:w-auto rounded-full border-none outline-none
         ${color} 
         ${disabled ? " opacity-50 cursor-default" : ""}
         `}
@@ -25,5 +25,5 @@ export default function Button({ children, secondary, ...btnProps }: Props) {
     >
       {children}
     </button>
-  );
+  )
 }

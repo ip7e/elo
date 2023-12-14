@@ -18,11 +18,11 @@ const Bubble = ({
   HTMLAttributes<HTMLSpanElement>) => {
   return (
     <span
-      className={`inline-block p-2 px-4 font-bold border border-gray-900 rounded-full cursor-pointer 
+      className={`inline-block py-1 px-4 text-lg font-semibold border border-gray-900 rounded-full cursor-pointer 
       ${
         selected
           ? "bg-gray-900 text-white hover:bg-gray-800"
-          : "hover:bg-gray-900 hover:text-white"
+          : "hover:bg-gray-200"
       }`}
       {...props}
     >
@@ -40,21 +40,18 @@ export default function MyModal({ members }: Props) {
   const closeModal = () => setIsOpen(false)
   const openModal = () => setIsOpen(true)
 
-  console.log(playingMembers)
+  const togglePlayingMember = (m: Member) =>
+    playingMembers.includes(m)
+      ? setPlayingMembers(playingMembers.filter((p) => p.id !== m.id))
+      : setPlayingMembers([...playingMembers, m])
+
   const chooseMembers = (
-    <div className="flex justify-center w-full gap-2 py-10">
+    <div className="flex flex-wrap justify-center max-w-md gap-2 mx-auto ">
       {members.map((m) => (
         <Bubble
           key={m.id}
           selected={playingMembers.includes(m)}
-          onClick={() => {
-            console.log("hi")
-            if (playingMembers.includes(m)) {
-              setPlayingMembers(playingMembers.filter((p) => p.id !== m.id))
-            } else {
-              setPlayingMembers([...playingMembers, m])
-            }
-          }}
+          onClick={() => togglePlayingMember(m)}
         >
           {m.display_name}
         </Bubble>
@@ -65,16 +62,21 @@ export default function MyModal({ members }: Props) {
   return (
     <>
       <div className="fixed inset-0 flex items-center justify-center">
-        <Button type="button" onClick={openModal}>
-          Open dialog
-        </Button>
+        <Button onClick={openModal}>New game session</Button>
       </div>
 
       <Dialog
         isOpen={isOpen}
-        title={<div className="text-center">Who&apos;s playing?</div>}
+        title="Choose who's playing?"
         content={chooseMembers}
-        footer={<Button onClick={closeModal}>Close</Button>}
+        footer={
+          <>
+            <Button secondary onClick={closeModal}>
+              Close
+            </Button>
+            <Button onClick={closeModal}>Submit</Button>
+          </>
+        }
         onClose={closeModal}
       ></Dialog>
     </>
