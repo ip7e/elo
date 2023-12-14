@@ -22,8 +22,8 @@ export default async function Home() {
             <tr key={i} className="text-lg">
               <td>#{i + 1}</td>
               <td className="w-full">{display_name}</td>
-              <td className="text-right">{new_elo}</td>
-              <td className="text-right">99</td>
+              <td className="font-mono text-right">{new_elo}</td>
+              <td className="font-mono text-right">99</td>
             </tr>
           ))}
         </tbody>
