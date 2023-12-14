@@ -1,12 +1,9 @@
 import { supabase } from "@/supabase";
-import NewGameDialog from "./new-game-dialog";
+import AddNewGame from "./add-new-game";
+import { getMembersWithElo } from "../queries/get-members";
 
 export default async function Home() {
-  const { data: members } = await supabase.from("circle_members").select(`
-    id,
-    display_name,
-    game_results!inner(new_elo, old_elo)
-  `);
+  const { data: members, error } = await getMembersWithElo();
 
   return (
     <div className="mt-20">
@@ -21,18 +18,18 @@ export default async function Home() {
         </thead>
 
         <tbody>
-          {members?.map(({ display_name, game_results }, i) => (
+          {members?.map(({ display_name, new_elo }, i) => (
             <tr key={i} className="text-lg">
               <td>#{i + 1}</td>
               <td className="w-full">{display_name}</td>
-              <td className="text-right">{game_results[0]["new_elo"]}</td>
+              <td className="text-right">{new_elo}</td>
               <td className="text-right">99</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <NewGameDialog />
+      <AddNewGame />
     </div>
   );
 }

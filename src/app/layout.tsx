@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
-import { Roboto_Mono } from 'next/font/google'
+import { Inter, Roboto_Mono } from 'next/font/google'
 import './globals.css'
 
 const robotoMono = Roboto_Mono({ subsets: ['latin'], variable: '--font-roboto-mono' })
+const inter = Inter({ weight: 'variable', subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'Elo',
@@ -16,8 +17,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${robotoMono.variable} font-mono`}>
-        <div className='container mx-auto max-w-xl'>
+      <body className={`${robotoMono.variable} ${inter.variable} font-sans`}>
+        <div className='container max-w-xl mx-auto'>
           {children}
         </div>
       </body>

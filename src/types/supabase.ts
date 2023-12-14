@@ -105,6 +105,13 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "circle_members"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_results_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members_with_elo"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -139,7 +146,25 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      members_with_elo: {
+        Row: {
+          circle_id: number | null
+          created_at: string | null
+          display_name: string | null
+          elo_date: string | null
+          id: number | null
+          new_elo: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_members_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
