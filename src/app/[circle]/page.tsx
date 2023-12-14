@@ -1,9 +1,13 @@
-import { supabase } from "@/supabase";
-import AddNewGame from "./add-new-game";
-import { getMembersWithElo } from "../queries/get-members";
+import { supabase } from "@/supabase"
+import AddNewGame from "./add-new-game"
+import { getAllMembers, getMembersWithElo } from "../queries/get-members"
 
 export default async function Home() {
-  const { data: members, error } = await getMembersWithElo();
+  const { data: allMembers } = await getAllMembers()
+  const { data: members } = await getMembersWithElo()
+
+  if (!members) return null
+  if (!allMembers) return null
 
   return (
     <div className="mt-20">
@@ -29,7 +33,7 @@ export default async function Home() {
         </tbody>
       </table>
 
-      <AddNewGame />
+      <AddNewGame members={allMembers} />
     </div>
-  );
+  )
 }

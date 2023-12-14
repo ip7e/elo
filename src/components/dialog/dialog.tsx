@@ -1,17 +1,23 @@
-"use client";
+"use client"
 
-import { Dialog as HeadlessDialog, Transition } from "@headlessui/react";
-import { Fragment, ReactNode } from "react";
+import { Dialog as HeadlessDialog, Transition } from "@headlessui/react"
+import { Fragment, ReactNode } from "react"
 
 type Props = {
-  isOpen: boolean;
-  title: ReactNode;
-  content: ReactNode;
-  footer: ReactNode;
-  onClose: () => void;
-};
+  isOpen: boolean
+  title: ReactNode
+  content: ReactNode
+  footer: ReactNode
+  onClose: () => void
+}
 
-export default function Dialog({ title, content, footer, isOpen, onClose }: Props) {
+export default function Dialog({
+  title,
+  content,
+  footer,
+  isOpen,
+  onClose,
+}: Props) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <HeadlessDialog as="div" className="relative z-10" onClose={onClose}>
@@ -45,20 +51,14 @@ export default function Dialog({ title, content, footer, isOpen, onClose }: Prop
                 >
                   {title}
                 </HeadlessDialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    {content}
-                  </p>
-                </div>
+                <div className="mt-2">{content}</div>
 
-                <div className="mt-4">
-                  {footer}
-                </div>
+                <div className="mt-4">{footer}</div>
               </HeadlessDialog.Panel>
             </Transition.Child>
           </div>
         </div>
       </HeadlessDialog>
     </Transition>
-  );
+  )
 }
