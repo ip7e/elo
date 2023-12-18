@@ -1,10 +1,10 @@
 import { supabase } from "@/supabase"
-import AddNewGame from "./add-new-game"
 import { getAllMembers, getMembersWithElo } from "../queries/get-members"
+import NewGameOpener from "./new-game/new-game-opener"
 
 export default async function Home() {
   const { data: allMembers } = await getAllMembers()
-  const { data: members } = await getMembersWithElo()
+  const { data: members } = await supabase.from("members_elo").select(`*`)
 
   if (!members) return null
   if (!allMembers) return null
@@ -22,18 +22,18 @@ export default async function Home() {
         </thead>
 
         <tbody>
-          {members?.map(({ display_name, new_elo }, i) => (
+          {members?.map(({ display_name, elo }, i) => (
             <tr key={i} className="text-lg">
               <td>#{i + 1}</td>
               <td className="w-full">{display_name}</td>
-              <td className="font-mono text-right">{new_elo}</td>
+              <td className="font-mono text-right">{elo}</td>
               <td className="font-mono text-right">99</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <AddNewGame members={allMembers} />
+      <NewGameOpener members={allMembers} />
     </div>
   )
 }

@@ -69,27 +69,27 @@ export interface Database {
       game_results: {
         Row: {
           created_at: string
+          elo: number | null
           game_id: number | null
           id: number
           member_id: number | null
-          new_elo: number | null
-          old_elo: number | null
+          winner: boolean | null
         }
         Insert: {
           created_at?: string
+          elo?: number | null
           game_id?: number | null
           id?: number
           member_id?: number | null
-          new_elo?: number | null
-          old_elo?: number | null
+          winner?: boolean | null
         }
         Update: {
           created_at?: string
+          elo?: number | null
           game_id?: number | null
           id?: number
           member_id?: number | null
-          new_elo?: number | null
-          old_elo?: number | null
+          winner?: boolean | null
         }
         Relationships: [
           {
@@ -110,7 +110,7 @@ export interface Database {
             foreignKeyName: "game_results_member_id_fkey"
             columns: ["member_id"]
             isOneToOne: false
-            referencedRelation: "members_with_elo"
+            referencedRelation: "members_elo"
             referencedColumns: ["id"]
           }
         ]
@@ -146,14 +146,12 @@ export interface Database {
       }
     }
     Views: {
-      members_with_elo: {
+      members_elo: {
         Row: {
           circle_id: number | null
-          created_at: string | null
           display_name: string | null
-          elo_date: string | null
+          elo: number | null
           id: number | null
-          new_elo: number | null
         }
         Relationships: [
           {
