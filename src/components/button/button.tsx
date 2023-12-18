@@ -10,9 +10,9 @@ export default function Button({ children, secondary, ...btnProps }: Props) {
 
   const color = secondary
     ? // secondary
-      "bg-none text-black"
+      "bg-none text-black hover:underline"
     : // primary
-      "bg-black text-white "
+      "bg-gray-800 text-white hover:bg-black"
 
   return (
     <button

@@ -18,10 +18,10 @@ const Bubble = ({
   HTMLAttributes<HTMLSpanElement>) => {
   return (
     <span
-      className={`inline-block py-1 px-4 text-lg font-semibold border border-gray-900 rounded-full cursor-pointer 
+      className={`inline-block py-1 px-4 text-lg font-semibold border border-gray-900 rounded-full cursor-pointer transition-all duration-300 select-none
       ${
         selected
-          ? "bg-gray-900 text-white hover:bg-gray-800"
+          ? "bg-gray-900 text-white hover:bg-gray-800 scale-105"
           : "hover:bg-gray-200"
       }`}
       {...props}
@@ -46,7 +46,7 @@ export default function MyModal({ members }: Props) {
       : setPlayingMembers([...playingMembers, m])
 
   const chooseMembers = (
-    <div className="flex flex-wrap justify-center max-w-md gap-2 mx-auto ">
+    <div className="flex flex-wrap justify-center max-w-md gap-2 mx-auto">
       {members.map((m) => (
         <Bubble
           key={m.id}
