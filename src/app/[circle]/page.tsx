@@ -4,7 +4,9 @@ import NewGameOpener from "./new-game/new-game-opener"
 
 export default async function Home() {
   const { data: allMembers } = await getAllMembers()
-  const { data: members } = await supabase.from("members_elo").select(`*`)
+  const { data: members } = await supabase.from("members_elo").select(`*`).order("elo", {
+    ascending: false,
+  })
 
   if (!members) return null
   if (!allMembers) return null

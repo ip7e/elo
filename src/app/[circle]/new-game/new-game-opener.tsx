@@ -19,13 +19,11 @@ export default function NewGameOpener({ members }: Props) {
 
   return (
     <>
-      <div className="fixed inset-0 flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <Button onClick={openModal}>New game session</Button>
       </div>
 
-      {isOpen && (
-        <NewGameDialog members={members} onClose={closeModal}></NewGameDialog>
-      )}
+      {isOpen && <NewGameDialog members={members} onClose={closeModal}></NewGameDialog>}
     </>
   )
 }

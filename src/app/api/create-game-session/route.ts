@@ -1,7 +1,7 @@
 import { supabase } from "@/supabase"
+import calculateElo from "./calculate-elo"
 
 const DEFAULT_ELO = 1100
-const ELO_K = 32
 
 type NewGameSessionRequest = {
   memberIds: number[]
@@ -33,26 +33,29 @@ export async function POST(request: Request) {
     delta: 0,
   }))
 
-  let member1: { startElo: any; id?: number; isWinner?: boolean }
-  let totalRWR = 0
+  const newElos = calculateElo(
+    members.map((member) => ({
+      id: member.id,
+      startElo: member.startElo,
+      isWinner: member.isWinner,
+    })),
+  )
 
-  // calculate relative win rates
-  members.forEach((member) => {
-    member1 = member1 || member
-    const rwr = Math.pow(10, (member.startElo - member1.startElo) / 400)
-    totalRWR += rwr
-    member.rwr = rwr
-  })
+  const { data: game } = await supabase.from("games").insert({ circle_id: 1 }).select()
 
-  members.forEach((member) => {
-    const probability = member.rwr / totalRWR
-    const multiplier = member.isWinner ? 1 : 0
-    const eloChange = Math.round(ELO_K * (1 * multiplier - probability))
-    member.newElo = member.startElo + eloChange
-    member.delta = eloChange
-  })
+  if (!game?.length) return MessageResponse(500, "Failed to create game")
 
-  console.log(members)
+  await supabase
+    .from("game_results")
+    .insert(
+      Object.entries(newElos).map(([id, result]) => ({
+        member_id: +id,
+        game_id: game[0].id,
+        winner: winnersMap[id],
+        elo: result.elo,
+      })),
+    )
+    .select()
 
   return Response.json({
     status: 200,
