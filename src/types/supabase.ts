@@ -163,6 +163,29 @@ export interface Database {
           }
         ]
       }
+      members_stats: {
+        Row: {
+          member_id: number | null
+          total_games: number | null
+          total_wins: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_results_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "circle_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_results_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members_elo"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Functions: {
       [_ in never]: never

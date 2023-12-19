@@ -17,17 +17,11 @@ export const metadata: Metadata = {
   description: "Board Game elo system",
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${robotoMono.variable} ${inter.variable} font-sans bg-bg`}
-      >
-        <div className="container max-w-xl mx-auto">{children}</div>
+      <body className={`${robotoMono.variable} ${inter.variable} font-sans bg-bg`}>
+        <div className="container max-w-lg mx-auto">{children}</div>
       </body>
     </html>
   )
