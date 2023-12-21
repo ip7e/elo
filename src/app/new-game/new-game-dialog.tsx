@@ -1,6 +1,5 @@
 "use client"
 
-import { createGameSession } from "@/app/queries/get-members"
 import Button from "@/components/button/button"
 import Dialog from "@/components/dialog/dialog"
 import MemberPill from "@/components/member-pill"
@@ -13,91 +12,67 @@ type Props = {
   onClose: () => void
 }
 
-const steps = ["choose-members", "choose-winners"] as const
-
-type Step = (typeof steps)[number]
+type MemberStatus = "none" | "losing" | "wining"
 
 export default function NewGameDialog({ members, onClose }: Props) {
-  const [currentStep, setCurrentStep] = useState<Step>("choose-members")
+  let [statusMap, setStatusMap] = useState<Record<number, MemberStatus>>({})
 
-  let [winningMembers, setWinningMembers] = useState<Member[]>([])
-  let [playingMembers, setPlayingMembers] = useState<Member[]>([])
+  const handleClick = (member: Member) => {
+    const prev = statusMap[member.id] || "none"
+    const next = ({ none: "losing", losing: "wining", wining: "none" } as const)[prev]
+    setStatusMap({ ...statusMap, [member.id]: next })
+  }
 
-  const togglePlayingMember = (m: Member) =>
-    playingMembers.includes(m)
-      ? setPlayingMembers(playingMembers.filter((p) => p.id !== m.id))
-      : setPlayingMembers([...playingMembers, m])
-
-  const toggleWinningMember = (m: Member) =>
-    winningMembers.includes(m)
-      ? setWinningMembers(winningMembers.filter((p) => p.id !== m.id))
-      : setWinningMembers([...winningMembers, m])
+  const losingIds = members.filter((m) => statusMap[m.id] === "losing").map((m) => m.id)
+  const winningIds = members.filter((m) => statusMap[m.id] === "wining").map((m) => m.id)
 
   const submit = async () => {
-    const memberIds = playingMembers.map((m) => m.id)
-    const winnerIds = winningMembers.map((m) => m.id)
-
-    await createGameSession(memberIds, winnerIds)
+    console.log({ losingIds, winningIds })
+    // await createGameSession(memberIds, winnerIds)
   }
+
+  const isValid = losingIds.length > 0 && winningIds.length > 0
 
   return (
     <Dialog
-      title="Choose who's playing?"
+      title="Who's winning today?"
+      subtitle={
+        <>
+          Tap once for <span className="text-gray-900  font-bold">losers</span>, twice for{" "}
+          <span className="text-yellow-600 font-bold">winners</span>
+        </>
+      }
       content={
         <>
-          {currentStep === "choose-members" && (
-            <div className="flex flex-wrap justify-center max-w-md gap-2 mx-auto">
-              {members.map((m) => (
-                <MemberPill
-                  key={m.id}
-                  color={playingMembers.includes(m) ? "highlight" : undefined}
-                  onClick={() => togglePlayingMember(m)}
-                >
-                  {m.display_name}
-                </MemberPill>
-              ))}
-            </div>
-          )}
-
-          {currentStep === "choose-winners" && (
-            <div className="flex flex-wrap justify-center max-w-md gap-2 mx-auto">
-              {playingMembers.map((m) => (
-                <MemberPill
-                  key={m.id}
-                  color={winningMembers.includes(m) ? "golden" : "highlight"}
-                  onClick={() => toggleWinningMember(m)}
-                >
-                  {m.display_name}
-                </MemberPill>
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap justify-center max-w-md gap-2 mx-auto">
+            {members.map((m) => (
+              <MemberPill
+                key={m.id}
+                color={
+                  statusMap[m.id] === "losing"
+                    ? "highlight"
+                    : statusMap[m.id] === "wining"
+                      ? "golden"
+                      : undefined
+                }
+                onClick={() => handleClick(m)}
+              >
+                {m.display_name}
+              </MemberPill>
+            ))}
+          </div>
         </>
       }
       footer={
         <>
-          {currentStep === "choose-members" && (
-            <>
-              <Button secondary onClick={onClose}>
-                Close
-              </Button>
-              <Button onClick={() => setCurrentStep("choose-winners")}>
-                Submit
-              </Button>
-            </>
-          )}
-
-          {currentStep === "choose-winners" && (
-            <>
-              <Button
-                secondary
-                onClick={() => setCurrentStep("choose-members")}
-              >
-                Back
-              </Button>
-              <Button onClick={submit}>Submit</Button>
-            </>
-          )}
+          <>
+            <Button secondary onClick={onClose}>
+              Close
+            </Button>
+            <Button disabled={!isValid} onClick={() => submit()}>
+              Submit
+            </Button>
+          </>
         </>
       }
       onClose={onClose}

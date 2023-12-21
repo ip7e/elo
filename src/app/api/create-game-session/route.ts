@@ -11,7 +11,6 @@ const MessageResponse = (status: Number, message: string) =>
   Response.json({ status, body: { message } })
 
 export async function POST(request: Request) {
-  // -- get data first --
   const { memberIds, winnerIds } = (await request.json()) as NewGameSessionRequest
 
   if (!memberIds.length || !winnerIds.length)
