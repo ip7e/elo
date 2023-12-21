@@ -1,5 +1,7 @@
 import { supabase } from "@/supabase"
 import NewGameOpener from "./new-game/new-game-opener"
+import Chart from "./chart/chart"
+import { Tables } from "@/types/supabase"
 
 export default async function Home() {
   const { data: allMembers } = await supabase.from("circle_members").select("*")
@@ -11,10 +13,27 @@ export default async function Home() {
       ascending: false,
     })
 
+  const { data: gamesHistory, error } = await supabase
+    .from("game_results")
+    .select("*")
+    .order("created_at", { ascending: false })
   if (!leaderBoard) return null
   if (!allMembers) return null
+  if (!gamesHistory) return null
 
   const membersWith5games = leaderBoard.filter((member) => member.stats[0]?.total_games! >= 5)
+
+  const chartData = gamesHistory.reduce(
+    (acc, session) => {
+      const history = acc[session.member_id!] || []
+      history.push(session)
+      return {
+        ...acc,
+        [session.member_id!]: history,
+      }
+    },
+    {} as Record<number, Tables<"game_results">[]>,
+  )
 
   return (
     <div className="mt-20">
@@ -42,6 +61,7 @@ export default async function Home() {
         </tbody>
       </table>
 
+      <Chart />
       <div className="mt-20">
         <NewGameOpener members={allMembers} />
       </div>
