@@ -1,63 +1,88 @@
-"use client"
-import React, { useEffect, useRef } from "react"
+import { supabase } from "@/supabase"
+import { Tables } from "@/types/supabase"
 import * as d3 from "d3"
 
-const dummyData = [
-  {
-    id: 1,
-    points: [900, 912, 1100, 1050, 1050, 1060, 1010],
-  },
-  {
-    id: 2,
-    points: [1130, 1111, 1000, 1032, 1032, 1032, 1032],
-  },
-  {
-    id: 3,
-    points: [912, 1175, 1100, 1187, 1187, 1111, 1120],
-  },
-] // Example data
+type Props = {
+  members: Tables<"members_elo">[]
+}
 
-export default function Chart() {
+export default async function Chart({ members }: Props) {
+  const { data: games, error } = await supabase
+    .from("games")
+    .select("*, game_results(*)")
+    .order("created_at", { ascending: false })
+    .limit(20)
+
+  if (!games?.length) return null
+
+  let curEloByMember = members.reduce(
+    (acc, m) => ({
+      ...acc,
+      [m.id!]: m.elo!,
+    }),
+    {} as Record<number, number>,
+  )
+
+  let rankingByMemberGames = {} as Record<number | string, [number | string, number][]>
+
+  games.forEach((game) => {
+    game.game_results.forEach((r) => {
+      if (!curEloByMember[r.member_id!]) return
+
+      curEloByMember[r.member_id!] = r.elo!
+    })
+
+    const curRanking = Object.entries(curEloByMember).sort((a, b) => b[1] - a[1])
+
+    curRanking.forEach(([memberId, elo], i) => {
+      rankingByMemberGames[memberId] = rankingByMemberGames[memberId] || []
+      rankingByMemberGames[memberId].push([game.id, i])
+    })
+  })
+
   const width = 512
   const height = 128
   const padding = 8
 
   // Create scales
   const x = d3
-    .scaleLinear()
-    .domain([0, dummyData[0].points.length - 1]) // TODO:
-    .range([padding, width - padding])
+    .scaleBand()
+    .paddingInner(1)
+    .domain(games.map((g) => "g-" + g.id.toString()))
+    .range([width - padding, padding])
 
   const y = d3
     .scaleLinear()
-    .domain([900, 1200]) // TODO:
-    .range([height - padding, padding])
+    .domain([0, members.length])
+    .range([padding, height - padding])
 
   // Create line generator
   const line = d3
-    .line<number>()
-    .defined((d) => !isNaN(d))
-    .x((d, i) => x(i))
-    .y((d, i) => y(d))
+    .line<[number | string, number]>()
+    .defined(([game_id, rank]) => rank !== undefined)
+    .x(([game_id, rank]) => x("g-" + game_id)!)
+    .y(([game_id, rank]) => y(rank))
     .curve(d3.curveCatmullRom.alpha(0.5))
 
-  const activePoints = dummyData.at(-1)!.points
+  console.log(games.map((g) => "g-" + g.id.toString()))
+  console.log(rankingByMemberGames[1])
+
+  const selected = 1
+
+  console.log(members.map((m) => [m.id, m.display_name]))
 
   return (
     <div className="w-full my-8">
-      <svg fill="#000" vectorEffect="non-scaling-stroke" width={width} height={height}>
-        {dummyData.map((member) => (
+      <svg vectorEffect="non-scaling-stroke" width={width} height={height}>
+        {Object.entries(rankingByMemberGames).map(([memberId, data]) => (
           <path
-            key={member.id}
-            d={line(member.points)!}
-            stroke={member.id === 3 ? `#E6A320` : "#cbcbcb"}
+            key={memberId}
+            d={line(data)!}
+            stroke={memberId == selected.toString() ? `#E6A320` : `#aeaeae45`}
             strokeWidth={2}
             fill="none"
+            stroke-linecap="round"
           ></path>
-        ))}
-
-        {activePoints.map((point, i) => (
-          <circle key={i} cx={x(i)} cy={y(point)} r={3} stroke="#F3F0EA" fill="#E6A320" />
         ))}
       </svg>
     </div>

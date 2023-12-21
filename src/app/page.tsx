@@ -1,7 +1,6 @@
 import { supabase } from "@/supabase"
-import NewGameOpener from "./new-game/new-game-opener"
 import Chart from "./chart/chart"
-import { Tables } from "@/types/supabase"
+import NewGameOpener from "./new-game/new-game-opener"
 
 export default async function Home() {
   const { data: allMembers } = await supabase.from("circle_members").select("*")
@@ -13,27 +12,10 @@ export default async function Home() {
       ascending: false,
     })
 
-  const { data: gamesHistory, error } = await supabase
-    .from("game_results")
-    .select("*")
-    .order("created_at", { ascending: false })
   if (!leaderBoard) return null
   if (!allMembers) return null
-  if (!gamesHistory) return null
 
-  const membersWith5games = leaderBoard.filter((member) => member.stats[0]?.total_games! >= 5)
-
-  const chartData = gamesHistory.reduce(
-    (acc, session) => {
-      const history = acc[session.member_id!] || []
-      history.push(session)
-      return {
-        ...acc,
-        [session.member_id!]: history,
-      }
-    },
-    {} as Record<number, Tables<"game_results">[]>,
-  )
+  const topMembers = leaderBoard.filter((member) => member.stats[0]?.total_games! >= 5)
 
   return (
     <div className="mt-20">
@@ -48,7 +30,7 @@ export default async function Home() {
         </thead>
 
         <tbody>
-          {membersWith5games?.map(({ display_name, elo, stats }, i) => (
+          {topMembers?.map(({ display_name, elo, stats }, i) => (
             <tr key={i}>
               <td className="font-mono font-bold text-right text-xl opacity-20">{i + 1}</td>
               <td className="w-full text-lg font-bold">{display_name}</td>
@@ -61,7 +43,8 @@ export default async function Home() {
         </tbody>
       </table>
 
-      <Chart />
+      <Chart members={topMembers} />
+
       <div className="mt-20">
         <NewGameOpener members={allMembers} />
       </div>
