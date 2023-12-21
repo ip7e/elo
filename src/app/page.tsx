@@ -12,8 +12,15 @@ export default async function Home() {
       ascending: false,
     })
 
+  const { data: gameResults, error } = await supabase
+    .from("games")
+    .select("*, game_results(*)")
+    .order("created_at", { ascending: false })
+    .limit(20)
+
   if (!leaderBoard) return null
   if (!allMembers) return null
+  if (!gameResults) return null
 
   const topMembers = leaderBoard.filter((member) => member.stats[0]?.total_games! >= 5)
 
@@ -30,7 +37,7 @@ export default async function Home() {
         </thead>
 
         <tbody>
-          {topMembers?.map(({ display_name, elo, stats }, i) => (
+          {topMembers?.map(({ id, display_name, elo, stats }, i) => (
             <tr key={i}>
               <td className="font-mono font-bold text-right text-xl opacity-20">{i + 1}</td>
               <td className="w-full text-lg font-bold">{display_name}</td>
@@ -43,7 +50,7 @@ export default async function Home() {
         </tbody>
       </table>
 
-      <Chart members={topMembers} />
+      <Chart members={topMembers} data={gameResults} />
 
       <div className="mt-20">
         <NewGameOpener members={allMembers} />

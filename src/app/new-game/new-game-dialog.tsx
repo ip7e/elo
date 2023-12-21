@@ -29,6 +29,7 @@ export default function NewGameDialog({ members, onClose }: Props) {
   const submit = async () => {
     console.log({ losingIds, winningIds })
     // await createGameSession(memberIds, winnerIds)
+    onClose()
   }
 
   const isValid = losingIds.length > 0 && winningIds.length > 0
