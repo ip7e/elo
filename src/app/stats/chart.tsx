@@ -1,8 +1,7 @@
 "use client"
 
-import { Tables } from "@/types/supabase"
 import * as d3 from "d3"
-import { m, motion } from "framer-motion"
+import { motion } from "framer-motion"
 import { GameWithGameResults, MemberStatsWithElo } from "./types"
 
 type Props = {

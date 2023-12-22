@@ -20,7 +20,9 @@ export async function POST(request: Request) {
 
   if (!membersElo) throw new Error("Failed to get members elo")
 
-  const existingEloMap = Object.fromEntries(membersElo.map((member) => [member.id, member.elo]))
+  const existingEloMap = Object.fromEntries(
+    membersElo.map((member) => [member.member_id, member.elo]),
+  )
   const winnersMap = Object.fromEntries(winnerIds.map((id) => [id, true]))
 
   const members = memberIds.map((id) => ({
