@@ -17,6 +17,8 @@ export default function NewGameOpener({ members }: Props) {
   const closeModal = () => setIsOpen(false)
   const openModal = () => setIsOpen(true)
 
+  // const { data: allMembers } = await supabase.from("circle_members").select("*")
+
   return (
     <>
       <div className="flex items-center justify-center">

@@ -111,7 +111,7 @@ export interface Database {
             columns: ["member_id"]
             isOneToOne: false
             referencedRelation: "members_elo"
-            referencedColumns: ["id"]
+            referencedColumns: ["member_id"]
           }
         ]
       }
@@ -151,7 +151,7 @@ export interface Database {
           circle_id: number | null
           display_name: string | null
           elo: number | null
-          id: number | null
+          member_id: number | null
         }
         Relationships: [
           {
@@ -165,6 +165,7 @@ export interface Database {
       }
       members_stats: {
         Row: {
+          display_name: string | null
           member_id: number | null
           total_games: number | null
           total_wins: number | null
@@ -182,7 +183,7 @@ export interface Database {
             columns: ["member_id"]
             isOneToOne: false
             referencedRelation: "members_elo"
-            referencedColumns: ["id"]
+            referencedColumns: ["member_id"]
           }
         ]
       }

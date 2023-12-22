@@ -3,17 +3,19 @@
 import { Tables } from "@/types/supabase"
 import * as d3 from "d3"
 import { m, motion } from "framer-motion"
+import { GameWithGameResults, MemberStatsWithElo } from "./types"
 
 type Props = {
-  members: Tables<"members_elo">[]
-  data: (Tables<"games"> & { game_results: Tables<"game_results">[] })[]
+  members: MemberStatsWithElo[]
+  games: GameWithGameResults[]
+  highlight: number
 }
 
-export default function Chart({ members, data: games }: Props) {
+export default function Chart({ members, games: games, highlight }: Props) {
   let curEloByMember = members.reduce(
     (acc, m) => ({
       ...acc,
-      [m.id!]: m.elo!,
+      [m.member_id!]: m.elo!,
     }),
     {} as Record<number, number>,
   )
@@ -59,11 +61,11 @@ export default function Chart({ members, data: games }: Props) {
     .y(([game_id, rank]) => y(rank))
     .curve(d3.curveCatmullRom.alpha(0.5))
 
-  const selectedData = rankingByMemberGames[1]
+  const selectedData = rankingByMemberGames[highlight]
 
   return (
-    <div className={`w-full my-8 w-[${width}] h-[${height}]`}>
-      <svg vectorEffect="non-scaling-stroke" width={width} height={height}>
+    <div className={`w-full my-8 aspect-[512/128]`}>
+      <svg vectorEffect="non-scaling-stroke" viewBox={`0 0 ${width} ${height}`} width="100%">
         {Object.entries(rankingByMemberGames).map(([memberId, data]) => (
           <path
             key={memberId}
@@ -77,6 +79,7 @@ export default function Chart({ members, data: games }: Props) {
 
         {selectedData && (
           <motion.path
+            key={highlight}
             d={line(selectedData)!}
             stroke="#E6A320"
             strokeWidth={2}
