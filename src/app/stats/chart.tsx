@@ -89,7 +89,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
     .defined((d) => d !== undefined)
     .x((record) => x("g-" + record.game_id)!)
     .y((record) => y(record.rank))
-    .curve(d3.curveCatmullRom.alpha(0.5))
+    .curve(d3.curveCardinal.tension(0))
 
   const selectedData = gamesByMember[highlight]
 
@@ -106,9 +106,9 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               fill="none"
               strokeLinecap="round"
             ></path>
+
             {data[0].played && (
               <circle
-                key={memberId}
                 cx={x("g-" + data[0].game_id)!}
                 cy={y(data[0].rank)}
                 r={2}

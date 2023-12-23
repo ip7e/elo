@@ -7,6 +7,7 @@ export default async function StatsServer() {
     .from("members_stats")
     .select("*")
     .filter("total_games", "gt", 4)
+    .order("elo", { ascending: false })
 
   const { data: recentGames }: { data: GameWithGameResults[] | null } = await supabase
     .from("games")
