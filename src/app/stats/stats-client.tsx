@@ -51,7 +51,7 @@ export default function StatsClient({ stats, recentWinners, recentGames }: Props
               </td>
               <td className="font-mono font-bold text-right text-lg ">{elo}</td>
               <td className="font-mono font-bold text-right text-lg opacity-20 w-max">
-                {Math.round(((total_wins || 1) / (total_games || 1)) * 100)}
+                {Math.round(((total_wins || 0) / (total_games || 0)) * 100)}
               </td>
             </tr>
           ))}
