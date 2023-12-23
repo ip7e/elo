@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${robotoMono.variable} ${inter.variable} font-sans bg-bg`}>
+      <body className={`${robotoMono.variable} ${inter.variable} font-sans bg-bg dark:bg-black`}>
         <div className="container max-w-lg py-10 mx-auto">
           <Navigation />
           {children}

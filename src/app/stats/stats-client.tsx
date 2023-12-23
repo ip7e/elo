@@ -24,21 +24,23 @@ export default function StatsClient({ stats, recentWinners, recentGames }: Props
     <>
       <table className="table border-separate border-spacing-x-3 border-spacing-y-2">
         <thead>
-          <tr className="text-sm lowercase align-text-top opacity-60">
+          <tr className="text-sm lowercase align-text-top opacity-60 text-black/30 dark:text-white/40">
             <th className="invisible"></th>
             <th className="invisible w-full">Player</th>
-            <th className="text-center font-mono font-bold opacity-30 text-lg">elo</th>
-            <th className="text-center font-mono font-bold opacity-30 text-lg">%</th>
+            <th className="text-center font-mono font-bold text-lg">elo</th>
+            <th className="text-center font-mono font-bold text-lg">%</th>
           </tr>
         </thead>
 
         <tbody>
           {stats.map(({ elo, display_name, member_id, total_games, total_wins }, i) => (
             <tr key={member_id} onMouseEnter={() => setHighlight(member_id!)}>
-              <td className="font-mono font-bold text-right text-xl opacity-20 w-max">{i + 1}</td>
+              <td className="font-mono font-bold text-right text-xl text-black/30 dark:text-white/40 w-max">
+                {i + 1}
+              </td>
               <td
                 className={`w-full text-lg font-bold font-mono ${
-                  highlight == member_id ? "text-[#E6A320]" : ""
+                  highlight == member_id ? "text-[#E6A320]" : "text-black dark:text-white"
                 }`}
               >
                 {display_name}
@@ -49,8 +51,10 @@ export default function StatsClient({ stats, recentWinners, recentGames }: Props
                   </span>
                 )}
               </td>
-              <td className="font-mono font-bold text-right text-lg ">{elo}</td>
-              <td className="font-mono font-bold text-right text-lg opacity-20 w-max">
+              <td className="font-mono font-bold text-right text-lg text-black dark:text-white">
+                {elo}
+              </td>
+              <td className="font-mono font-bold text-right text-lg text-black/30 dark:text-white/40 w-max">
                 {Math.round(((total_wins || 0) / (total_games || 0)) * 100)}
               </td>
             </tr>

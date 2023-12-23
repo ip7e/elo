@@ -101,9 +101,9 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
             <path
               key={memberId}
               d={line(data)!}
-              stroke="#aeaeae45"
               strokeWidth={2}
               fill="none"
+              className="stroke-gray-300 dark:stroke-gray-800"
               strokeLinecap="round"
             ></path>
 
@@ -112,7 +112,8 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
                 cx={x("g-" + data[0].game_id)!}
                 cy={y(data[0].rank)}
                 r={2}
-                fill="#aeaeae45"
+                fill="none"
+                className="stroke-gray-300 dark:stroke-gray-800"
               ></circle>
             )}
           </>
@@ -140,9 +141,9 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
                   animate={{ opacity: 1, transition: { delay: i * 0.02 } }}
                   cx={x("g-" + record.game_id)!}
                   cy={y(record.rank)}
-                  r={3}
-                  stroke="#E6A320"
-                  fill="#F5F2ED"
+                  strokeWidth={2}
+                  r={4}
+                  className={"stroke-[#E6A320] fill-bg dark:fill-black"}
                 ></motion.circle>
               ))}
           </>

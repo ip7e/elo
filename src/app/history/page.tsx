@@ -13,7 +13,7 @@ export default async function ResultsPage() {
     <div className="font-mono mt-10">
       {history.map((game) => (
         <p key={game.id} className="py-1 text-gray-500">
-          <time dateTime={game.created_at} className="text-black">
+          <time dateTime={game.created_at} className="text-gray-500 dark:text-gray-600">
             {format(game.created_at, "MMM dd")} -{" "}
           </time>
 
@@ -22,7 +22,7 @@ export default async function ResultsPage() {
               key={result.member_id}
               className={`
               italic inline-block px-1
-              ${result.winner ? "text-orange-500" : "text-gray-500 font-light"}
+              ${result.winner ? "text-orange-500" : "text-gray-500 dark:text-gray-600 font-light"}
             `}
             >
               {result.member?.display_name}

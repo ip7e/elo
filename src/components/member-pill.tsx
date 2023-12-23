@@ -9,13 +9,13 @@ type Props = HTMLAttributes<HTMLSpanElement> &
 const MemberPill = ({ color, children, ...props }: Props) => {
   return (
     <span
-      className={`inline-block py-1 px-4 text-lg font-semibold border  rounded-full cursor-pointer transition-all duration-300 select-none
+      className={`inline-block py-1 px-4 text-lg font-semibold rounded-full cursor-pointer transition-all duration-300 select-none 
       ${
         color === "highlight"
-          ? "bg-gray-900 text-white hover:bg-gray-800 scale-105"
+          ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-200 dark:hover:bg-gray-300 dark:text-black"
           : color === "golden"
-            ? "bg-yellow-500 text-white hover:bg-yellow-500 scale-105"
-            : "hover:bg-gray-200 border-gray-900"
+            ? "bg-yellow-500 text-white dark:text-black hover:bg-yellow-500"
+            : " hover:bg-gray-200 ring-1 ring-gray-900 dark:text-gray-400 dark:ring-gray-800 dark:hover:bg-gray-900"
       }`}
       {...props}
     >

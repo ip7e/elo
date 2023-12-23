@@ -24,7 +24,9 @@ export default function Navigation() {
             <Link
               key={route.pathname}
               href={route.pathname}
-              className={`text-black ${currentPathname === route.pathname && "underline"}`}
+              className={`text-black ${
+                currentPathname === route.pathname && "underline"
+              } dark:text-white`}
             >
               {route.label}
             </Link>

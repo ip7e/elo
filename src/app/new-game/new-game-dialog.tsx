@@ -40,8 +40,8 @@ export default function NewGameDialog({ members, onClose }: Props) {
       title="Who's winning today?"
       subtitle={
         <>
-          Tap once for <span className="text-gray-900  font-bold">losers</span>, twice for{" "}
-          <span className="text-yellow-600 font-bold">winners</span>
+          Tap once for <span className="text-gray-900 dark:text-gray-200  font-bold">losers</span>,
+          twice for <span className="text-yellow-600 font-bold">winners</span>
         </>
       }
       content={
