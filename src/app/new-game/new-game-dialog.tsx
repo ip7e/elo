@@ -5,6 +5,7 @@ import Dialog from "@/components/dialog/dialog"
 import MemberPill from "@/components/member-pill"
 import { Tables } from "@/types/supabase"
 import { useState } from "react"
+import { createGameSession } from "../queries/get-members"
 
 type Member = Tables<"circle_members">
 type Props = {
@@ -28,7 +29,7 @@ export default function NewGameDialog({ members, onClose }: Props) {
 
   const submit = async () => {
     console.log({ losingIds, winningIds })
-    // await createGameSession(memberIds, winnerIds)
+    // await createGameSession(losingIds, winningIds)
     onClose()
   }
 

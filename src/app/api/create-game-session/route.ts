@@ -4,16 +4,16 @@ import calculateElo from "./calculate-elo"
 const DEFAULT_ELO = 1100
 
 type NewGameSessionRequest = {
-  memberIds: number[]
+  loserIds: number[]
   winnerIds: number[]
 }
 const MessageResponse = (status: Number, message: string) =>
   Response.json({ status, body: { message } })
 
 export async function POST(request: Request) {
-  const { memberIds, winnerIds } = (await request.json()) as NewGameSessionRequest
+  const { loserIds, winnerIds } = (await request.json()) as NewGameSessionRequest
 
-  if (!memberIds.length || !winnerIds.length)
+  if (!loserIds.length || !winnerIds.length)
     return MessageResponse(400, "missing member ids and/or winner ids")
 
   const { data: membersElo, error } = await supabase.from("members_elo").select(`*`)
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   )
   const winnersMap = Object.fromEntries(winnerIds.map((id) => [id, true]))
 
-  const members = memberIds.map((id) => ({
+  const members = [...loserIds, ...winnerIds].map((id) => ({
     id,
     startElo: existingEloMap[id] || DEFAULT_ELO,
     isWinner: !!winnersMap[id],
