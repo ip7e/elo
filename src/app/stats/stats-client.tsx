@@ -2,15 +2,15 @@
 
 import { useState } from "react"
 import Chart from "./chart"
-import { GameWithGameResults, MemberStatsWithElo } from "./types"
+import { GameWithGameResults, MemberStats } from "./types"
 
 type Props = {
-  leaderBoard: MemberStatsWithElo[]
+  stats: MemberStats[]
   recentGames: GameWithGameResults[]
   recentWinners: number[]
 }
-export default function StatsClient({ leaderBoard, recentWinners, recentGames }: Props) {
-  const [highlight, setHighlight] = useState<number>(leaderBoard[0].member_id!)
+export default function StatsClient({ stats, recentWinners, recentGames }: Props) {
+  const [highlight, setHighlight] = useState<number>(stats[0].member_id!)
 
   const winsByMemberId = recentWinners.reduce(
     (acc, winner) => ({
@@ -33,7 +33,7 @@ export default function StatsClient({ leaderBoard, recentWinners, recentGames }:
         </thead>
 
         <tbody>
-          {leaderBoard.map(({ elo, display_name, member_id, total_games, total_wins }, i) => (
+          {stats.map(({ elo, display_name, member_id, total_games, total_wins }, i) => (
             <tr key={member_id} onMouseEnter={() => setHighlight(member_id!)}>
               <td className="font-mono font-bold text-right text-xl opacity-20 w-max">{i + 1}</td>
               <td
@@ -58,7 +58,7 @@ export default function StatsClient({ leaderBoard, recentWinners, recentGames }:
         </tbody>
       </table>
 
-      <Chart members={leaderBoard} games={recentGames} highlight={highlight} />
+      <Chart stats={stats} games={recentGames} highlight={highlight} />
     </>
   )
 }

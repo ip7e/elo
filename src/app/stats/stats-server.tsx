@@ -1,12 +1,12 @@
 import { supabase } from "@/supabase"
 import StatsClient from "./stats-client"
-import { GameWithGameResults, MemberStatsWithElo } from "./types"
+import { GameWithGameResults } from "./types"
 
 export default async function StatsServer() {
-  const { data: leaderBoardRaw } = await supabase
+  const { data: stats } = await supabase
     .from("members_stats")
-    .select("*, members_elo(elo, *)")
-    .filter("total_games", "gte", 5)
+    .select("*")
+    .filter("total_games", "gt", 4)
 
   const { data: recentGames }: { data: GameWithGameResults[] | null } = await supabase
     .from("games")
@@ -14,26 +14,13 @@ export default async function StatsServer() {
     .order("created_at", { ascending: false })
     .limit(20)
 
-  if (!leaderBoardRaw) return null
   if (!recentGames) return null
-
-  const leaderBoard: MemberStatsWithElo[] = leaderBoardRaw
-    .map((member) => {
-      const { members_elo, ...rest } = member
-      return { ...rest, elo: members_elo!.elo! }
-    })
-    .sort((a, b) => b.elo - a.elo)
+  if (!stats) return null
 
   const recentWinners = recentGames
     .slice(0, 3)
     .map((game) => game.game_results.find((result) => result.winner === true)?.member_id)
     .filter(Boolean) as number[]
 
-  return (
-    <StatsClient
-      leaderBoard={leaderBoard}
-      recentWinners={recentWinners}
-      recentGames={recentGames}
-    />
-  )
+  return <StatsClient stats={stats} recentWinners={recentWinners} recentGames={recentGames} />
 }

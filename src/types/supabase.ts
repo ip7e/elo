@@ -11,21 +11,21 @@ export interface Database {
     Tables: {
       circle_members: {
         Row: {
-          circle_id: number | null
+          circle_id: number
           created_at: string
           display_name: string | null
           id: number
           user_id: string | null
         }
         Insert: {
-          circle_id?: number | null
+          circle_id: number
           created_at?: string
           display_name?: string | null
           id?: number
           user_id?: string | null
         }
         Update: {
-          circle_id?: number | null
+          circle_id?: number
           created_at?: string
           display_name?: string | null
           id?: number
@@ -69,26 +69,26 @@ export interface Database {
       game_results: {
         Row: {
           created_at: string
-          elo: number | null
-          game_id: number | null
+          elo: number
+          game_id: number
           id: number
-          member_id: number | null
+          member_id: number
           winner: boolean | null
         }
         Insert: {
           created_at?: string
-          elo?: number | null
-          game_id?: number | null
+          elo: number
+          game_id: number
           id?: number
-          member_id?: number | null
+          member_id: number
           winner?: boolean | null
         }
         Update: {
           created_at?: string
-          elo?: number | null
-          game_id?: number | null
+          elo?: number
+          game_id?: number
           id?: number
-          member_id?: number | null
+          member_id?: number
           winner?: boolean | null
         }
         Relationships: [
@@ -98,6 +98,20 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "games"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_results_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "members_stats"
+            referencedColumns: ["latest_game"]
+          },
+          {
+            foreignKeyName: "game_results_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "members_stats"
+            referencedColumns: ["first_game"]
           },
           {
             foreignKeyName: "game_results_member_id_fkey"
@@ -112,24 +126,31 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "members_elo"
             referencedColumns: ["member_id"]
+          },
+          {
+            foreignKeyName: "game_results_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members_stats"
+            referencedColumns: ["member_id"]
           }
         ]
       }
       games: {
         Row: {
-          circle_id: number | null
+          circle_id: number
           created_at: string
           id: number
           location: string | null
         }
         Insert: {
-          circle_id?: number | null
+          circle_id: number
           created_at?: string
           id?: number
           location?: string | null
         }
         Update: {
-          circle_id?: number | null
+          circle_id?: number
           created_at?: string
           id?: number
           location?: string | null
@@ -166,26 +187,14 @@ export interface Database {
       members_stats: {
         Row: {
           display_name: string | null
+          elo: number | null
+          first_game: number | null
+          latest_game: number | null
           member_id: number | null
           total_games: number | null
           total_wins: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "game_results_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "circle_members"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "game_results_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "members_elo"
-            referencedColumns: ["member_id"]
-          }
-        ]
+        Relationships: []
       }
     }
     Functions: {
