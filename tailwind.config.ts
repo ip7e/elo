@@ -11,6 +11,7 @@ const config: Config = {
     extend: {
       colors: {
         bg: "#F5F2ED",
+        accent: "#E6A320",
       },
       fontFamily: {
         sans: ["var(--font-inter)"],

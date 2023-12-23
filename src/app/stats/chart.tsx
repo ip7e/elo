@@ -124,7 +124,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
             <motion.path
               key={highlight}
               d={line(selectedData)!}
-              stroke="#E6A320"
+              className="stroke-accent"
               strokeWidth={2}
               fill="none"
               strokeLinecap="round"
@@ -143,7 +143,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
                   cy={y(record.rank)}
                   strokeWidth={2}
                   r={4}
-                  className={"stroke-[#E6A320] fill-bg dark:fill-black"}
+                  className={"stroke-accent fill-bg dark:fill-black"}
                 ></motion.circle>
               ))}
           </>

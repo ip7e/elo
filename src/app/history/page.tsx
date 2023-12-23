@@ -22,7 +22,7 @@ export default async function ResultsPage() {
               key={result.member_id}
               className={`
               italic inline-block px-1
-              ${result.winner ? "text-orange-500" : "text-gray-500 dark:text-gray-600 font-light"}
+              ${result.winner ? "text-accent" : "text-gray-500 dark:text-gray-600 font-light"}
             `}
             >
               {result.member?.display_name}
