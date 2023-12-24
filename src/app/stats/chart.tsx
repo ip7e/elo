@@ -15,6 +15,7 @@ type GameRecord = {
   game_id: number
   rank: number
   played: boolean
+  won: boolean
 }
 
 export default function Chart({ stats: statsArr, games: games, highlight }: Props) {
@@ -33,12 +34,14 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
     games.forEach((game, i) => {
       // collect list of members who played in this round
       const membersWhoPlayed = new Set<number>()
+      const membersWhoWon = new Set<number>()
 
       // update elo for this round
       game.game_results.forEach((result) => {
         if (!rollingStats[result.member_id]) return
 
         membersWhoPlayed.add(result.member_id)
+        if (result.winner) membersWhoWon.add(result.member_id)
         rollingStats[result.member_id].elo = result.elo
       })
 
@@ -52,6 +55,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
           game_id: game.id,
           rank: i,
           played: membersWhoPlayed.has(s.member_id!),
+          won: membersWhoWon.has(s.member_id!),
         })
 
         if (s.first_game === game.id) {
@@ -142,7 +146,9 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
                   cy={y(record.rank)}
                   strokeWidth={2}
                   r={4}
-                  className={"stroke-accent fill-bg dark:fill-black"}
+                  className={`stroke-accent ${
+                    record.won ? "fill-accent" : "fill-bg dark:fill-black"
+                  }`}
                 ></motion.circle>
               ))}
           </>
