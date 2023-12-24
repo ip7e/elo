@@ -6,22 +6,26 @@ const DEFAULT_ELO = 1100
 type NewGameSessionRequest = {
   loserIds: number[]
   winnerIds: number[]
+  circleId: number
 }
 const MessageResponse = (status: Number, message: string) =>
   Response.json({ status, body: { message } })
 
 export async function POST(request: Request) {
-  const { loserIds, winnerIds } = (await request.json()) as NewGameSessionRequest
+  const { loserIds, winnerIds, circleId } = (await request.json()) as NewGameSessionRequest
 
   if (!loserIds.length || !winnerIds.length)
     return MessageResponse(400, "missing member ids and/or winner ids")
 
-  const { data: membersElo, error } = await supabase.from("members_elo").select(`*`)
+  const { data: membersStats, error } = await supabase
+    .from("members_stats")
+    .select(`*`)
+    .eq("circle_id", circleId)
 
-  if (!membersElo) throw new Error("Failed to get members elo")
+  if (!membersStats) throw new Error("Failed to get members elo")
 
   const existingEloMap = Object.fromEntries(
-    membersElo.map((member) => [member.member_id, member.elo]),
+    membersStats.map((member) => [member.member_id, member.elo]),
   )
   const winnersMap = Object.fromEntries(winnerIds.map((id) => [id, true]))
 
@@ -42,7 +46,7 @@ export async function POST(request: Request) {
     })),
   )
 
-  const { data: game } = await supabase.from("games").insert({ circle_id: 1 }).select()
+  const { data: game } = await supabase.from("games").insert({ circle_id: circleId }).select()
 
   if (!game?.length) return MessageResponse(500, "Failed to create game")
 

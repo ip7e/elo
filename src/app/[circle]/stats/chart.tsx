@@ -2,7 +2,7 @@
 
 import * as d3 from "d3"
 import { motion } from "framer-motion"
-import { GameWithGameResults, MemberStats } from "./types"
+import { GameWithGameResults, MemberStats } from "../types"
 import { useMemo } from "react"
 
 type Props = {
@@ -100,10 +100,10 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
   return (
     <div className={`w-full my-8 aspect-[512/128]`}>
       <svg vectorEffect="non-scaling-stroke" viewBox={`0 0 ${width} ${height}`} width="100%">
-        {Object.entries(gamesByMember).map(([memberId, data]) => (
-          <>
+        {Object.entries(gamesByMember).map(([memberId, data], i) => (
+          <g key={`m-${memberId}`}>
             <path
-              key={memberId}
+              key={`m-${memberId}`}
               d={line(data)!}
               strokeWidth={2}
               fill="none"
@@ -113,14 +113,13 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
 
             {data[0].played && (
               <circle
-                key={data[0].game_id}
                 cx={x("g-" + data[0].game_id)!}
                 cy={y(data[0].rank)}
                 r={3}
                 className=" fill-gray-300 dark:fill-gray-800"
               ></circle>
             )}
-          </>
+          </g>
         ))}
 
         {selectedData && (

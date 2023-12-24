@@ -1,18 +1,18 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
-export default function Navigation() {
+export default function Navigation({ slug }: { slug: string }) {
   const currentPathname = usePathname()
 
   const routes = [
     {
-      pathname: "/",
+      pathname: `/${slug}`,
       label: "leaderboard",
     },
     {
-      pathname: "/history",
+      pathname: `/${slug}/history`,
       label: "history",
     },
   ]

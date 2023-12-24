@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Chart from "./chart"
-import { GameWithGameResults, MemberStats } from "./types"
+import { GameWithGameResults, MemberStats } from "../types"
 import Star from "./star"
 import { useDebounce } from "use-debounce"
 

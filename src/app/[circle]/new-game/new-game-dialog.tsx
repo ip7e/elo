@@ -5,17 +5,18 @@ import Dialog from "@/components/dialog/dialog"
 import MemberPill from "@/components/member-pill"
 import { Tables } from "@/types/supabase"
 import { useState } from "react"
-import { createGameSession } from "../queries/get-members"
+import { createGameSession } from "../../queries/get-members"
 
 type Member = Tables<"circle_members">
 type Props = {
   members: Member[]
+  circleId: number
   onClose: () => void
 }
 
 type MemberStatus = "none" | "losing" | "wining"
 
-export default function NewGameDialog({ members, onClose }: Props) {
+export default function NewGameDialog({ members, onClose, circleId }: Props) {
   let [statusMap, setStatusMap] = useState<Record<number, MemberStatus>>({})
 
   const handleClick = (member: Member) => {
@@ -24,16 +25,15 @@ export default function NewGameDialog({ members, onClose }: Props) {
     setStatusMap({ ...statusMap, [member.id]: next })
   }
 
-  const losingIds = members.filter((m) => statusMap[m.id] === "losing").map((m) => m.id)
-  const winningIds = members.filter((m) => statusMap[m.id] === "wining").map((m) => m.id)
+  const loserIds = members.filter((m) => statusMap[m.id] === "losing").map((m) => m.id)
+  const winnerIds = members.filter((m) => statusMap[m.id] === "wining").map((m) => m.id)
 
   const submit = async () => {
-    console.log({ losingIds, winningIds })
-    // await createGameSession(losingIds, winningIds)
+    await createGameSession({ loserIds, winnerIds, circleId })
     onClose()
   }
 
-  const isValid = losingIds.length > 0 && winningIds.length > 0
+  const isValid = loserIds.length > 0 && winnerIds.length > 0
 
   return (
     <Dialog

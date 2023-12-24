@@ -9,9 +9,10 @@ type Member = Tables<"circle_members">
 
 type Props = {
   members: Member[]
+  circleId: number
 }
 
-export default function NewGameOpener({ members }: Props) {
+export default function NewGameOpener({ members, circleId }: Props) {
   let [isOpen, setIsOpen] = useState(false)
 
   const closeModal = () => setIsOpen(false)
@@ -25,7 +26,9 @@ export default function NewGameOpener({ members }: Props) {
         <Button onClick={openModal}>New game session</Button>
       </div>
 
-      {isOpen && <NewGameDialog members={members} onClose={closeModal}></NewGameDialog>}
+      {isOpen && (
+        <NewGameDialog members={members} onClose={closeModal} circleId={circleId}></NewGameDialog>
+      )}
     </>
   )
 }

@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
 import { Inter, Roboto_Mono } from "next/font/google"
-import "./globals.css"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import "../globals.css"
 import Navigation from "./navigation"
 
 const robotoMono = Roboto_Mono({
@@ -20,12 +18,18 @@ export const metadata: Metadata = {
   description: "Board Game elo system",
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: { circle: string }
+}) {
   return (
     <html lang="en">
       <body className={`${robotoMono.variable} ${inter.variable} font-sans bg-bg dark:bg-black`}>
         <div className="container max-w-lg py-10 mx-auto">
-          <Navigation />
+          <Navigation slug={params.circle} />
           {children}
         </div>
       </body>
