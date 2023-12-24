@@ -4,6 +4,7 @@ import { useState } from "react"
 import Chart from "./chart"
 import { GameWithGameResults, MemberStats } from "./types"
 import Star from "./star"
+import { useDebounce } from "use-debounce"
 
 type Props = {
   stats: MemberStats[]
@@ -12,6 +13,7 @@ type Props = {
 }
 export default function StatsClient({ stats, recentWinners, recentGames }: Props) {
   const [highlight, setHighlight] = useState<number>(stats[0].member_id!)
+  const [highlightDebounced] = useDebounce(highlight, 150)
 
   const winsByMemberId = recentWinners.reduce(
     (acc, winner) => ({
@@ -70,7 +72,7 @@ export default function StatsClient({ stats, recentWinners, recentGames }: Props
         </tbody>
       </table>
 
-      <Chart stats={stats} games={recentGames} highlight={highlight} />
+      <Chart stats={stats} games={recentGames} highlight={highlightDebounced} />
     </>
   )
 }
