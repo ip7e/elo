@@ -7,9 +7,12 @@ export default function Star() {
   const [rotation, setRotation] = useState(-30 + Math.random() * 60)
   return (
     <motion.svg
-      animate={{ rotate: rotation }}
+      initial={{ opacity: 0 }}
+      animate={{ rotate: rotation, opacity: 1 }}
       onMouseEnter={() => setRotation(-30 + Math.random() * 60)}
-      className="inline-block w-5 h-5 mb-1 mx-[1px]"
+      onClick={() => setRotation(-30 + Math.random() * 60)}
+      whileTap={{ scale: 1.2 }}
+      className="inline-block w-5 h-5 mb-1 mx-[1px] outline-none"
       viewBox="0 0 16 15"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

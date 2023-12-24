@@ -35,14 +35,17 @@ export default function StatsClient({ stats, recentWinners, recentGames }: Props
 
         <tbody>
           {stats.map(({ elo, display_name, member_id, total_games, total_wins }, i) => (
-            <tr key={member_id} onMouseEnter={() => setHighlight(member_id!)}>
+            <tr
+              key={member_id}
+              onMouseEnter={() => setHighlight(member_id!)}
+              className=" select-none"
+            >
               <td className="font-mono font-bold text-right text-xl text-black/30 dark:text-white/40 w-max">
                 {i + 1}
               </td>
               <td
-                className={`w-full text-lg font-bold font-mono ${
-                  highlight == member_id ? "text-[#E6A320]" : "text-black dark:text-white"
-                }`}
+                className={`w-full text-lg font-bold font-mono
+                 ${highlight == member_id ? "text-[#E6A320]" : "text-black dark:text-white"}`}
               >
                 {display_name}
 
