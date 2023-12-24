@@ -113,6 +113,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
 
             {data[0].played && (
               <circle
+                key={data[0].game_id}
                 cx={x("g-" + data[0].game_id)!}
                 cy={y(data[0].rank)}
                 r={3}
@@ -125,7 +126,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
         {selectedData && (
           <>
             <motion.path
-              key={highlight}
+              key={"selected" + highlight}
               d={line(selectedData)!}
               className="stroke-accent"
               strokeWidth={2}

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Chart from "./chart"
 import { GameWithGameResults, MemberStats } from "./types"
+import Star from "./star"
 
 type Props = {
   stats: MemberStats[]
@@ -47,7 +48,11 @@ export default function StatsClient({ stats, recentWinners, recentGames }: Props
 
                 {winsByMemberId[member_id!] && (
                   <span className="mx-1 tracking-widest">
-                    {"🏆".repeat(winsByMemberId[member_id!])}
+                    {Array(winsByMemberId[member_id!])
+                      .fill(null)
+                      .map((_, i) => (
+                        <Star key={i} />
+                      ))}
                   </span>
                 )}
               </td>
