@@ -2,6 +2,8 @@ import { supabase } from "@/supabase"
 import NewGameOpener from "./new-game/new-game-opener"
 import StatsServer from "./stats/stats-server"
 
+export const revalidate = 0
+
 export default async function CirclePage({ params }: { params: { circle: string } }) {
   const { data: circle } = await supabase
     .from("circles")
