@@ -12,7 +12,7 @@ type Props = {
   recentWinners: number[]
 }
 export default function StatsClient({ stats, recentWinners, recentGames }: Props) {
-  const [highlight, setHighlight] = useState<number>(stats[0].member_id!)
+  const [highlight, setHighlight] = useState<number>(stats[0]?.member_id!)
   const [highlightDebounced] = useDebounce(highlight, 150)
 
   const winsByMemberId = recentWinners.reduce(

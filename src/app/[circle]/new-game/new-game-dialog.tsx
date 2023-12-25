@@ -6,6 +6,7 @@ import MemberPill from "@/components/member-pill"
 import { Tables } from "@/types/supabase"
 import { useState } from "react"
 import { createGameSession } from "../../queries/get-members"
+import { useRouter } from "next/navigation"
 
 type Member = Tables<"circle_members">
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
 type MemberStatus = "none" | "losing" | "wining"
 
 export default function NewGameDialog({ members, onClose, circleId }: Props) {
+  const router = useRouter()
   let [statusMap, setStatusMap] = useState<Record<number, MemberStatus>>({})
 
   const handleClick = (member: Member) => {
@@ -30,6 +32,7 @@ export default function NewGameDialog({ members, onClose, circleId }: Props) {
 
   const submit = async () => {
     await createGameSession({ loserIds, winnerIds, circleId })
+    router.refresh()
     onClose()
   }
 
