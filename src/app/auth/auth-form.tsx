@@ -11,7 +11,7 @@ export default function AuthForm() {
 
   const redirectTo = isDev
     ? "http://localhost:3000/auth/callback"
-    : "https://elo.ika.im/auth/callback"
+    : "https://www.shmelo.io/auth/callback"
 
   return (
     <Auth
