@@ -53,16 +53,19 @@ export interface Database {
           created_at: string
           id: number
           name: string
+          slug: string
         }
         Insert: {
           created_at?: string
           id?: number
           name: string
+          slug: string
         }
         Update: {
           created_at?: string
           id?: number
           name?: string
+          slug?: string
         }
         Relationships: []
       }
@@ -104,14 +107,14 @@ export interface Database {
             columns: ["game_id"]
             isOneToOne: false
             referencedRelation: "members_stats"
-            referencedColumns: ["latest_game"]
+            referencedColumns: ["first_game"]
           },
           {
             foreignKeyName: "game_results_game_id_fkey"
             columns: ["game_id"]
             isOneToOne: false
             referencedRelation: "members_stats"
-            referencedColumns: ["first_game"]
+            referencedColumns: ["latest_game"]
           },
           {
             foreignKeyName: "game_results_member_id_fkey"
@@ -186,6 +189,7 @@ export interface Database {
       }
       members_stats: {
         Row: {
+          circle_id: number | null
           display_name: string | null
           elo: number | null
           first_game: number | null
@@ -194,7 +198,15 @@ export interface Database {
           total_games: number | null
           total_wins: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "circle_members_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Functions: {

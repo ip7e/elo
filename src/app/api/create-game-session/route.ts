@@ -1,5 +1,6 @@
 import { supabase } from "@/supabase"
 import calculateElo from "./calculate-elo"
+import { revalidatePath } from "next/cache"
 
 const DEFAULT_ELO = 1100
 
@@ -21,6 +22,8 @@ export async function POST(request: Request) {
     .from("members_stats")
     .select(`*`)
     .eq("circle_id", circleId)
+
+  const { data: circle } = await supabase.from("circles").select().eq("id", circleId).single()
 
   if (!membersStats) throw new Error("Failed to get members elo")
 
@@ -61,6 +64,8 @@ export async function POST(request: Request) {
       })),
     )
     .select()
+
+  revalidatePath(`/${circle?.slug}/`, "layout")
 
   return Response.json({
     status: 200,

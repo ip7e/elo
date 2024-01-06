@@ -4,9 +4,9 @@ import Button from "@/components/button/button"
 import Dialog from "@/components/dialog/dialog"
 import MemberPill from "@/components/member-pill"
 import { Tables } from "@/types/supabase"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { createGameSession } from "../../queries/get-members"
-import { useRouter } from "next/navigation"
 
 type Member = Tables<"circle_members">
 type Props = {

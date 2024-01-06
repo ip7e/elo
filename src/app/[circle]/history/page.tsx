@@ -1,8 +1,6 @@
 import { supabase } from "@/supabase"
 import { format } from "date-fns"
 
-export const revalidate = 0
-
 export default async function ResultsPage() {
   const { data: history, error } = await supabase
     .from("games")
