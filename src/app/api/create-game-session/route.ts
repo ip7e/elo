@@ -65,7 +65,8 @@ export async function POST(request: Request) {
     )
     .select()
 
-  revalidatePath(`/${circle?.slug}/`, "layout")
+  console.log(`/${circle?.slug}`)
+  revalidatePath(`/`, "layout")
 
   return Response.json({
     status: 200,
