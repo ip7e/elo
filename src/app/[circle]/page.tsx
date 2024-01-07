@@ -1,6 +1,5 @@
 import { supabase } from "@/supabase"
-import NewGameOpener from "./new-game/new-game-opener"
-import StatsServer from "./stats/stats-server"
+import CircleServer from "./circle-server"
 
 export default async function CirclePage({ params }: { params: { circle: string } }) {
   const { data: circle } = await supabase
@@ -20,11 +19,12 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   return (
     <div className="mt">
-      <StatsServer circleId={circle.id} />
+      <CircleServer circleId={circle.id} />
+      {/* <StatsServer circleId={circle.id} /> */}
 
-      <div className="mt-20">
-        <NewGameOpener members={allMembers} circleId={circle.id} />
-      </div>
+      {/* <div className="mt-20"> */}
+      {/* <NewGameOpener members={allMembers} circleId={circle.id} /> */}
+      {/* </div> */}
     </div>
   )
 }

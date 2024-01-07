@@ -2,12 +2,12 @@
 
 import * as d3 from "d3"
 import { motion } from "framer-motion"
-import { GameWithGameResults, MemberStats } from "../types"
+import { GameWithResults, MemberStats } from "../types"
 import { useMemo } from "react"
 
 type Props = {
   stats: MemberStats[]
-  games: GameWithGameResults[]
+  games: GameWithResults[]
   highlight: number
 }
 

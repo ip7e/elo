@@ -1,19 +1,31 @@
 "use client"
 
-import { useState } from "react"
-import Chart from "./chart"
-import { GameWithGameResults, MemberStats } from "../types"
-import Star from "./star"
+import { useEffect, useState } from "react"
 import { useDebounce } from "use-debounce"
+import { GameWithResults, MemberStats } from "../types"
+import Star from "./star"
+import { motion } from "framer-motion"
 
 type Props = {
   stats: MemberStats[]
-  recentGames: GameWithGameResults[]
   recentWinners: number[]
+  onHighlightChange: (id: number) => void
+  highlightId: number
 }
-export default function StatsClient({ stats, recentWinners, recentGames }: Props) {
-  const [highlight, setHighlight] = useState<number>(stats[0]?.member_id!)
+
+export default function StatsClient({
+  stats,
+  recentWinners,
+  onHighlightChange,
+  highlightId,
+}: Props) {
+  const [highlight, setHighlight] = useState<number>(highlightId)
   const [highlightDebounced] = useDebounce(highlight, 150)
+
+  const handleHighlight = (id: number) => {
+    setHighlight(id)
+    onHighlightChange(id)
+  }
 
   const winsByMemberId = recentWinners.reduce(
     (acc, winner) => ({
@@ -37,9 +49,11 @@ export default function StatsClient({ stats, recentWinners, recentGames }: Props
 
         <tbody>
           {stats.map(({ elo, display_name, member_id, total_games, total_wins }, i) => (
-            <tr
+            <motion.tr
+              layout
+              layoutId={"m" + member_id!}
               key={member_id}
-              onMouseEnter={() => setHighlight(member_id!)}
+              onMouseEnter={() => handleHighlight(member_id!)}
               className=" select-none"
             >
               <td className="font-mono font-bold text-right text-xl text-black/30 dark:text-white/40 w-max">
@@ -67,12 +81,10 @@ export default function StatsClient({ stats, recentWinners, recentGames }: Props
               <td className="font-mono font-bold text-right text-lg text-black/30 dark:text-white/40 w-max">
                 {Math.round(((total_wins || 0) / (total_games || 0)) * 100)}
               </td>
-            </tr>
+            </motion.tr>
           ))}
         </tbody>
       </table>
-
-      <Chart stats={stats} games={recentGames} highlight={highlightDebounced} />
     </>
   )
 }

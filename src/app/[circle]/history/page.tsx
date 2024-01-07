@@ -1,10 +1,19 @@
 import { supabase } from "@/supabase"
 import { format } from "date-fns"
 
-export default async function ResultsPage() {
+export default async function ResultsPage({ params }: { params: { circle: string } }) {
+  const { data: circle } = await supabase
+    .from("circles")
+    .select("*")
+    .eq("slug", params.circle)
+    .single()
+
+  if (!circle) return null
+
   const { data: history, error } = await supabase
     .from("games")
     .select("*, game_results(*, member:circle_members(display_name)) ")
+    .eq("circle_id", circle.id)
     .order("created_at", { ascending: false })
 
   if (!history) return null

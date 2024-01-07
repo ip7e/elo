@@ -31,9 +31,9 @@ export default function NewGameDialog({ members, onClose, circleId }: Props) {
   const winnerIds = members.filter((m) => statusMap[m.id] === "wining").map((m) => m.id)
 
   const submit = async () => {
+    onClose()
     await createGameSession({ loserIds, winnerIds, circleId })
     router.refresh()
-    onClose()
   }
 
   const isValid = loserIds.length > 0 && winnerIds.length > 0
