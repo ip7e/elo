@@ -22,7 +22,7 @@ export default function CircleClient({ members, recentGames, stats }: Props) {
     .slice(0, 3)
     .map((game) => game.game_results.find((r) => r.winner)!.member_id)
 
-  const [selectedMemberId, setSelectedMemberId] = useState(stats[0].member_id!)
+  const [selectedMemberId, setSelectedMemberId] = useState(stats[0]?.member_id || 0)
   const [debouncedSelectedMemberId] = useDebounce(selectedMemberId, 150)
 
   return (
