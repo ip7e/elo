@@ -30,5 +30,12 @@ export default async function CircleServer({ circleId }: Props) {
   if (!recentGames) return null
   if (!stats) return null
 
-  return <CircleClient members={allMembers} recentGames={recentGames} stats={stats} />
+  return (
+    <CircleClient
+      members={allMembers}
+      recentGames={recentGames}
+      stats={stats}
+      circleId={circleId}
+    />
+  )
 }

@@ -11,9 +11,10 @@ type Props = {
   members: Member[]
   recentGames: GameWithResults[]
   stats: Stat[]
+  circleId: number
 }
 
-export default function CircleClient({ members, recentGames, stats }: Props) {
+export default function CircleClient({ members, recentGames, stats, circleId }: Props) {
   const [optimisticStats, setOptimisticStats] = useOptimistic(stats)
   const [optimisticRecentGames, setOptimisticRecentGames] = useOptimistic(recentGames)
   const [optimisticMembers, setOptimisticMembers] = useOptimistic(members)
@@ -36,7 +37,7 @@ export default function CircleClient({ members, recentGames, stats }: Props) {
 
       <Chart games={recentGames} stats={stats} highlight={debouncedSelectedMemberId} />
 
-      <NewGameOpener members={members} circleId={2} />
+      <NewGameOpener members={members} circleId={circleId} />
     </>
   )
 }
