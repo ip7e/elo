@@ -37,9 +37,6 @@ export default function ControlClient({ circle, members }: Props) {
   }
 
   const handleKickMember = async (id: number) => {
-    const name = inputRef.current?.value
-    if (!name) return
-
     setOptimisticStats([...optimisticStats].filter((member) => member.id !== id))
     await kickMember({ id })
   }
