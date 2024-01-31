@@ -2,10 +2,6 @@ import { Tables } from "@/types/supabase"
 
 export type MemberStats = Tables<"members_stats">
 
-type ResultWithMember = Tables<"game_results"> & {
-  circle_members?: Tables<"circle_members">
-}
-
 export type GameWithResults = Tables<"games"> & {
   game_results: Tables<"game_results">[]
 }
