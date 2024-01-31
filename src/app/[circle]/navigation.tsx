@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 
 export default function Navigation({ slug }: { slug: string }) {
   const currentPathname = usePathname()

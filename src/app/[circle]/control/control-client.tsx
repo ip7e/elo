@@ -43,19 +43,19 @@ export default function ControlClient({ circle, members }: Props) {
 
   return (
     <div className="font-mono mt-10 flex flex-col gap-3">
-      <h3 className=" text-center">Circle Members</h3>
+      <h3 className="text-center dark:text-white">Circle Members</h3>
 
       {optimisticStats.map((member, i) => (
-        <div className="flex gap-5 w-full justify-between group" key={member.id}>
+        <div className="flex gap-5 w-full justify-between group dark:text-gray-200" key={member.id}>
           <div>
-            <span className="text-lg font-bold font-mono">{member.display_name}</span>{" "}
+            <span className="text-lg font-bold font-mono ">{member.display_name}</span>{" "}
             <span className="italic opacity-30">{member.total_games} games</span>
           </div>
 
           <div>
             {!member.total_games && (
               <button
-                className="text-white px-4 bg-accent rounded-md"
+                className="text-white px-4 bg-accent rounded-md dark:text-black"
                 onClick={() => handleKickMember(member.id)}
               >
                 kick
@@ -100,10 +100,19 @@ export default function ControlClient({ circle, members }: Props) {
               focus:outline-gray-500 
               focus:outline-offset-0
               bg-white/30
-              transition-all"
+              transition-all
+
+              dark:text-white
+              dark:bg-white/10
+              dark:outline-white/20
+              dark:focus:outline-white/50
+              "
           />
 
-          <button className="text-white px-4 h-8 bg-accent rounded-md" onClick={handleAddMember}>
+          <button
+            className="text-white px-4 h-8 bg-accent rounded-md dark:text-black"
+            onClick={handleAddMember}
+          >
             Add member
           </button>
         </div>
