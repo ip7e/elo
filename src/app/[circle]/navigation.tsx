@@ -25,8 +25,8 @@ export default function Navigation({ slug }: { slug: string }) {
               <Link
                 key={route.pathname}
                 href={route.pathname}
-                className={`text-black opacity-50 ${
-                  currentPathname === route.pathname && "opacity-100"
+                className={`text-black  ${
+                  currentPathname === route.pathname ? "opacity-100" : "opacity-50"
                 } dark:text-white`}
               >
                 {route.label}
@@ -37,8 +37,8 @@ export default function Navigation({ slug }: { slug: string }) {
           <div className="pr-3">
             <Link
               href={`/${slug}/control`}
-              className={`text-black opacity-50 ${
-                currentPathname.endsWith("control") && "opacity-100"
+              className={`text-black ${
+                currentPathname.endsWith("control") ? "opacity-100" : "opacity-50"
               } dark:text-white`}
             >
               <svg
