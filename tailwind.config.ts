@@ -14,8 +14,8 @@ const config: Config = {
         accent: "#E6A320",
       },
       fontFamily: {
-        sans: ["var(--font-inter)"],
-        mono: ["var(--font-roboto-mono)"],
+        display: ["var(--font-display)"],
+        mono: ["var(--font-mono)"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

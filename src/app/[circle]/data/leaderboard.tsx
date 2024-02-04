@@ -42,8 +42,8 @@ export default function StatsClient({
           <tr className="text-sm lowercase align-text-top opacity-60 text-black/30 dark:text-white/40">
             <th className="invisible"></th>
             <th className="invisible w-full">Player</th>
-            <th className="text-center font-mono font-bold text-lg">elo</th>
-            <th className="text-center font-mono font-bold text-lg">%</th>
+            <th className="text-center font-bold text-lg">elo</th>
+            <th className="text-center font-bold text-lg">%</th>
           </tr>
         </thead>
 
@@ -56,11 +56,11 @@ export default function StatsClient({
               onMouseEnter={() => handleHighlight(member_id!)}
               className=" select-none"
             >
-              <td className="font-mono font-bold text-right text-xl text-black/30 dark:text-white/40 w-max">
+              <td className="font-bold text-right text-xl text-black/30 dark:text-white/40 w-max">
                 {i + 1}
               </td>
               <td
-                className={`w-full text-lg font-bold font-mono
+                className={`w-full text-lg font-bold 
                  ${highlight == member_id ? "text-[#E6A320]" : "text-black dark:text-white"}`}
               >
                 {display_name}
@@ -75,10 +75,8 @@ export default function StatsClient({
                   </span>
                 )}
               </td>
-              <td className="font-mono font-bold text-right text-lg text-black dark:text-white">
-                {elo}
-              </td>
-              <td className="font-mono font-bold text-right text-lg text-black/30 dark:text-white/40 w-max">
+              <td className="font-bold text-right text-lg text-black dark:text-white">{elo}</td>
+              <td className="font-bold text-right text-lg text-black/30 dark:text-white/40 w-max">
                 {Math.round(((total_wins || 0) / (total_games || 0)) * 100)}
               </td>
             </motion.tr>

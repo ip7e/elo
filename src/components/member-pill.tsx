@@ -9,7 +9,7 @@ type Props = HTMLAttributes<HTMLSpanElement> &
 const MemberPill = ({ color, children, ...props }: Props) => {
   return (
     <span
-      className={`inline-block py-1 px-4 text-lg font-mono font-semibold rounded-full cursor-pointer transition-all duration-300 select-none 
+      className={`inline-block py-1 px-4 text-lg font-semibold rounded-full cursor-pointer transition-all duration-300 select-none 
       ${
         color === "highlight"
           ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-200 dark:hover:bg-gray-300 dark:text-black"

@@ -16,6 +16,7 @@ type GameRecord = {
   rank: number
   played: boolean
   won: boolean
+  isFirstGame: boolean
 }
 
 export default function Chart({ stats: statsArr, games: games, highlight }: Props) {
@@ -56,6 +57,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
           rank: i,
           played: membersWhoPlayed.has(s.member_id!),
           won: membersWhoWon.has(s.member_id!),
+          isFirstGame: s.first_game === game.id,
         })
 
         if (s.first_game === game.id) {
@@ -72,7 +74,8 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
   if (!gamesByMember) return null
 
   const width = 512
-  const height = 128
+  const lineHeight = statsArr.length <= 6 ? 20 : 16
+  const height = statsArr.length * lineHeight
   const padding = 8
 
   // Create scales
@@ -98,7 +101,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
   const selectedData = gamesByMember[highlight]
 
   return (
-    <div className={`w-full my-8 aspect-[512/128]`}>
+    <div className={`w-full my-8 aspect-[512/${height}]`}>
       <svg vectorEffect="non-scaling-stroke" viewBox={`0 0 ${width} ${height}`} width="100%">
         {Object.entries(gamesByMember).map(([memberId, data], i) => (
           <g key={`m-${memberId}`}>
@@ -111,7 +114,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               strokeLinecap="round"
             ></path>
 
-            {data[0].played && (
+            {data[0].isFirstGame && (
               <circle
                 cx={x("g-" + data[0].game_id)!}
                 cy={y(data[0].rank)}

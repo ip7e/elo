@@ -24,7 +24,7 @@ export default function HistoryClient({ games, members }: Props) {
   }
 
   return (
-    <div className="font-mono mt-10">
+    <div className="mt-10">
       {optimisticGames.map((game, i) => (
         <div className="flex gap-5 w-full py-1 text-gray-500 group" key={game.id}>
           <p key={game.id}>

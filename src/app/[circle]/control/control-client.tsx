@@ -44,13 +44,13 @@ export default function ControlClient({ circle, members }: Props) {
   }
 
   return (
-    <div className="font-mono mt-10 flex flex-col gap-3">
+    <div className="mt-10 flex flex-col gap-3">
       <h3 className="text-center dark:text-white">Circle Members</h3>
 
       {optimisticStats.map((member, i) => (
         <div className="flex gap-5 w-full justify-between group dark:text-gray-200" key={member.id}>
           <div>
-            <span className="text-lg font-bold font-mono ">{member.display_name}</span>{" "}
+            <span className="text-lg font-bold ">{member.display_name}</span>{" "}
             <span className="italic opacity-30">{member.total_games} games</span>
           </div>
 
