@@ -23,7 +23,7 @@ export default function NewGameOpener({ members, circleId }: Props) {
   return (
     <>
       <div className="flex items-center justify-center">
-        <Button onClick={openModal}>New game session</Button>
+        <Button onClick={openModal}>new game</Button>
       </div>
 
       {isOpen && (

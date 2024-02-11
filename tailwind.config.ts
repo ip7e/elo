@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss"
-import defaultColors from "tailwindcss/colors"
 
 const config: Config = {
   content: [
@@ -14,7 +13,6 @@ const config: Config = {
         accent: "#E6A320",
       },
       fontFamily: {
-        display: ["var(--font-display)"],
         mono: ["var(--font-mono)"],
       },
       backgroundImage: {

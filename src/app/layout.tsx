@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import PlausibleProvider from "next-plausible"
-import { JetBrains_Mono, Oleo_Script } from "next/font/google"
+import { JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 
 const mono = JetBrains_Mono({
