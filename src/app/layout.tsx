@@ -1,17 +1,11 @@
 import type { Metadata } from "next"
 import PlausibleProvider from "next-plausible"
-import { Oleo_Script, Roboto_Mono } from "next/font/google"
+import { JetBrains_Mono, Oleo_Script } from "next/font/google"
 import "./globals.css"
 
-const mono = Roboto_Mono({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
-})
-
-const display = Oleo_Script({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-display",
 })
 
 export const metadata: Metadata = {
@@ -22,8 +16,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <PlausibleProvider domain="shmelo.io">
-      <html lang="en">
-        <body className={`${mono.variable} ${display.variable} font-mono bg-bg dark:bg-black`}>
+      <html lang="en" className="h-full">
+        <body className={`${mono.variable} font-mono bg-bg dark:bg-black w-full h-full`}>
           {children}
         </body>
       </html>

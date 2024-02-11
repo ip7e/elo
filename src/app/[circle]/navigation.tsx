@@ -26,10 +26,10 @@ export default function Navigation({ circle }: Props) {
   return (
     <div
       className="flex gap-4 items-center py-8 
-      text-black dark:text-white"
+      text-black dark:text-white font-light"
     >
-      <h1 className="font-display text-2xl mr-4">
-        <Link href={`/${slug}`}>{circle.name}</Link>
+      <h1 className="">
+        <Link href={`/${slug}`}>[{circle.name.toLowerCase()}]</Link>
       </h1>
       <nav className="flex gap-4">
         {routes.map((route) => (
@@ -39,7 +39,7 @@ export default function Navigation({ circle }: Props) {
             className={`${
               currentPathname === route.pathname
                 ? "text-black dark:text-white"
-                : "text-black/30 dark:text-white/30"
+                : "text-neutral-400 dark:text-neutral-500"
             }`}
           >
             {route.label}

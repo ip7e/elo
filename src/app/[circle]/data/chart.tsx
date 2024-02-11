@@ -110,7 +110,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               d={line(data)!}
               strokeWidth={2}
               fill="none"
-              className="stroke-gray-300 dark:stroke-gray-800"
+              className="stroke-neutral-300 dark:stroke-neutral-900"
               strokeLinecap="round"
             ></path>
 
@@ -118,8 +118,8 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               <circle
                 cx={x("g-" + data[0].game_id)!}
                 cy={y(data[0].rank)}
-                r={3}
-                className=" fill-gray-300 dark:fill-gray-800"
+                r={2}
+                className="fill-neutral-300 dark:fill-neutral-800"
               ></circle>
             )}
           </g>
@@ -148,7 +148,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
                   cx={x("g-" + record.game_id)!}
                   cy={y(record.rank)}
                   strokeWidth={2}
-                  r={4}
+                  r={3}
                   className={`stroke-accent ${
                     record.won ? "fill-accent" : "fill-bg dark:fill-black"
                   }`}
