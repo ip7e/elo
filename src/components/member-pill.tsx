@@ -9,13 +9,23 @@ type Props = HTMLAttributes<HTMLSpanElement> &
 const MemberPill = ({ color, children, ...props }: Props) => {
   return (
     <span
-      className={`inline-block py-1 px-4 text-lg font-semibold rounded-full cursor-pointer transition-all duration-300 select-none 
+      className={`inline-block py-1 px-4 text font-light rounded-full cursor-pointer transition-all duration-300 select-none ring-1
       ${
         color === "highlight"
-          ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-200 dark:hover:bg-gray-300 dark:text-black"
+          ? // highlight
+            `bg-neutral-900   dark:bg-neutral-200 
+            text-white dark:text-black  
+            hover:bg-neutral-800 dark:hover:bg-neutral-300 
+            ring-neutral-900 dark:ring-neutral-200`
           : color === "golden"
-            ? "bg-yellow-500 text-white dark:text-black hover:bg-yellow-500"
-            : " hover:bg-gray-200 ring-1 ring-gray-900 dark:text-gray-400 dark:ring-gray-800 dark:hover:bg-gray-900"
+            ? // golden
+              ` text-white dark:text-black 
+            bg-accent
+            hover:bg-accent  ring-accent`
+            : // default
+              `hover:bg-neutral-200   dark:text-neutral-400
+              ring-neutral-900 dark:ring-neutral-500
+              dark:hover:bg-neutral-900`
       }`}
       {...props}
     >

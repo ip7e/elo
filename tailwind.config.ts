@@ -13,7 +13,7 @@ const config: Config = {
         accent: "#E6A320",
       },
       fontFamily: {
-        mono: ["var(--font-mono)"],
+        mono: ["var(--font-geist-mono)"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

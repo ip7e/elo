@@ -17,14 +17,5 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   if (!allMembers) return null
 
-  return (
-    <div className="mt">
-      <CircleServer circleId={circle.id} />
-      {/* <StatsServer circleId={circle.id} /> */}
-
-      {/* <div className="mt-20"> */}
-      {/* <NewGameOpener members={allMembers} circleId={circle.id} /> */}
-      {/* </div> */}
-    </div>
-  )
+  return <CircleServer circleId={circle.id} />
 }

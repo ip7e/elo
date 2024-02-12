@@ -15,10 +15,6 @@ type Props = {
 }
 
 export default function CircleClient({ members, recentGames, stats, circleId }: Props) {
-  const [optimisticStats, setOptimisticStats] = useOptimistic(stats)
-  const [optimisticRecentGames, setOptimisticRecentGames] = useOptimistic(recentGames)
-  const [optimisticMembers, setOptimisticMembers] = useOptimistic(members)
-
   const recentWinners = [...recentGames]
     .slice(0, 3)
     .map((game) => game.game_results.find((r) => r.winner)!.member_id)
@@ -27,7 +23,7 @@ export default function CircleClient({ members, recentGames, stats, circleId }: 
   const [debouncedSelectedMemberId] = useDebounce(selectedMemberId, 150)
 
   return (
-    <>
+    <div className="flex flex-col h-full justify-center gap-4">
       <Leaderboard
         recentWinners={recentWinners}
         stats={stats}
@@ -35,9 +31,11 @@ export default function CircleClient({ members, recentGames, stats, circleId }: 
         onHighlightChange={(id) => setSelectedMemberId(id)}
       />
 
-      <Chart games={recentGames} stats={stats} highlight={debouncedSelectedMemberId} />
+      <div>
+        <Chart games={recentGames} stats={stats} highlight={debouncedSelectedMemberId} />
 
-      <NewGameOpener members={members} circleId={circleId} />
-    </>
+        <NewGameOpener members={members} circleId={circleId} />
+      </div>
+    </div>
   )
 }

@@ -110,7 +110,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               d={line(data)!}
               strokeWidth={1}
               fill="none"
-              className="stroke-neutral-300 dark:stroke-neutral-800"
+              className="stroke-neutral-300 dark:stroke-neutral-700"
               strokeLinecap="round"
             ></path>
 
@@ -119,7 +119,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
                 cx={x("g-" + data[0].game_id)!}
                 cy={y(data[0].rank)}
                 r={2}
-                className="fill-neutral-300 dark:fill-neutral-800"
+                className="fill-neutral-300 dark:fill-neutral-700"
               ></circle>
             )}
           </g>

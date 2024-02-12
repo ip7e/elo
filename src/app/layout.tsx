@@ -3,10 +3,9 @@ import PlausibleProvider from "next-plausible"
 import { JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
+import { GeistMono } from "geist/font/mono"
+
+const mono = GeistMono
 
 export const metadata: Metadata = {
   title: "Elo",
