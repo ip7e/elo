@@ -7,5 +7,5 @@ export type GameWithResults = Tables<"games"> & {
 }
 
 export type Stat = Tables<"members_stats">
-export type Member = Tables<"circle_members">
+export type Member = Tables<"members">
 export type Circle = Tables<"circles">

@@ -8,15 +8,15 @@ type Props = {
 
 export default async function ControlServer({ circle }: Props) {
   const { data: membersRaw } = await supabase
-    .from("circle_members")
-    .select("*, game_results(count)")
-    .eq("circle_id", circle.id)
+    .from("members")
+    .select("*, circles!inner(*), game_results(count)")
+    .eq("circles.id", circle.id)
 
   if (!membersRaw) return null
 
   const members = membersRaw.map((member) => ({
     id: member.id,
-    display_name: member.display_name!,
+    name: member.name!,
     total_games: (member.game_results[0] as any).count, // supabase types are wrong
   }))
 

@@ -6,6 +6,9 @@ import { revalidatePath } from "next/cache"
 type Props = { name: string; circleId: number }
 
 export async function addMember({ name, circleId }: Props) {
+  // TODO:
+
+  return { error: "yoo" }
   const { data, error } = await supabase
     .from("circle_members")
     .insert({ circle_id: circleId, display_name: name })

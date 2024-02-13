@@ -10,12 +10,5 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   if (!circle) return null
 
-  const { data: allMembers } = await supabase
-    .from("circle_members")
-    .select("*")
-    .eq("circle_id", circle.id)
-
-  if (!allMembers) return null
-
   return <CircleServer circleId={circle.id} />
 }

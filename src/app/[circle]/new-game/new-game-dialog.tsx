@@ -7,8 +7,8 @@ import { Tables } from "@/types/supabase"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { createGameSession } from "../../queries/get-members"
+import { Member } from "../types"
 
-type Member = Tables<"circle_members">
 type Props = {
   members: Member[]
   circleId: number
@@ -62,7 +62,7 @@ export default function NewGameDialog({ members, onClose, circleId }: Props) {
                 }
                 onClick={() => handleClick(m)}
               >
-                {m.display_name}
+                {m.name}
               </MemberPill>
             ))}
           </div>

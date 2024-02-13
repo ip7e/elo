@@ -6,12 +6,15 @@ import { revalidatePath } from "next/cache"
 type Props = { id: number }
 
 export async function kickMember({ id }: Props) {
-  const { data, error } = await supabase.from("circle_members").delete().eq("id", id).single()
+  // TODO:
 
-  if (!error) {
-    revalidatePath("/[circle]", "layout")
-    return { success: true }
-  }
+  const error = "to be implemented"
+  // const { data, error } = await supabase.from("circle_members_new").delete().eq("member_id", id).single()
+
+  // if (!error) {
+  // revalidatePath("/[circle]", "layout")
+  // return { success: true }
+  // }
 
   return { error }
 }

@@ -1,51 +1,42 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
-      circle_members: {
+      circle_members_new: {
         Row: {
+          admin: boolean | null
           circle_id: number
           created_at: string
-          display_name: string | null
-          id: number
-          user_id: string | null
+          member_id: number
         }
         Insert: {
+          admin?: boolean | null
           circle_id: number
           created_at?: string
-          display_name?: string | null
-          id?: number
-          user_id?: string | null
+          member_id: number
         }
         Update: {
+          admin?: boolean | null
           circle_id?: number
           created_at?: string
-          display_name?: string | null
-          id?: number
-          user_id?: string | null
+          member_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "circle_members_circle_id_fkey"
+            foreignKeyName: "public_circle_members_new_circle_id_fkey"
             columns: ["circle_id"]
             isOneToOne: false
             referencedRelation: "circles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "circle_members_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "public_circle_members_new_member_id_fkey"
+            columns: ["member_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "members"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       circles: {
@@ -117,26 +108,12 @@ export interface Database {
             referencedColumns: ["latest_game"]
           },
           {
-            foreignKeyName: "game_results_member_id_fkey"
+            foreignKeyName: "public_game_results_member_id_fkey"
             columns: ["member_id"]
             isOneToOne: false
-            referencedRelation: "circle_members"
+            referencedRelation: "members"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "game_results_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "members_elo"
-            referencedColumns: ["member_id"]
-          },
-          {
-            foreignKeyName: "game_results_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "members_stats"
-            referencedColumns: ["member_id"]
-          }
         ]
       }
       games: {
@@ -165,7 +142,36 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "circles"
             referencedColumns: ["id"]
-          }
+          },
+        ]
+      }
+      members: {
+        Row: {
+          created_at: string
+          id: number
+          name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
@@ -184,7 +190,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "circles"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       members_stats: {
@@ -205,7 +211,7 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "circles"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
     }
@@ -228,7 +234,7 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
@@ -237,22 +243,20 @@ export type Tables<
     ? R
     : never
   : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
-      Database["public"]["Views"])
-  ? (Database["public"]["Tables"] &
-      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
-      Row: infer R
-    }
-    ? R
+        Database["public"]["Views"])
+    ? (Database["public"]["Tables"] &
+        Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
     : never
-  : never
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
-    | { schema: keyof Database },
+  PublicTableNameOrOptions extends keyof Database["public"]["Tables"] | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
@@ -260,20 +264,18 @@ export type TablesInsert<
     ? I
     : never
   : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Insert: infer I
-    }
-    ? I
+    ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
     : never
-  : never
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
-    | { schema: keyof Database },
+  PublicTableNameOrOptions extends keyof Database["public"]["Tables"] | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
@@ -281,22 +283,20 @@ export type TablesUpdate<
     ? U
     : never
   : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Update: infer U
-    }
-    ? U
+    ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
     : never
-  : never
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof Database["public"]["Enums"]
-    | { schema: keyof Database },
+  PublicEnumNameOrOptions extends keyof Database["public"]["Enums"] | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
-    : never = never
+    : never = never,
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
-  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
-  : never
+    ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+    : never

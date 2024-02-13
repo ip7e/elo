@@ -6,16 +6,16 @@ type Props = {
 }
 
 export default async function HistoryServer({ circleId }: Props) {
-  const { data: history, error } = await supabase
+  const { data: history } = await supabase
     .from("games")
     .select("*, game_results(*) ")
     .eq("circle_id", circleId)
     .order("created_at", { ascending: false })
 
   const { data: members } = await supabase
-    .from("circle_members")
-    .select("*")
-    .eq("circle_id", circleId)
+    .from("members")
+    .select("*, circles!inner(*)")
+    .eq("circles.id", circleId)
 
   if (!history) return null
   if (!members) return null

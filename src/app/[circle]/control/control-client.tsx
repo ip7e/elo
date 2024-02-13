@@ -8,7 +8,7 @@ import { kickMember } from "./kick-member.action"
 type Props = {
   members: {
     id: number
-    display_name: string
+    name: string
     total_games: number
   }[]
   circle: Circle
@@ -23,7 +23,7 @@ export default function ControlClient({ circle, members }: Props) {
     if (!name) return
 
     const randomId = Math.random() * 10
-    const draftMember = { id: randomId, total_games: 0, display_name: name }
+    const draftMember = { id: randomId, total_games: 0, name: name }
     setOptimisticStats([...optimisticStats, draftMember])
 
     const { data: addedMember } = await addMember({
@@ -50,7 +50,7 @@ export default function ControlClient({ circle, members }: Props) {
       {optimisticStats.map((member, i) => (
         <div className="flex gap-5 w-full justify-between group dark:text-gray-200" key={member.id}>
           <div>
-            <span className="text-lg font-bold ">{member.display_name}</span>{" "}
+            <span className="text-lg font-bold ">{member.name}</span>{" "}
             <span className="italic opacity-30">{member.total_games} games</span>
           </div>
 

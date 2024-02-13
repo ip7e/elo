@@ -4,8 +4,7 @@ import Button from "@/components/button/button"
 import { Tables } from "@/types/supabase"
 import { useState } from "react"
 import NewGameDialog from "./new-game-dialog"
-
-type Member = Tables<"circle_members">
+import { Member } from "../types"
 
 type Props = {
   members: Member[]
@@ -17,8 +16,6 @@ export default function NewGameOpener({ members, circleId }: Props) {
 
   const closeModal = () => setIsOpen(false)
   const openModal = () => setIsOpen(true)
-
-  // const { data: allMembers } = await supabase.from("circle_members").select("*")
 
   return (
     <>

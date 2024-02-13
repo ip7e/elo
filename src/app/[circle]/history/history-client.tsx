@@ -35,7 +35,7 @@ export default function HistoryClient({ games, members }: Props) {
             {game.game_results.map((result) => (
               <HistoryMember
                 key={result.member_id}
-                name={membersMap.get(result.member_id)?.display_name || ""}
+                name={membersMap.get(result.member_id)?.name || ""}
                 winner={!!result.winner}
               ></HistoryMember>
             ))}
