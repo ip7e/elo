@@ -32,7 +32,7 @@ export default function ControlClient({ circle, members }: Props) {
     })
 
     if (addedMember) {
-      setOptimisticStats([...optimisticStats, { ...draftMember, id: addedMember.id }])
+      // setOptimisticStats([...optimisticStats, { ...draftMember, id: addedMember.id }])
     }
   }
 

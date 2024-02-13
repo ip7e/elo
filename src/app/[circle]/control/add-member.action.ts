@@ -8,7 +8,7 @@ type Props = { name: string; circleId: number }
 export async function addMember({ name, circleId }: Props) {
   // TODO:
 
-  return { error: "yoo" }
+  return { error: "yoo", data: null }
   // const { data, error } = await supabase
   //   .from("circle_members")
   //   .insert({ circle_id: circleId, name: name })
