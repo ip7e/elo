@@ -11,7 +11,7 @@ export async function addMember({ name, circleId }: Props) {
   return { error: "yoo" }
   const { data, error } = await supabase
     .from("circle_members")
-    .insert({ circle_id: circleId, display_name: name })
+    .insert({ circle_id: circleId, name: name })
     .select("*")
     .single()
 

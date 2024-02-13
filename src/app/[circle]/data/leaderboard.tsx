@@ -47,7 +47,7 @@ export default function StatsClient({
       </thead>
 
       <tbody>
-        {stats.map(({ elo, display_name, member_id, total_games, total_wins }, i) => (
+        {stats.map(({ elo, name, member_id, total_games, total_wins }, i) => (
           <motion.tr
             layout
             layoutId={"m" + member_id!}
@@ -61,7 +61,7 @@ export default function StatsClient({
               className={`w-full font-semibold
                  ${highlight == member_id ? "text-[#E6A320]" : "text-neutral-900 dark:text-white"}`}
             >
-              {display_name}
+              {name}
 
               {winsByMemberId[member_id!] && (
                 <span className="mx-1 tracking-widest">

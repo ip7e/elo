@@ -7,13 +7,15 @@ import CircleClient from "./circle-client"
 type Props = { circleId: number }
 
 export default async function CircleServer({ circleId }: Props) {
-  const { data: stats } = await supabase
+  console.log("fetching data")
+  const { data: stats, error } = await supabase
     .from("members_stats")
     .select("*")
     .filter("total_games", "gt", 4)
     .eq("circle_id", circleId)
     .order("elo", { ascending: false })
 
+  console.log("fetching data", error)
   const { data: recentGames }: { data: GameWithResults[] | null } = await supabase
     .from("games")
     .select("*, game_results(*)")
