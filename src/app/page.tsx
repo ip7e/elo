@@ -15,13 +15,13 @@ export default async function Page() {
 
   if (!user) return null
 
-  const { data: member } = await supabase
-    .from("members")
-    .select("*")
-    .eq("user_id", user.id)
-    .single()
+  // const { data: member } = await supabase
+  //   .from("circlemembers")
+  //   .select("*")
+  //   .eq("user_id", user.id)
+  //   .single()
 
-  if (!member) return null
+  // if (!member) return null
 
-  return <CirclesList member={member} />
+  // return <CirclesList member={member} />
 }
