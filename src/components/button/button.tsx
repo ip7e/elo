@@ -12,7 +12,7 @@ export default function Button({ children, secondary, ...btnProps }: Props) {
     ? // secondary
       `
         bg-none text-black dark:text-neutral-200
-        hover:underline 
+        hover:underline
       `
     : // primary
       `text-white dark:text-black
@@ -23,7 +23,7 @@ export default function Button({ children, secondary, ...btnProps }: Props) {
     <button
       type="button"
       className={`inline-flex justify-center px-4 py-2 text-sm sm:mt-0 sm:w-auto rounded-full border-none outline-none
-        ${color} 
+        ${color}
         ${disabled ? " opacity-50 cursor-default" : ""}
         `}
       {...btnProps}

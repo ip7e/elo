@@ -1,11 +1,11 @@
 "use client"
 
-import { useOptimistic, useState } from "react"
-import Leaderboard from "./data/leaderboard"
-import Chart from "./data/chart"
-import { GameWithResults, Member, Stat } from "./types"
-import NewGameOpener from "./new-game/new-game-opener"
+import { useState } from "react"
 import { useDebounce } from "use-debounce"
+import Chart from "./data/chart"
+import Leaderboard from "./data/leaderboard"
+import NewGameOpener from "./new-game/new-game-opener"
+import { GameWithResults, Member, Stat } from "./types"
 
 type Props = {
   members: Member[]

@@ -1,9 +1,7 @@
 "use client"
 
 import Button from "@/components/button/button"
-import { Tables } from "@/types/supabase"
 import { useState } from "react"
-import NewGameDialog from "./new-game-dialog"
 import { Member } from "../types"
 
 type Props = {
@@ -14,7 +12,6 @@ type Props = {
 export default function NewGameOpener({ members, circleId }: Props) {
   let [isOpen, setIsOpen] = useState(false)
 
-  const closeModal = () => setIsOpen(false)
   const openModal = () => setIsOpen(true)
 
   return (
@@ -24,7 +21,9 @@ export default function NewGameOpener({ members, circleId }: Props) {
       </div>
 
       {isOpen && (
-        <NewGameDialog members={members} onClose={closeModal} circleId={circleId}></NewGameDialog>
+        <div className="fixed inset-0 flex items-center justify-center bg-black">
+          <div className="relative w-96 bg-white rounded-lg">yoo</div>
+        </div>
       )}
     </>
   )

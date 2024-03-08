@@ -1,13 +1,12 @@
 "use server"
 
 import { supabase } from "@/supabase"
-import { GameWithResults } from "./types"
 import CircleClient from "./circle-client"
+import { GameWithResults } from "./types"
 
 type Props = { circleId: number }
 
 export default async function CircleServer({ circleId }: Props) {
-  console.log("fetching data")
   const { data: stats, error } = await supabase
     .from("members_stats")
     .select("*")
@@ -15,7 +14,6 @@ export default async function CircleServer({ circleId }: Props) {
     .eq("circle_id", circleId)
     .order("elo", { ascending: false })
 
-  console.log("fetching data", error)
   const { data: recentGames }: { data: GameWithResults[] | null } = await supabase
     .from("games")
     .select("*, game_results(*)")
