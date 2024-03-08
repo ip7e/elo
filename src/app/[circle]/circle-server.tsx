@@ -22,9 +22,9 @@ export default async function CircleServer({ circleId }: Props) {
     .limit(20)
 
   const { data: allMembers } = await supabase
-    .from("members")
-    .select("*, circles!inner(*)")
-    .eq("circles.id", circleId)
+    .from("circle_members")
+    .select("*")
+    .eq("circle_id", circleId)
 
   if (!allMembers) return null
   if (!recentGames) return null

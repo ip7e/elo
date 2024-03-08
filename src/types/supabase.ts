@@ -9,24 +9,60 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      circle_members: {
+      circle_admins: {
         Row: {
-          admin: boolean | null
           circle_id: number
           created_at: string
-          member_id: number
+          id: number
+          user_id: string
         }
         Insert: {
-          admin?: boolean | null
           circle_id: number
           created_at?: string
-          member_id: number
+          id?: number
+          user_id?: string
         }
         Update: {
-          admin?: boolean | null
           circle_id?: number
           created_at?: string
-          member_id?: number
+          id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_circle_admins_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_circle_admins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      circle_members: {
+        Row: {
+          circle_id: number
+          created_at: string
+          id: number
+          name: string | null
+        }
+        Insert: {
+          circle_id: number
+          created_at?: string
+          id: number
+          name?: string | null
+        }
+        Update: {
+          circle_id?: number
+          created_at?: string
+          id?: number
+          name?: string | null
         }
         Relationships: [
           {
@@ -35,20 +71,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "circles"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_circle_members_new_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "members"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_circle_members_new_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "members_stats"
-            referencedColumns: ["member_id"]
           }
         ]
       }
@@ -124,7 +146,7 @@ export type Database = {
             foreignKeyName: "public_game_results_member_id_fkey"
             columns: ["member_id"]
             isOneToOne: false
-            referencedRelation: "members"
+            referencedRelation: "circle_members"
             referencedColumns: ["id"]
           },
           {
@@ -139,21 +161,21 @@ export type Database = {
       games: {
         Row: {
           circle_id: number
+          comment: string | null
           created_at: string
           id: number
-          location: string | null
         }
         Insert: {
           circle_id: number
+          comment?: string | null
           created_at?: string
           id?: number
-          location?: string | null
         }
         Update: {
           circle_id?: number
+          comment?: string | null
           created_at?: string
           id?: number
-          location?: string | null
         }
         Relationships: [
           {
@@ -165,7 +187,7 @@ export type Database = {
           }
         ]
       }
-      members: {
+      old_members: {
         Row: {
           created_at: string
           id: number

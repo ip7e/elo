@@ -8,9 +8,9 @@ type Props = {
 
 export default async function ControlServer({ circle }: Props) {
   const { data: membersRaw } = await supabase
-    .from("members")
-    .select("*, circles!inner(*), game_results(count)")
-    .eq("circles.id", circle.id)
+    .from("circle_members")
+    .select("*, game_results(count)")
+    .eq("circle_id", circle.id)
 
   if (!membersRaw) return null
 

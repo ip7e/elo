@@ -13,9 +13,9 @@ export default async function HistoryServer({ circleId }: Props) {
     .order("created_at", { ascending: false })
 
   const { data: members } = await supabase
-    .from("members")
-    .select("*, circles!inner(*)")
-    .eq("circles.id", circleId)
+    .from("circle_members")
+    .select("*")
+    .eq("circle_id", circleId)
 
   if (!history) return null
   if (!members) return null

@@ -71,15 +71,3 @@ export default function Navigation({ circle }: Props) {
     </div>
   )
 }
-
-// <Link
-//             key={route.pathname}
-//             href={route.pathname}
-//             className={`${
-//               currentPathname === route.pathname
-//                 ? "text-black dark:text-white"
-//                 : "text-neutral-400 dark:text-neutral-500"
-//             }`}
-//           >
-//             {route.label}
-//           </Link>

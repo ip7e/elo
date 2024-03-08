@@ -3,6 +3,7 @@
 import Button from "@/components/button/button"
 import { useState } from "react"
 import { Member } from "../types"
+import NewGameDialog from "./new-game-dialog"
 
 type Props = {
   members: Member[]
@@ -21,9 +22,7 @@ export default function NewGameOpener({ members, circleId }: Props) {
       </div>
 
       {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black">
-          <div className="relative w-96 bg-white rounded-lg">yoo</div>
-        </div>
+        <NewGameDialog circleId={circleId} members={members} onClose={() => setIsOpen(false)} />
       )}
     </>
   )
