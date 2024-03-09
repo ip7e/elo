@@ -5,6 +5,7 @@ import { useState } from "react"
 import { GameWithResults, Member } from "../types"
 import HistoryMember from "./history-member"
 import { deleteLastGame } from "./delete-last-game.action"
+import { motion } from "framer-motion"
 
 type Props = {
   games: GameWithResults[]
@@ -24,28 +25,50 @@ export default function HistoryClient({ games, members }: Props) {
   }
 
   return (
-    <div className="mt-10">
+    <div className="my-48 max-w-md mx-auto flex-col flex gap-16">
       {optimisticGames.map((game, i) => (
-        <div className="flex gap-5 w-full py-1 text-gray-500 group" key={game.id}>
-          <p key={game.id}>
-            <time dateTime={game.created_at} className="text-gray-500 dark:text-gray-600">
-              {format(game.created_at, "MMM dd")} -{" "}
-            </time>
+        <motion.div
+          className={`flex flex-col gap-1 w-full py-1 text-gray-500 group
+          items-center
+          `}
+          key={game.id}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{
+            rotate: -3 + Math.random() * 8,
+            opacity: 1,
+            y: 0,
+            transition: { delay: i * 0.03 },
+          }}
+        >
+          <time
+            dateTime={game.created_at}
+            className="text-sm text-gray-500 dark:text-gray-500 font-light"
+          >
+            {format(game.created_at, " d MMMM")}
+          </time>
 
+          <div className="flex gap-2">
             {game.game_results.map((result) => (
-              <HistoryMember
+              <span
                 key={result.member_id}
-                name={membersMap.get(result.member_id)?.name || ""}
-                winner={!!result.winner}
-              ></HistoryMember>
+                className={`
+                    ${
+                      result.winner
+                        ? "text-accent font-bold"
+                        : "text-gray-800 dark:text-gray-300 font-extralight"
+                    }
+                  `}
+              >
+                {membersMap.get(result.member_id)?.name || ""}
+              </span>
             ))}
-          </p>
+          </div>
           {i == 0 && (
-            <button className="group-hover:visible invisible" onClick={handleDeleteLastGame}>
+            <button className="font-light" onClick={handleDeleteLastGame}>
               delete
             </button>
           )}
-        </div>
+        </motion.div>
       ))}
     </div>
   )
