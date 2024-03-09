@@ -6,19 +6,18 @@ import { revalidatePath } from "next/cache"
 type Props = { name: string; circleId: number }
 
 export async function addMember({ name, circleId }: Props) {
-  // TODO:
+  const { data, error } = await supabase
+    .from("circle_members")
+    .insert({ circle_id: circleId, name: name })
+    .select("*")
+    .single()
 
-  return { error: "yoo", data: null }
-  // const { data, error } = await supabase
-  //   .from("circle_members")
-  //   .insert({ circle_id: circleId, name: name })
-  //   .select("*")
-  //   .single()
+  if (!error) {
+    revalidatePath("/[circle]", "layout")
+    return { data, success: true }
+  }
 
-  // if (!error) {
-  //   revalidatePath("/[circle]", "layout")
-  //   return { data, success: true }
-  // }
+  console.log(error)
 
-  // return { error }
+  return { error }
 }

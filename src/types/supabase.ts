@@ -55,7 +55,7 @@ export type Database = {
         Insert: {
           circle_id: number
           created_at?: string
-          id: number
+          id?: number
           name?: string | null
         }
         Update: {
