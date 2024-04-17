@@ -8,8 +8,15 @@ import MainNavigation from "./main-navigation"
 const mono = GeistMono
 
 export const metadata: Metadata = {
-  title: "Elo",
-  description: "Board Game elo system",
+  title: "Shmelo.io",
+  description: "Ranking system for board games",
+  icons: [
+    {
+      rel: "icon",
+      type: "image/svg",
+      url: "/favicon.svg",
+    },
+  ],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -17,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <PlausibleProvider domain="shmelo.io">
       <html lang="en" className="h-full">
         <body className={`${mono.variable} font-mono bg-bg dark:bg-black w-full h-full`}>
-          <MainNavigation />
+          {/* <MainNavigation /> */}
 
           {children}
         </body>

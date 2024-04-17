@@ -35,7 +35,7 @@ export default function Navigation({ isAdmin, circle }: Props) {
     >
       <Link className="flex gap-2 items-center" href={circleRoot}>
         <Logo className="w-8 text-accent" />
-        <div className="w-0.5 h-4 bg-gray-500/20" />
+        <div className="w-0.5 h-4 bg-gray-400/20 dark:bg-gray-200/30" />
         <h1 className="font-semibold text-gray-400">catan</h1>
       </Link>
 
