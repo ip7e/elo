@@ -56,7 +56,7 @@ export default function ControlClient({ circle, members }: Props) {
           {optimisticMembers.map((member) => (
             <div className="flex w-full justify-between items-center" key={member.id}>
               <div className="flex flex-col">
-                <span className="text-black font-semibold">{member.name}</span>
+                <span className="text-black dark:text-white font-semibold">{member.name}</span>
                 <span className="text-gray-400 text-sm font-light">{member.total_games} games</span>
               </div>
               <div>
