@@ -3,10 +3,12 @@
 import { supabase } from "@/supabase"
 import { revalidatePath } from "next/cache"
 
-export async function deleteLastGame() {
+type Props = { circleId: number }
+export async function deleteLastGame({ circleId }: Props) {
   const { data, error } = await supabase
     .from("games")
     .delete()
+    .eq("circle_id", circleId)
     .order("id", { ascending: false })
     .limit(1)
     .single()

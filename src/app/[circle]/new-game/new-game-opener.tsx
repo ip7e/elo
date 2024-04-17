@@ -1,6 +1,6 @@
 "use client"
 
-import Button from "@/components/button/button"
+import Button from "@/components/button/big-button"
 import { useState } from "react"
 import { Member } from "../types"
 import NewGameDialog from "./new-game-dialog"

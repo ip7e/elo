@@ -5,7 +5,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> &
     secondary?: boolean
   }>
 
-export default function Button({ children, secondary, ...btnProps }: Props) {
+export default function BigButton({ children, secondary, ...btnProps }: Props) {
   const { disabled } = btnProps
 
   const color = secondary

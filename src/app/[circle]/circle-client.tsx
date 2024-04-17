@@ -11,10 +11,11 @@ type Props = {
   members: Member[]
   recentGames: GameWithResults[]
   stats: Stat[]
+  isAdmin: boolean
   circleId: number
 }
 
-export default function CircleClient({ members, recentGames, stats, circleId }: Props) {
+export default function CircleClient({ members, recentGames, stats, isAdmin, circleId }: Props) {
   const recentWinners = [...recentGames]
     .slice(0, 3)
     .map((game) => game.game_results.find((r) => r.winner)!.member_id)
@@ -34,7 +35,7 @@ export default function CircleClient({ members, recentGames, stats, circleId }: 
       <div>
         <Chart games={recentGames} stats={stats} highlight={debouncedSelectedMemberId} />
 
-        <NewGameOpener members={members} circleId={circleId} />
+        {isAdmin && <NewGameOpener members={members} circleId={circleId} />}
       </div>
     </div>
   )

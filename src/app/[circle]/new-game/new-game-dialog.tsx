@@ -1,6 +1,6 @@
 "use client"
 
-import Button from "@/components/button/button"
+import Button from "@/components/button/big-button"
 import Dialog from "@/components/dialog/dialog"
 import MemberPill from "@/components/member-pill"
 import { Tables } from "@/types/supabase"

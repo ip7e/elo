@@ -4,8 +4,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Circle } from "./types"
 
-type Props = { circle: Circle }
-export default function Navigation({ circle }: Props) {
+type Props = { circle: Circle; isAdmin: boolean }
+export default function Navigation({ isAdmin, circle }: Props) {
   const currentPathname = usePathname()
   const slug = circle.slug
 
@@ -18,11 +18,12 @@ export default function Navigation({ circle }: Props) {
       pathname: `/${slug}/history`,
       label: "history",
     },
-    {
+    isAdmin && {
       pathname: `/${slug}/control`,
       label: "settings",
     },
-  ]
+  ].filter(Boolean)
+
   return (
     <div
       className="flex gap-4 items-center py-8 

@@ -1,25 +1,25 @@
 "use client"
 
 import { format } from "date-fns"
+import { motion } from "framer-motion"
 import { useState } from "react"
 import { GameWithResults, Member } from "../types"
-import HistoryMember from "./history-member"
 import { deleteLastGame } from "./delete-last-game.action"
-import { motion } from "framer-motion"
 
 type Props = {
   games: GameWithResults[]
   members: Member[]
+  circleId: number
 }
 
-export default function HistoryClient({ games, members }: Props) {
+export default function HistoryClient({ games, members, circleId }: Props) {
   const membersMap = new Map(members.map((m) => [m.id, m]))
   const [optimisticGames, setOptimisticGames] = useState(games)
 
   const handleDeleteLastGame = async () => {
     const confirm = window.confirm("Are you sure you want to delete the last game?")
     if (!confirm) return
-    const res = await deleteLastGame()
+    const res = await deleteLastGame({ circleId: circleId })
     if (res.success) setOptimisticGames(optimisticGames.slice(1))
     else alert("Something went wrong")
   }
