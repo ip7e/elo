@@ -20,5 +20,5 @@ export default async function HistoryServer({ circleId }: Props) {
   if (!history) return null
   if (!members) return null
 
-  return <HistoryClient games={history} members={members} />
+  return <HistoryClient games={history} members={members} circleId={circleId} />
 }

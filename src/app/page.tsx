@@ -1,9 +1,7 @@
-import { supabase } from "@/supabase"
-import "./globals.css"
-import { cookies } from "next/headers"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { Database } from "@/types/supabase"
-import CirclesList from "./circles-list.server"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { cookies } from "next/headers"
+import "./globals.css"
 
 export default async function Page() {
   const cookieStore = cookies()
