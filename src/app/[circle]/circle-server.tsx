@@ -1,7 +1,6 @@
 "use server"
 
-import useSupabase from "../use-supabase"
-import useUser from "../use-user"
+import { supabase } from "@/supabase"
 import CircleClient from "./circle-client"
 import { GameWithResults } from "./types"
 import useIsAdmin from "./use-is-admin"
@@ -9,8 +8,6 @@ import useIsAdmin from "./use-is-admin"
 type Props = { circleId: number }
 
 export default async function CircleServer({ circleId }: Props) {
-  const supabase = await useSupabase()
-
   const { data: stats, error } = await supabase
     .from("members_stats")
     .select("*")

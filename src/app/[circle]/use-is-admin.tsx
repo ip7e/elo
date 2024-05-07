@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation"
 import useUser from "../use-user"
-import useSupabase from "../use-supabase"
+// import useSupabase from "../use-supabase"
 
 export default async function useIsAdmin(circleId?: number) {
   return true
