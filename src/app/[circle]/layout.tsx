@@ -21,10 +21,11 @@ export default async function RootLayout({
 
   return (
     <>
-      <div className="container max-w-lg mx-auto h-full flex flex-col">
+      <div className="container max-w-3xl mx-auto h-full flex flex-col">
         <div className="mx-auto mt-5 w-full flex items-center justify-center">
           <Navigation circle={circle} isAdmin={isAdmin} />
         </div>
+
         <div className="flex-1">{children}</div>
         <div className="flex-1 max-h-28 "></div>
       </div>

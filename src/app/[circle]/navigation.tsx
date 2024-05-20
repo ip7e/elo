@@ -39,7 +39,7 @@ export default function Navigation({ isAdmin, circle }: Props) {
         <h1 className="font-semibold text-gray-400">{circle.name}</h1>
       </Link>
 
-      <nav className="flex gap-2 relative font-semibold text-gray-400">
+      <nav className="flex gap-2 relative font-normal text-gray-400">
         {routes.map(({ pathname, label }) => (
           <Link
             href={pathname}
