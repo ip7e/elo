@@ -20,7 +20,6 @@ export default function StatsClient({
   highlightId,
 }: Props) {
   const [highlight, setHighlight] = useState<number>(highlightId)
-  const [highlightDebounced] = useDebounce(highlight, 150)
 
   const handleHighlight = (id: number) => {
     setHighlight(id)
@@ -36,50 +35,42 @@ export default function StatsClient({
   )
 
   return (
-    <table className="table border-separate border-spacing-x-3 border-spacing-y-2">
-      <thead>
-        <tr className="text-sm lowercase align-text-top  text-neutral-300 dark:text-neutral-600">
-          <th className="invisible"></th>
-          <th className="invisible w-full">Player</th>
-          <th className="text-center font-light text-lg">elo</th>
-          <th className="text-center font-light text-lg">%</th>
-        </tr>
-      </thead>
+    <div className="flex flex-col">
+      {stats.map(({ elo, name, member_id, total_games, total_wins }, i) => (
+        <motion.div
+          layout
+          layoutId={"m" + member_id!}
+          key={member_id}
+          onMouseEnter={() => handleHighlight(member_id!)}
+          className="flex gap-4 h-8 select-none text-base"
+        >
+          <div className="text-right w-10 text-neutral-300 dark:text-neutral-600">{i + 1}</div>
 
-      <tbody>
-        {stats.map(({ elo, name, member_id, total_games, total_wins }, i) => (
-          <motion.tr
-            layout
-            layoutId={"m" + member_id!}
-            key={member_id}
-            onMouseEnter={() => handleHighlight(member_id!)}
-            className="select-none text-lg"
+          <div
+            className={`w-full font-medium pr-4
+                 ${highlight == member_id ? "text-accent" : "text-neutral-900 dark:text-white"}`}
           >
-            <td className="text-right text-neutral-300 dark:text-neutral-600 w-max ">{i + 1}</td>
+            {name}
 
-            <td
-              className={`w-full font-semibold
-                 ${highlight == member_id ? "text-[#E6A320]" : "text-neutral-900 dark:text-white"}`}
-            >
-              {name}
-
-              {winsByMemberId[member_id!] && (
-                <span className="mx-1 tracking-widest">
-                  {Array(winsByMemberId[member_id!])
-                    .fill(null)
-                    .map((_, i) => (
-                      <Star key={i} />
-                    ))}
-                </span>
-              )}
-            </td>
-            <td className="font-medium text-right text-black dark:text-white">{elo}</td>
-            <td className="text-right text-neutral-400 dark:text-neutral-600 w-max">
-              {Math.round(((total_wins || 0) / (total_games || 0)) * 100)}
-            </td>
-          </motion.tr>
-        ))}
-      </tbody>
-    </table>
+            {winsByMemberId[member_id!] && (
+              <span className="mx-1 tracking-widest">
+                {Array(winsByMemberId[member_id!])
+                  .fill(null)
+                  .map((_, i) => (
+                    <Star key={i} />
+                  ))}
+              </span>
+            )}
+          </div>
+          <div
+            className={`font-medium  text-right dark:text-white
+              ${highlight == member_id ? "text-accent" : "text-neutral-300  dark:text-white"}
+            `}
+          >
+            {elo}
+          </div>
+        </motion.div>
+      ))}
+    </div>
   )
 }

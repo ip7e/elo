@@ -6,3 +6,12 @@ html,
 body {
   scrollbar-width: none;
 }
+
+.gradient-clip {
+  -webkit-mask-image: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 1) 0px,
+    rgba(0, 0, 0, 1) 300px,
+    rgba(0, 0, 0, 0) 550px
+  );
+}

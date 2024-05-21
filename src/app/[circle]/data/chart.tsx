@@ -1,7 +1,7 @@
 "use client"
 
 import * as d3 from "d3"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { GameWithResults, MemberStats } from "../types"
 import { useMemo } from "react"
 
@@ -52,7 +52,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
       sortedStats.forEach((s, i) => {
         gamesByMember[s.member_id!] = gamesByMember[s.member_id!] || []
 
-        gamesByMember[s.member_id!].unshift({
+        gamesByMember[s.member_id!].push({
           game_id: game.id,
           rank: i,
           played: membersWhoPlayed.has(s.member_id!),
@@ -73,50 +73,63 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
 
   if (!gamesByMember) return null
 
-  const width = 512
-  const lineHeight = statsArr.length <= 6 ? 20 : 16
+  const width = games.length * 40
+  const lineHeight = 32
   const height = statsArr.length * lineHeight
-  const padding = 8
 
   // Create scales
   const x = d3
     .scaleBand()
     .paddingInner(1)
-    .domain(games.map((g) => "g-" + g.id.toString()))
-    .range([width - padding, padding])
+    .domain(games.map((g) => g.id.toString()))
+    .range([width - 4, 4])
 
   const y = d3
     .scaleLinear()
     .domain([0, statsArr.length])
-    .range([padding, height - padding])
+    .range([lineHeight / 3, height + lineHeight / 3])
 
   // Create line generator
   const line = d3
     .line<GameRecord>()
     .defined((d) => d !== undefined)
-    .x((record) => x("g-" + record.game_id)!)
+    .x((record) => x(record.game_id.toString())!)
     .y((record) => y(record.rank))
     .curve(d3.curveMonotoneX)
 
   const selectedData = gamesByMember[highlight]
 
   return (
-    <div className={`w-full my-8 aspect-[512/${height}]`}>
-      <svg vectorEffect="non-scaling-stroke" viewBox={`0 0 ${width} ${height}`} width="100%">
+    <div className={`h-[${height}px] w-[${width}px] `}>
+      <svg
+        vectorEffect="non-scaling-stroke"
+        viewBox={`0 0 ${width} ${height}`}
+        width={width}
+        height={height}
+      >
         {Object.entries(gamesByMember).map(([memberId, data], i) => (
           <g key={`m-${memberId}`}>
-            <path
+            <motion.path
               key={`m-${memberId}`}
               d={line(data)!}
               strokeWidth={1}
               fill="none"
               className="stroke-neutral-300 dark:stroke-neutral-700"
               strokeLinecap="round"
-            ></path>
+              initial={{ pathLength: 0 }}
+              animate={{
+                pathLength: 1,
+                transition: {
+                  mass: 1,
+                  stiffness: 10,
+                  damping: 10,
+                },
+              }}
+            ></motion.path>
 
             {data[0].isFirstGame && (
               <circle
-                cx={x("g-" + data[0].game_id)!}
+                cx={x(data[0].game_id.toString())!}
                 cy={y(data[0].rank)}
                 r={2}
                 className="fill-neutral-300 dark:fill-neutral-700"
@@ -126,7 +139,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
         ))}
 
         {selectedData && (
-          <>
+          <AnimatePresence>
             <motion.path
               key={"selected" + highlight}
               d={line(selectedData)!}
@@ -134,8 +147,9 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               strokeWidth={2}
               fill="none"
               strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.3 } }}
             ></motion.path>
 
             {selectedData
@@ -145,7 +159,8 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
                   key={`${highlight}-${record.game_id}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1, transition: { delay: i * 0.02 } }}
-                  cx={x("g-" + record.game_id)!}
+                  exit={{ opacity: 0, transition: { duration: 0.3 } }}
+                  cx={x(record.game_id.toString())!}
                   cy={y(record.rank)}
                   strokeWidth={2}
                   r={3}
@@ -154,7 +169,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
                   }`}
                 ></motion.circle>
               ))}
-          </>
+          </AnimatePresence>
         )}
       </svg>
     </div>

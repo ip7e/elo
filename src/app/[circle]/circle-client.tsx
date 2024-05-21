@@ -21,20 +21,27 @@ export default function CircleClient({ members, recentGames, stats, isAdmin, cir
     .map((game) => game.game_results.find((r) => r.winner)!.member_id)
 
   const [selectedMemberId, setSelectedMemberId] = useState(stats[0]?.member_id || 0)
-  const [debouncedSelectedMemberId] = useDebounce(selectedMemberId, 150)
 
   return (
-    <div className="flex flex-col h-full justify-center gap-4">
-      <Leaderboard
-        recentWinners={recentWinners}
-        stats={stats}
-        highlightId={selectedMemberId}
-        onHighlightChange={(id) => setSelectedMemberId(id)}
-      />
+    <div className="h-full flex flex-col justify-center ">
+      <div className="flex justify-center gap-4">
+        <div className="flex basis-2/3 relative">
+          <div className="absolute top-0 h-full right-0 gradient-clip">
+            <Chart games={recentGames} stats={stats} highlight={selectedMemberId} />
+          </div>
+        </div>
 
-      <div>
-        <Chart games={recentGames} stats={stats} highlight={debouncedSelectedMemberId} />
+        <div className="flex basis-1/3">
+          <Leaderboard
+            recentWinners={recentWinners}
+            stats={stats}
+            highlightId={selectedMemberId}
+            onHighlightChange={(id) => setSelectedMemberId(id)}
+          />
+        </div>
+      </div>
 
+      <div className="my-8">
         {isAdmin && <NewGameOpener members={members} circleId={circleId} />}
       </div>
     </div>
