@@ -40,6 +40,10 @@ export default function CircleClient({ members, recentGames, stats, isAdmin, cir
           />
         </div>
       </div>
+
+      <div className="my-8">
+        {isAdmin && <NewGameOpener members={members} circleId={circleId} />}
+      </div>
     </div>
   )
 }

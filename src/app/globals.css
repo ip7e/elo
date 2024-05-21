@@ -9,10 +9,9 @@ body {
 
 .gradient-clip {
   -webkit-mask-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0) 30%,
-    rgba(0, 0, 0, 1) 70%,
-    rgba(0, 0, 0, 1) 100%
+    to left,
+    rgba(0, 0, 0, 1) 0px,
+    rgba(0, 0, 0, 1) 300px,
+    rgba(0, 0, 0, 0) 550px
   );
 }

@@ -11,7 +11,6 @@ export default async function CircleServer({ circleId }: Props) {
   const { data: stats, error } = await supabase
     .from("members_stats")
     .select("*")
-    .filter("total_games", "gt", 4)
     .eq("circle_id", circleId)
     .order("elo", { ascending: false })
 
