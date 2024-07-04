@@ -61,6 +61,7 @@ export async function POST(request: Request) {
         game_id: game[0].id,
         winner: winnersMap[id],
         elo: result.elo,
+        previous_elo: existingEloMap[id] || DEFAULT_ELO,
       })),
     )
     .select()
