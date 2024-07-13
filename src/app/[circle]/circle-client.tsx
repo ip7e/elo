@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useDebounce } from "use-debounce"
 import Chart from "./data/chart"
 import Leaderboard from "./data/leaderboard"
 import NewGameOpener from "./new-game/new-game-opener"
@@ -23,15 +22,13 @@ export default function CircleClient({ members, recentGames, stats, isAdmin, cir
   const [selectedMemberId, setSelectedMemberId] = useState(stats[0]?.member_id || 0)
 
   return (
-    <div className="h-full flex flex-col justify-center ">
-      <div className="flex justify-center gap-4">
-        <div className="flex basis-2/3 relative">
-          <div className="absolute top-0 h-full right-0 gradient-clip">
-            <Chart games={recentGames} stats={stats} highlight={selectedMemberId} />
-          </div>
+    <div className="h-full flex flex-col justify-center">
+      <div className="flex justify-center gap-0 rounded-lg">
+        <div className="flex basis-2/3 relative bg-dot-grid justify-end py-2 overflow-hidden">
+          <Chart games={recentGames} stats={stats} highlight={selectedMemberId} />
         </div>
 
-        <div className="flex basis-1/3">
+        <div className="flex basis-1/3 py-2">
           <Leaderboard
             recentWinners={recentWinners}
             stats={stats}

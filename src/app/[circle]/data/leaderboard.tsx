@@ -1,10 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useDebounce } from "use-debounce"
-import { GameWithResults, MemberStats } from "../types"
-import Star from "./star"
 import { motion } from "framer-motion"
+import { useState } from "react"
+import { MemberStats } from "../types"
+import Star from "./star"
 
 type Props = {
   stats: MemberStats[]

@@ -15,3 +15,14 @@ body {
     rgba(0, 0, 0, 0) 550px
   );
 }
+
+.bg-dot-grid {
+  background-image: radial-gradient(rgb(231, 231, 231) 1px, transparent 0);
+  background-size: 12px 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bg-dot-grid {
+    background-image: radial-gradient(rgb(65, 65, 65) 1px, transparent 0);
+  }
+}

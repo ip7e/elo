@@ -22,6 +22,7 @@ type GameRecord = {
 export default function Chart({ stats: statsArr, games: games, highlight }: Props) {
   const gamesByMember = useMemo(() => {
     let gamesByMember: Record<number, GameRecord[]> = {}
+
     // will mutate while looping through games
     const rollingStats = statsArr.reduce(
       (acc, s) => ({
@@ -65,6 +66,11 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
         }
       })
 
+      game.game_results.forEach((result) => {
+        if (!rollingStats[result.member_id]) return
+        rollingStats[result.member_id].elo = result.previous_elo
+      })
+
       return
     })
 
@@ -73,7 +79,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
 
   if (!gamesByMember) return null
 
-  const width = games.length * 40
+  const width = games.length * 45
   const lineHeight = 32
   const height = statsArr.length * lineHeight
 
@@ -100,7 +106,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
   const selectedData = gamesByMember[highlight]
 
   return (
-    <div className={`h-[${height}px] w-[${width}px] `}>
+    <div className={`h-[${height}px] w-fit flex justify-end`}>
       <svg
         vectorEffect="non-scaling-stroke"
         viewBox={`0 0 ${width} ${height}`}
@@ -114,7 +120,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               d={line(data)!}
               strokeWidth={1}
               fill="none"
-              className="stroke-neutral-300 dark:stroke-neutral-700"
+              className="stroke-neutral-300 dark:stroke-neutral-500"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
               animate={{
@@ -127,14 +133,14 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               }}
             ></motion.path>
 
-            {data[0].isFirstGame && (
+            {/* {data[data.length - 1].isFirstGame && (
               <circle
-                cx={x(data[0].game_id.toString())!}
-                cy={y(data[0].rank)}
+                cx={x(data[data.length - 1].game_id.toString())!}
+                cy={y(data[data.length - 1].rank)}
                 r={2}
                 className="fill-neutral-300 dark:fill-neutral-700"
               ></circle>
-            )}
+            )} */}
           </g>
         ))}
 
