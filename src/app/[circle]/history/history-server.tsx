@@ -1,4 +1,4 @@
-import { supabase } from "@/supabase"
+import { createServerClient } from "@/utils/supabase/server"
 import HistoryClient from "./history-client"
 
 type Props = {
@@ -6,6 +6,7 @@ type Props = {
 }
 
 export default async function HistoryServer({ circleId }: Props) {
+  const supabase = createServerClient()
   const { data: history } = await supabase
     .from("games")
     .select("*, game_results(*) ")

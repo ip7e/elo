@@ -5,16 +5,16 @@ import Chart from "./data/chart"
 import Leaderboard from "./data/leaderboard"
 import NewGameOpener from "./new-game/new-game-opener"
 import { GameWithResults, Member, Stat } from "./types"
+import AccessGuard from "./shared/access-guard"
 
 type Props = {
   members: Member[]
   recentGames: GameWithResults[]
   stats: Stat[]
-  isAdmin: boolean
   circleId: number
 }
 
-export default function CircleClient({ members, recentGames, stats, isAdmin, circleId }: Props) {
+export default function CircleClient({ members, recentGames, stats, circleId }: Props) {
   const recentWinners = [...recentGames]
     .slice(0, 3)
     .map((game) => game.game_results.find((r) => r.winner)!.member_id)
@@ -39,7 +39,9 @@ export default function CircleClient({ members, recentGames, stats, isAdmin, cir
       </div>
 
       <div className="my-8">
-        {isAdmin && <NewGameOpener members={members} circleId={circleId} />}
+        <AccessGuard>
+          <NewGameOpener members={members} circleId={circleId} />
+        </AccessGuard>
       </div>
     </div>
   )

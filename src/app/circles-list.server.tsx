@@ -1,4 +1,4 @@
-import { supabase } from "@/supabase"
+import { createServerClient } from "@/utils/supabase/server"
 import { Member } from "./[circle]/types"
 import Link from "next/link"
 
@@ -6,6 +6,7 @@ type Props = {
   member: Member
 }
 export default async function CirclesList({ member }: Props) {
+  const supabase = createServerClient()
   const { data: circles } = await supabase.from("circles").select("*")
 
   if (!circles) return null
