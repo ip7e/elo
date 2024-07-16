@@ -1,7 +1,8 @@
-import { supabase } from "@/supabase"
+import { createServerClient } from "@/utils/supabase/server"
 import ControlServer from "./control-server"
 
 export default async function ControlPage({ params }: { params: { circle: string } }) {
+  const supabase = createServerClient()
   const { data: circle } = await supabase
     .from("circles")
     .select("*")

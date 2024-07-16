@@ -1,4 +1,4 @@
-import { supabase } from "@/supabase"
+import { createServerClientWithCookies } from "@/utils/supabase/server"
 import calculateElo from "./calculate-elo"
 import { revalidatePath } from "next/cache"
 
@@ -13,6 +13,7 @@ const MessageResponse = (status: Number, message: string) =>
   Response.json({ status, body: { message } })
 
 export async function POST(request: Request) {
+  const supabase = createServerClientWithCookies()
   const { loserIds, winnerIds, circleId } = (await request.json()) as NewGameSessionRequest
 
   if (!loserIds.length || !winnerIds.length)

@@ -1,4 +1,4 @@
-import { supabase } from "@/supabase"
+import { createServerClient } from "@/utils/supabase/server"
 import { Circle } from "../types"
 import ControlClient from "./control-client"
 
@@ -7,6 +7,7 @@ type Props = {
 }
 
 export default async function ControlServer({ circle }: Props) {
+  const supabase = createServerClient()
   const { data: membersRaw } = await supabase
     .from("circle_members")
     .select("*, game_results(count)")
