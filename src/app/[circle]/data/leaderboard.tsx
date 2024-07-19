@@ -41,7 +41,7 @@ export default function StatsClient({
           layoutId={"m" + member_id!}
           key={member_id}
           onMouseEnter={() => handleHighlight(member_id!)}
-          className="flex gap-4 h-8 select-none text-base"
+          className="flex gap-4 h-8 select-none text-base font-mono"
         >
           <div className="text-right w-10 text-neutral-300 dark:text-neutral-600">{i + 1}</div>
 
@@ -62,7 +62,7 @@ export default function StatsClient({
             )}
           </div>
           <div
-            className={`font-medium  text-right dark:text-white
+            className={`font-medium text-right dark:text-white
               ${highlight == member_id ? "text-accent" : "text-neutral-300  dark:text-white"}
             `}
           >

@@ -25,12 +25,10 @@ export default function HistoryClient({ games, members, circleId }: Props) {
   }
 
   return (
-    <div className="my-48 max-w-md mx-auto flex-col flex gap-16">
+    <div className="mx-auto my-48 flex max-w-md flex-col gap-16">
       {optimisticGames.map((game, i) => (
         <motion.div
-          className={`flex flex-col gap-1 w-full py-1 text-gray-500 group
-          items-center
-          `}
+          className={`group flex w-full flex-col items-center gap-1 py-1 text-gray-500`}
           key={game.id}
           initial={{ opacity: 0, y: -20 }}
           animate={{
@@ -42,7 +40,7 @@ export default function HistoryClient({ games, members, circleId }: Props) {
         >
           <time
             dateTime={game.created_at}
-            className="text-sm text-gray-500 dark:text-gray-500 font-light"
+            className="text-sm font-light text-gray-500 dark:text-gray-500"
           >
             {format(game.created_at, " d MMMM")}
           </time>
@@ -51,13 +49,11 @@ export default function HistoryClient({ games, members, circleId }: Props) {
             {game.game_results.map((result) => (
               <span
                 key={result.member_id}
-                className={`
-                    ${
-                      result.winner
-                        ? "text-accent font-bold"
-                        : "text-gray-800 dark:text-gray-300 font-extralight"
-                    }
-                  `}
+                className={`font-mono ${
+                  result.winner
+                    ? "font-bold text-accent"
+                    : "font-extralight text-gray-800 dark:text-gray-300"
+                } `}
               >
                 {membersMap.get(result.member_id)?.name || ""}
               </span>

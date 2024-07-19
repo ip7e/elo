@@ -13,6 +13,7 @@ const config: Config = {
         accent: "#E6A320",
       },
       fontFamily: {
+        sans: ["var(--font-geist-sans)"],
         mono: ["var(--font-geist-mono)"],
       },
       backgroundColor: {
