@@ -126,7 +126,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               animate={{
                 pathLength: 1,
                 transition: {
-                  duration: 0.3,
+                  duration: gamesByMember[+memberId].length * 0.05,
                   type: "tween",
                 },
               }}
@@ -138,7 +138,10 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
                 cy={y(data[data.length - 1].rank)}
                 r={2}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { delay: 0.3 } }}
+                animate={{
+                  opacity: 1,
+                  transition: { delay: gamesByMember[+memberId].length * 0.05 },
+                }}
                 className="fill-bg stroke-neutral-300 dark:fill-black dark:stroke-neutral-500"
               ></motion.circle>
             )}
@@ -164,7 +167,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               .map((record, i) => (
                 <motion.circle
                   key={`${highlight}-${record.game_id}`}
-                  initial={{ opacity: 0, scale: 0 }}
+                  initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1, transition: { delay: i * 0.02, duration: 0.5 } }}
                   exit={{ opacity: 0, transition: { duration: 0.3 } }}
                   cx={x(record.game_id.toString())!}

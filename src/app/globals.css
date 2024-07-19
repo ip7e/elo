@@ -23,6 +23,6 @@ body {
 
 @media (prefers-color-scheme: dark) {
   .bg-dot-grid {
-    background-image: radial-gradient(rgb(72, 72, 72) 1px, transparent 0);
+    background-image: radial-gradient(rgb(40, 40, 40) 1px, transparent 0);
   }
 }
