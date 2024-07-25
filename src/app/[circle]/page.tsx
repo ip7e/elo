@@ -1,6 +1,6 @@
 import { getAllGames, getCircleBySlug, getCircleMembers, getStats } from "@/server/queries"
 import CircleClient from "./leaderboard"
-import NewGameOpener from "./new-game/new-game-opener"
+import NewGameOpener from "./_components/new-game/new-game-opener"
 import HasAccess from "./_components/has-access"
 
 export default async function CirclePage({ params }: { params: { circle: string } }) {

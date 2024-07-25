@@ -4,7 +4,7 @@ import { format } from "date-fns"
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { GameWithResults, Member } from "../types"
-import { deleteLastGame } from "./delete-last-game.action"
+import { deleteLastGame } from "./_actions/delete-last-game.action"
 
 type Props = {
   games: GameWithResults[]

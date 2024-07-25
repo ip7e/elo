@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { useState } from "react"
-import { MemberStats } from "../types"
+import { MemberStats } from "../../types"
 import Star from "./star"
 
 type Props = {
@@ -41,13 +41,12 @@ export default function StatsClient({
           layoutId={"m" + member_id!}
           key={member_id}
           onMouseEnter={() => handleHighlight(member_id!)}
-          className="flex gap-4 h-8 select-none text-base font-mono"
+          className="flex h-8 select-none gap-4 font-mono text-base"
         >
-          <div className="text-right w-10 text-neutral-300 dark:text-neutral-600">{i + 1}</div>
+          <div className="w-10 text-right text-neutral-300 dark:text-neutral-600">{i + 1}</div>
 
           <div
-            className={`w-full font-medium pr-4
-                 ${highlight == member_id ? "text-accent" : "text-neutral-900 dark:text-white"}`}
+            className={`w-full pr-4 font-medium ${highlight == member_id ? "text-accent" : "text-neutral-900 dark:text-white"}`}
           >
             {name}
 
@@ -62,9 +61,7 @@ export default function StatsClient({
             )}
           </div>
           <div
-            className={`font-medium text-right dark:text-white
-              ${highlight == member_id ? "text-accent" : "text-neutral-300  dark:text-white"}
-            `}
+            className={`text-right font-medium dark:text-white ${highlight == member_id ? "text-accent" : "text-neutral-300 dark:text-white"} `}
           >
             {elo}
           </div>

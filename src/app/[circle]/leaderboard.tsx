@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import Chart from "./data/chart"
-import Leaderboard from "./data/leaderboard"
+import Chart from "./_components/data/chart"
+import Leaderboard from "./_components/data/leaderboard"
 import { GameWithResults, Member, Stat } from "./types"
 
 type Props = {

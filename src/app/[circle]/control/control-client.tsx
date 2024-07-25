@@ -2,8 +2,8 @@
 
 import { useRef, useState } from "react"
 import { Circle } from "../types"
-import { kickMember } from "./kick-member.action"
-import { addMember } from "./add-member.action"
+import { kickMember } from "./_actions/kick-member.action"
+import { addMember } from "./_actions/add-member.action"
 
 type Props = {
   members: {
@@ -46,23 +46,23 @@ export default function ControlClient({ circle, members }: Props) {
   }
 
   return (
-    <div className="flex gap-4 p-8 mt-16">
+    <div className="mt-16 flex gap-4 p-8">
       <div className="flex w-full">
         <div className="w-32">
-          <h2 className="text-gray-400 font-light">Members</h2>
+          <h2 className="font-light text-gray-400">Members</h2>
         </div>
 
-        <div className="flex-1 w-full flex flex-col gap-3">
+        <div className="flex w-full flex-1 flex-col gap-3">
           {optimisticMembers.map((member) => (
-            <div className="flex w-full justify-between items-center" key={member.id}>
+            <div className="flex w-full items-center justify-between" key={member.id}>
               <div className="flex flex-col">
-                <span className="text-black dark:text-white font-semibold">{member.name}</span>
-                <span className="text-gray-400 text-sm font-light">{member.total_games} games</span>
+                <span className="font-semibold text-black dark:text-white">{member.name}</span>
+                <span className="text-sm font-light text-gray-400">{member.total_games} games</span>
               </div>
               <div>
                 {!member.total_games && (
                   <button
-                    className="text-white px-4 h-8 bg-accent rounded-md dark:text-black"
+                    className="h-8 rounded-md bg-accent px-4 text-white dark:text-black"
                     onClick={() => handleKickMember(member.id)}
                   >
                     kick
@@ -75,28 +75,11 @@ export default function ControlClient({ circle, members }: Props) {
           <form action={handleAddMember} ref={formRef} className="flex flex-row gap-2">
             <input
               ref={inputRef}
-              className="appearance-none
-               flex-1
-               px-2 h-8
-               border-none
-               rounded-md
-               outline-offset-0
-               outline
-               outline-gray-300
-               focus:outline-gray-500
-               focus:outline-offset-0
-               bg-white/30
-               transition-all
-
-               dark:text-white
-               dark:bg-white/10
-               dark:outline-white/20
-               dark:focus:outline-white/50
-               "
+              className="h-8 flex-1 appearance-none rounded-md border-none bg-white/30 px-2 outline outline-offset-0 outline-gray-300 transition-all focus:outline-offset-0 focus:outline-gray-500 dark:bg-white/10 dark:text-white dark:outline-white/20 dark:focus:outline-white/50"
             />
 
             <button
-              className="text-white px-4 h-8 bg-accent rounded-md dark:text-black"
+              className="h-8 rounded-md bg-accent px-4 text-white dark:text-black"
               type="submit"
             >
               Add

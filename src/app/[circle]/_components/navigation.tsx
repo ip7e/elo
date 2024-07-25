@@ -3,7 +3,7 @@
 import Logo from "@/components/logo"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import HasAccess from "../_components/has-access"
+import HasAccess from "./has-access"
 import { Circle } from "../types"
 
 type Props = { circle: Circle }
