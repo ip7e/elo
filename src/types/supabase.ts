@@ -51,18 +51,21 @@ export type Database = {
           created_at: string
           id: number
           name: string | null
+          user_id: string | null
         }
         Insert: {
           circle_id: number
           created_at?: string
           id?: number
           name?: string | null
+          user_id?: string | null
         }
         Update: {
           circle_id?: number
           created_at?: string
           id?: number
           name?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -70,6 +73,13 @@ export type Database = {
             columns: ["circle_id"]
             isOneToOne: false
             referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_circle_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]

@@ -1,10 +1,10 @@
 "use client"
 
+import Logo from "@/components/logo"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import HasAccess from "../_components/has-access"
 import { Circle } from "../types"
-import Logo from "@/components/logo"
-import AccessGuard from "../shared/access-guard"
 
 type Props = { circle: Circle }
 
@@ -24,16 +24,11 @@ export default function Navigation({ circle }: Props) {
   ]
 
   return (
-    <div
-      className="flex gap-4 py-8 w-full p-4
-      justify-between
-      font-semibold text-gray-400
-      "
-    >
-      <div className="flex gap-4 ">
-        <Link href={circleRoot} className="flex gap-2 items-center">
+    <div className="flex w-full justify-between gap-4 p-4 py-8 font-semibold text-gray-400">
+      <div className="flex gap-4">
+        <Link href={circleRoot} className="flex items-center gap-2">
           <Logo className="w-8 text-accent" />
-          <div className="w-0.5 h-4 bg-gray-400/20 dark:bg-gray-200/30" />
+          <div className="h-4 w-0.5 bg-gray-400/20 dark:bg-gray-200/30" />
           <h1>{circle.name}</h1>
         </Link>
 
@@ -50,9 +45,7 @@ export default function Navigation({ circle }: Props) {
         </nav>
       </div>
       <div>
-        <AccessGuard loadingCallback={<></>} noAuthCallback={<Link href="/auth">login</Link>}>
-          logged in
-        </AccessGuard>
+        <HasAccess noAuthCallback={<Link href="/auth">login</Link>}>logged in</HasAccess>
       </div>
     </div>
   )
