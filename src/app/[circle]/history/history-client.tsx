@@ -35,7 +35,7 @@ export default function HistoryClient({ games, members, circleId }: Props) {
             rotate: -3 + Math.random() * 8,
             opacity: 1,
             y: 0,
-            transition: { delay: i * 0.03 },
+            transition: { delay: Math.min(0.3, i * 0.03) },
           }}
         >
           <time

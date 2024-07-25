@@ -6,13 +6,12 @@ import Leaderboard from "./data/leaderboard"
 import { GameWithResults, Member, Stat } from "./types"
 
 type Props = {
-  members: Member[]
   recentGames: GameWithResults[]
   stats: Stat[]
   circleId: number
 }
 
-export default function CircleClient({ members, recentGames, stats, circleId }: Props) {
+export default function CircleClient({ recentGames, stats, circleId }: Props) {
   const recentWinners = [...recentGames]
     .slice(0, 3)
     .map((game) => game.game_results.find((r) => r.winner)!.member_id)

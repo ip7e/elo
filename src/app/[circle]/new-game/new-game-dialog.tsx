@@ -3,7 +3,6 @@
 import Button from "@/components/button/big-button"
 import Dialog from "@/components/dialog/dialog"
 import MemberPill from "@/components/member-pill"
-import { Tables } from "@/types/supabase"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { createGameSession } from "../../queries/get-members"
@@ -43,13 +42,13 @@ export default function NewGameDialog({ members, onClose, circleId }: Props) {
       title="Who's winning today?"
       subtitle={
         <>
-          Tap once for <span className="text-gray-900 dark:text-gray-200  font-bold">losers</span>,
-          twice for <span className="text-yellow-600 font-bold">winners</span>
+          Tap once for <span className="font-bold text-gray-900 dark:text-gray-200">losers</span>,
+          twice for <span className="font-bold text-yellow-600">winners</span>
         </>
       }
       content={
         <>
-          <div className="flex flex-wrap justify-center max-w-md gap-2 mx-auto">
+          <div className="mx-auto flex max-w-md flex-wrap justify-center gap-2">
             {members.map((m) => (
               <MemberPill
                 key={m.id}
