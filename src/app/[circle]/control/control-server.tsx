@@ -1,5 +1,5 @@
 import { createServerClient } from "@/utils/supabase/server"
-import { Circle } from "../types"
+import { Circle } from "../../../server/types"
 import ControlClient from "./control-client"
 
 type Props = {

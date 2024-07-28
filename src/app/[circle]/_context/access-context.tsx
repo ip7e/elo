@@ -2,7 +2,7 @@
 
 import { createBrowserClient } from "@/utils/supabase/client"
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react"
-import { Circle } from "../types"
+import { Circle } from "../../../server/types"
 
 type AccessContextType = {
   circle: Circle

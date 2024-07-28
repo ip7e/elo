@@ -4,7 +4,7 @@ import Logo from "@/components/logo"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import HasAccess from "./has-access"
-import { Circle } from "../types"
+import { Circle } from "../../../server/types"
 
 type Props = { circle: Circle }
 

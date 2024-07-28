@@ -6,7 +6,7 @@ import MemberPill from "@/components/member-pill"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { createGameSession } from "../../../queries/get-members"
-import { Member } from "../../types"
+import { Member } from "../../../../server/types"
 
 type Props = {
   members: Member[]

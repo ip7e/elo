@@ -1,4 +1,4 @@
-import { GameWithResults } from "@/app/[circle]/types"
+import { GameWithResults } from "@/server/types"
 import { createServerClient, createServerClientWithCookies } from "@/utils/supabase/server"
 import "server-only"
 

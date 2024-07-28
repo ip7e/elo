@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { GameWithResults, Stat } from "../../server/types"
 import Chart from "./_components/data/chart"
 import Leaderboard from "./_components/data/leaderboard"
-import { GameWithResults, Member, Stat } from "./types"
 
 type Props = {
   recentGames: GameWithResults[]

@@ -1,5 +1,5 @@
 import { getAllGames, getCircleBySlug, getCircleMembers, getStats } from "@/server/queries"
-import CircleClient from "./leaderboard"
+import CircleClient from "./circle-client"
 import NewGameOpener from "./_components/new-game/new-game-opener"
 import HasAccess from "./_components/has-access"
 

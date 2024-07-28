@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { useState } from "react"
-import { MemberStats } from "../../types"
+import { MemberStats } from "../../../../server/types"
 import Star from "./star"
 
 type Props = {

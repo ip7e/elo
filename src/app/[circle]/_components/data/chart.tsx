@@ -2,7 +2,7 @@
 
 import * as d3 from "d3"
 import { AnimatePresence, motion } from "framer-motion"
-import { GameWithResults, MemberStats } from "../../types"
+import { GameWithResults, MemberStats } from "../../../../server/types"
 import { useMemo } from "react"
 
 type Props = {

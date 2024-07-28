@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Circle } from "../types"
+import { Circle } from "../../../server/types"
 import { kickMember } from "./_actions/kick-member.action"
 import { addMember } from "./_actions/add-member.action"
 
