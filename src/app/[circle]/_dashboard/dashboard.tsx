@@ -19,12 +19,12 @@ export default function CircleClient({ recentGames, stats, circleId }: Props) {
   const [selectedMemberId, setSelectedMemberId] = useState(stats[0]?.member_id || 0)
 
   return (
-    <div className="flex justify-center gap-0 rounded-lg">
-      <div className="bg-dot-grid relative flex basis-2/3 justify-end overflow-hidden py-2">
+    <div className="flex flex-col-reverse justify-center gap-10 rounded-lg px-4 sm:flex-row sm:gap-0 sm:px-4">
+      <div className="bg-dot-grid relative flex w-full flex-1 justify-end self-end overflow-hidden">
         <BumpChart games={recentGames} stats={stats} highlight={selectedMemberId} />
       </div>
 
-      <div className="flex basis-1/3 py-2">
+      <div className="flex sm:w-56">
         <Rankings
           recentWinners={recentWinners}
           stats={stats}

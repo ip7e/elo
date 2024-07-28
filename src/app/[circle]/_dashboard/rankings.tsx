@@ -1,7 +1,8 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { useState } from "react"
+import { cn } from "@/utils/tailwind/cn"
+import { HTMLMotionProps, motion } from "framer-motion"
+import { PropsWithChildren } from "react"
 import { MemberStats } from "../../../server/types"
 import Star from "../_components/star"
 
@@ -13,10 +14,7 @@ type Props = {
 }
 
 export default function Rankings({ stats, recentWinners, onHighlightChange, highlightId }: Props) {
-  const [highlight, setHighlight] = useState<number>(highlightId)
-
   const handleHighlight = (id: number) => {
-    setHighlight(id)
     onHighlightChange(id)
   }
 
@@ -29,39 +27,70 @@ export default function Rankings({ stats, recentWinners, onHighlightChange, high
   )
 
   return (
-    <div className="flex flex-col">
+    <div className="flex w-full flex-col">
       {stats.map(({ elo, name, member_id, total_games, total_wins }, i) => (
-        <motion.div
-          layout
-          layoutId={"m" + member_id!}
-          key={member_id}
+        <RankingRow
+          highlight={highlightId === member_id}
+          memberId={member_id!}
+          name={name!}
+          rank={i + 1}
+          wins={winsByMemberId[member_id!]}
+          elo={elo!}
           onMouseEnter={() => handleHighlight(member_id!)}
-          className="flex h-8 select-none gap-4 font-mono text-base"
-        >
-          <div className="w-10 text-right text-neutral-300 dark:text-neutral-600">{i + 1}</div>
-
-          <div
-            className={`w-full pr-4 font-medium ${highlight == member_id ? "text-accent" : "text-neutral-900 dark:text-white"}`}
-          >
-            {name}
-
-            {winsByMemberId[member_id!] && (
-              <span className="mx-1 tracking-widest">
-                {Array(winsByMemberId[member_id!])
-                  .fill(null)
-                  .map((_, i) => (
-                    <Star key={i} />
-                  ))}
-              </span>
-            )}
-          </div>
-          <div
-            className={`text-right font-medium dark:text-white ${highlight == member_id ? "text-accent" : "text-neutral-300 dark:text-white"} `}
-          >
-            {elo}
-          </div>
-        </motion.div>
+          key={member_id}
+        ></RankingRow>
       ))}
     </div>
+  )
+}
+
+type RankingRowProps = PropsWithChildren<
+  HTMLMotionProps<"div"> & {
+    highlight: boolean
+    memberId: number
+    rank: number
+    name: string
+    wins: number
+    elo: number
+  }
+>
+
+function RankingRow({ memberId, wins, elo, highlight, name, rank, ...divProps }: RankingRowProps) {
+  return (
+    <motion.div
+      layout
+      layoutId={"m" + memberId}
+      key={memberId}
+      {...divProps}
+      className="flex h-8 w-full select-none gap-4 font-mono text-base"
+    >
+      <div className="w-6 text-right text-neutral-300 dark:text-neutral-600">{rank}</div>
+
+      <div
+        className={cn(
+          `w-full flex-1 pr-4 font-medium`,
+          highlight && "text-accent",
+          !highlight && "text-neutral-900 dark:text-white",
+        )}
+      >
+        {name}
+
+        <span className="mx-1 tracking-widest">
+          {Array.from({ length: wins }, (v, i) => (
+            <Star key={i} />
+          ))}
+        </span>
+      </div>
+
+      <div
+        className={cn(
+          `text-right font-medium dark:text-white`,
+          highlight && "text-accent",
+          "text-neutral-300 dark:text-white",
+        )}
+      >
+        {elo}
+      </div>
+    </motion.div>
   )
 }
