@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion"
 import { useState } from "react"
-import { MemberStats } from "../../../../server/types"
-import Star from "./star"
+import { MemberStats } from "../../../server/types"
+import Star from "../_components/star"
 
 type Props = {
   stats: MemberStats[]
@@ -12,12 +12,7 @@ type Props = {
   highlightId: number
 }
 
-export default function StatsClient({
-  stats,
-  recentWinners,
-  onHighlightChange,
-  highlightId,
-}: Props) {
+export default function Rankings({ stats, recentWinners, onHighlightChange, highlightId }: Props) {
   const [highlight, setHighlight] = useState<number>(highlightId)
 
   const handleHighlight = (id: number) => {

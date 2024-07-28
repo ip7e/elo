@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { GameWithResults, Stat } from "../../server/types"
-import Chart from "./_components/data/chart"
-import Leaderboard from "./_components/data/leaderboard"
+import { GameWithResults, Stat } from "../../../server/types"
+import BumpChart from "./bump-chart"
+import Rankings from "./rankings"
 
 type Props = {
   recentGames: GameWithResults[]
@@ -21,11 +21,11 @@ export default function CircleClient({ recentGames, stats, circleId }: Props) {
   return (
     <div className="flex justify-center gap-0 rounded-lg">
       <div className="bg-dot-grid relative flex basis-2/3 justify-end overflow-hidden py-2">
-        <Chart games={recentGames} stats={stats} highlight={selectedMemberId} />
+        <BumpChart games={recentGames} stats={stats} highlight={selectedMemberId} />
       </div>
 
       <div className="flex basis-1/3 py-2">
-        <Leaderboard
+        <Rankings
           recentWinners={recentWinners}
           stats={stats}
           highlightId={selectedMemberId}

@@ -1,5 +1,5 @@
 import { getAllGames, getCircleBySlug, getCircleMembers, getStats } from "@/server/queries"
-import CircleClient from "./circle-client"
+import Dashboard from "./_dashboard/dashboard"
 import NewGameOpener from "./_components/new-game/new-game-opener"
 import HasAccess from "./_components/has-access"
 
@@ -16,7 +16,7 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   return (
     <div className="flex h-full flex-col justify-center">
-      <CircleClient recentGames={games} stats={stats} circleId={circle.id} />
+      <Dashboard recentGames={games} stats={stats} circleId={circle.id} />
 
       <div className="my-8 min-h-10">
         <HasAccess>

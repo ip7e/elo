@@ -2,7 +2,7 @@
 
 import * as d3 from "d3"
 import { AnimatePresence, motion } from "framer-motion"
-import { GameWithResults, MemberStats } from "../../../../server/types"
+import { GameWithResults, MemberStats } from "../../../server/types"
 import { useMemo } from "react"
 
 type Props = {
@@ -19,7 +19,7 @@ type GameRecord = {
   isFirstGame: boolean
 }
 
-export default function Chart({ stats: statsArr, games: games, highlight }: Props) {
+export default function BumpChart({ stats: statsArr, games: games, highlight }: Props) {
   const gamesByMember = useMemo(() => {
     let gamesByMember: Record<number, GameRecord[]> = {}
 
