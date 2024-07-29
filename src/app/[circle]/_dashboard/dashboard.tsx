@@ -20,11 +20,11 @@ export default function CircleClient({ recentGames, stats, circleId }: Props) {
 
   return (
     <div className="flex flex-col-reverse justify-center gap-10 rounded-lg px-4 sm:flex-row sm:gap-0 sm:px-4">
-      <div className="bg-dot-grid relative flex w-full flex-1 justify-end self-end overflow-hidden">
+      <div className="bg-dot-grid relative flex h-fit w-full flex-1 items-start justify-end overflow-hidden">
         <BumpChart games={recentGames} stats={stats} highlight={selectedMemberId} />
       </div>
 
-      <div className="flex sm:w-56">
+      <div className="flex flex-col sm:w-56">
         <Rankings
           recentWinners={recentWinners}
           stats={stats}

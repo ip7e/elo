@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import HasAccess from "./has-access"
 import { Circle } from "../../../server/types"
+import { cn } from "@/utils/tailwind/cn"
 
 type Props = { circle: Circle }
 
@@ -24,7 +25,7 @@ export default function Navigation({ circle }: Props) {
   ]
 
   return (
-    <div className="flex w-full justify-between gap-4 p-4 py-8 font-semibold text-gray-400">
+    <div className="flex w-full justify-between gap-4 p-4 py-8 font-medium text-gray-400">
       <div className="flex gap-4">
         <Link href={circleRoot} className="flex items-center gap-2">
           <Logo className="w-8 text-accent" />
@@ -37,7 +38,7 @@ export default function Navigation({ circle }: Props) {
             <Link
               href={pathname}
               key={pathname}
-              className={currentPathname === pathname ? "text-accent" : ""}
+              className={cn(currentPathname === pathname && "text-accent")}
             >
               {label}
             </Link>

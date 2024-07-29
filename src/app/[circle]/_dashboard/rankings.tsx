@@ -5,6 +5,9 @@ import { HTMLMotionProps, motion } from "framer-motion"
 import { PropsWithChildren } from "react"
 import { MemberStats } from "../../../server/types"
 import Star from "../_components/star"
+import HasAccess from "../_components/has-access"
+import { CornerDownLeft, Plus } from "lucide-react"
+import AddNewMember from "./add-new-member"
 
 type Props = {
   stats: MemberStats[]
@@ -27,8 +30,8 @@ export default function Rankings({ stats, recentWinners, onHighlightChange, high
   )
 
   return (
-    <div className="flex w-full flex-col">
-      {stats.map(({ elo, name, member_id, total_games, total_wins }, i) => (
+    <div className="group flex w-full flex-col">
+      {stats.map(({ elo, name, member_id }, i) => (
         <RankingRow
           highlight={highlightId === member_id}
           memberId={member_id!}
@@ -40,6 +43,9 @@ export default function Rankings({ stats, recentWinners, onHighlightChange, high
           key={member_id}
         ></RankingRow>
       ))}
+      <HasAccess>
+        <AddNewMember />
+      </HasAccess>
     </div>
   )
 }

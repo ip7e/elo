@@ -2,8 +2,10 @@ import type { Metadata } from "next"
 import PlausibleProvider from "next-plausible"
 import "./globals.css"
 
-import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
+import { Inter } from "next/font/google"
+
+const sans = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
   title: "Shmelo.io",
@@ -22,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <PlausibleProvider domain="shmelo.io">
       <html lang="en" className="h-full">
         <body
-          className={`${GeistMono.variable} ${GeistSans.variable} h-full w-full bg-bg font-sans dark:bg-black`}
+          className={`${GeistMono.variable} ${sans.variable} h-full w-full bg-bg font-sans dark:bg-black`}
         >
           {/* <MainNavigation /> */}
 
