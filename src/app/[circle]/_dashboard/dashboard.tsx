@@ -1,17 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { GameWithResults, Stat } from "../../../server/types"
+import { GameWithResults, Member, Stat } from "../../../server/types"
 import BumpChart from "./bump-chart"
 import Rankings from "./rankings"
 
 type Props = {
   recentGames: GameWithResults[]
   stats: Stat[]
+  members: Member[]
   circleId: number
 }
 
-export default function CircleClient({ recentGames, stats, circleId }: Props) {
+export default function CircleClient({ recentGames, stats, members, circleId }: Props) {
   const recentWinners = [...recentGames]
     .slice(0, 3)
     .map((game) => game.game_results.find((r) => r.winner)!.member_id)
@@ -26,8 +27,9 @@ export default function CircleClient({ recentGames, stats, circleId }: Props) {
 
       <div className="flex flex-col sm:w-56">
         <Rankings
-          recentWinners={recentWinners}
           stats={stats}
+          members={members}
+          recentWinners={recentWinners}
           highlightId={selectedMemberId}
           onHighlightChange={(id) => setSelectedMemberId(id)}
         />

@@ -15,7 +15,7 @@ export const getCircleMembers = async (circleId: number) => {
     .from("circle_members")
     .select("*")
     .eq("circle_id", circleId)
-    .order("name", { ascending: true })
+    .order("created_at", { ascending: true })
 
   return members
 }
@@ -27,6 +27,7 @@ export const getStats = async (circleId: number) => {
     .select("*")
     .eq("circle_id", circleId)
     .order("elo", { ascending: false })
+
   return stats
 }
 

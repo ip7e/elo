@@ -16,7 +16,7 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   return (
     <div className="flex h-full flex-col justify-center">
-      <Dashboard recentGames={games} stats={stats} circleId={circle.id} />
+      <Dashboard recentGames={games} stats={stats} circleId={circle.id} members={members} />
 
       <div className="my-8 min-h-10">
         <HasAccess>

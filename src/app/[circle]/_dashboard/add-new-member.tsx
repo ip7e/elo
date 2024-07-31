@@ -1,17 +1,22 @@
 "use client"
 
+import { useClickedOutside } from "@/app/hooks/use-clicked-outside"
 import { cn } from "@/utils/tailwind/cn"
 import { CornerDownLeft, Plus } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { addMember } from "../control/_actions/add-member.action"
 
 export default function AddNewMember() {
+  const formRef = useRef<HTMLFormElement>(null)
   const [isActive, setIsActive] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [name, setName] = useState("")
+
+  useClickedOutside(formRef, () => setIsActive(false))
 
   useEffect(() => {
     if (!isActive) return
     const onKeyDown = (e: KeyboardEvent) => {
-      console.log(e)
       if (e.key === "Escape") {
         setIsActive(false)
       }
@@ -30,6 +35,15 @@ export default function AddNewMember() {
   }
 
   const nameIsValid = name.length > 1 && name.length < 20
+
+  const handleSubmit = async () => {
+    if (!nameIsValid) return
+
+    setIsLoading(true)
+    await addMember({ name, circleId: 1 })
+    setIsLoading(false)
+    setName("")
+  }
 
   return (
     <div
@@ -50,11 +64,12 @@ export default function AddNewMember() {
         </button>
       </div>
       {isActive && (
-        <div className="flex flex-1 items-center gap-2">
+        <form className="flex flex-1 items-center gap-2" action={handleSubmit} ref={formRef}>
           <input
             className="h-6 w-full appearance-none bg-transparent bg-none text-neutral-600 caret-neutral-800 outline-none placeholder:italic placeholder:text-neutral-300"
             placeholder="type name"
             autoFocus
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <button
@@ -63,10 +78,11 @@ export default function AddNewMember() {
               "text-neutral-300 transition-colors",
               nameIsValid && "text-neutral-600",
             )}
+            type="submit"
           >
             <CornerDownLeft size={16} strokeWidth={1.25} />
           </button>
-        </div>
+        </form>
       )}
     </div>
   )

@@ -3,20 +3,26 @@
 import { cn } from "@/utils/tailwind/cn"
 import { HTMLMotionProps, motion } from "framer-motion"
 import { PropsWithChildren } from "react"
-import { MemberStats } from "../../../server/types"
-import Star from "../_components/star"
+import { Member, MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
-import { CornerDownLeft, Plus } from "lucide-react"
+import Star from "../_components/star"
 import AddNewMember from "./add-new-member"
 
 type Props = {
   stats: MemberStats[]
+  members: Member[]
   recentWinners: number[]
   onHighlightChange: (id: number) => void
   highlightId: number
 }
 
-export default function Rankings({ stats, recentWinners, onHighlightChange, highlightId }: Props) {
+export default function Rankings({
+  stats,
+  recentWinners,
+  members,
+  onHighlightChange,
+  highlightId,
+}: Props) {
   const handleHighlight = (id: number) => {
     onHighlightChange(id)
   }
@@ -28,6 +34,9 @@ export default function Rankings({ stats, recentWinners, onHighlightChange, high
     }),
     {} as Record<number, number>,
   )
+
+  // TODO: Improves this
+  const membersWithNoGames = members.filter((m) => !stats.find((s) => s.member_id === m.id))
 
   return (
     <div className="group flex w-full flex-col">
@@ -43,6 +52,17 @@ export default function Rankings({ stats, recentWinners, onHighlightChange, high
           key={member_id}
         ></RankingRow>
       ))}
+      {membersWithNoGames.map((m) => (
+        <RankingRow
+          highlight={highlightId === m.id}
+          memberId={m.id}
+          name={m.name!}
+          rank={"?"}
+          wins={0}
+          elo={1100}
+          key={m.id}
+        ></RankingRow>
+      ))}
       <HasAccess>
         <AddNewMember />
       </HasAccess>
@@ -54,7 +74,7 @@ type RankingRowProps = PropsWithChildren<
   HTMLMotionProps<"div"> & {
     highlight: boolean
     memberId: number
-    rank: number
+    rank: number | string
     name: string
     wins: number
     elo: number
@@ -74,7 +94,7 @@ function RankingRow({ memberId, wins, elo, highlight, name, rank, ...divProps }:
 
       <div
         className={cn(
-          `w-full flex-1 pr-4 font-medium`,
+          `flex-1 overflow-hidden text-ellipsis text-nowrap pr-4 font-medium`,
           highlight && "text-accent",
           !highlight && "text-neutral-900 dark:text-white",
         )}
