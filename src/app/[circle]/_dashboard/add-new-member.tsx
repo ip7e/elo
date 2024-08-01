@@ -7,7 +7,8 @@ import { addMember } from "../control/_actions/add-member.action"
 import { useClickedOutside } from "@/app/hooks/use-clicked-outside"
 import { NameCell, RankCell, TableRow } from "./_components/table"
 
-export default function AddNewMember() {
+// TODO: circle id via context maybe?
+export default function AddNewMember({ circleId }: { circleId: number }) {
   const formRef = useRef<HTMLFormElement>(null)
   const [isActive, setIsActive] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -41,7 +42,7 @@ export default function AddNewMember() {
     if (!nameIsValid) return
 
     setIsLoading(true)
-    await addMember({ name, circleId: 1 })
+    await addMember({ name, circleId: circleId })
     setIsLoading(false)
     setName("")
   }

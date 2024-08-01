@@ -28,6 +28,7 @@ export default function CircleClient({ recentGames, stats, members, circleId }: 
 
       <div className="flex flex-col sm:w-56">
         <Members
+          circleId={circleId}
           stats={stats}
           members={members}
           recentWinners={recentWinners}

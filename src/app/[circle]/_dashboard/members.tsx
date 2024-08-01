@@ -11,6 +11,7 @@ import AddNewMember from "./add-new-member"
 import { kickMember } from "@/server/actions"
 
 type Props = {
+  circleId: number
   stats: MemberStats[]
   members: Member[]
   recentWinners: number[]
@@ -19,6 +20,7 @@ type Props = {
 }
 
 export default function Members({
+  circleId,
   highlightId,
   onHighlightChange,
   recentWinners,
@@ -91,7 +93,7 @@ export default function Members({
       ))}
 
       <HasAccess>
-        <AddNewMember />
+        <AddNewMember circleId={circleId} />
       </HasAccess>
     </Table>
   )
