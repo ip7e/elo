@@ -3,9 +3,9 @@
 import Button from "@/components/button/big-button"
 import Dialog from "@/components/dialog/dialog"
 import MemberPill from "@/components/member-pill"
-import { useRouter } from "next/navigation"
+import { createGameSession } from "@/server/actions"
 import { useState } from "react"
-import { createGameSession } from "../../../queries/get-members"
+import { useServerAction } from "zsa-react"
 import { Member } from "../../../../server/types"
 
 type Props = {
@@ -17,9 +17,9 @@ type Props = {
 type MemberStatus = "none" | "losing" | "wining"
 
 export default function NewGameDialog({ members, onClose, circleId }: Props) {
-  const router = useRouter()
   let [statusMap, setStatusMap] = useState<Record<number, MemberStatus>>({})
 
+  const { isPending, execute } = useServerAction(createGameSession)
   const handleClick = (member: Member) => {
     const prev = statusMap[member.id] || "none"
     const next = ({ none: "losing", losing: "wining", wining: "none" } as const)[prev]
@@ -30,9 +30,11 @@ export default function NewGameDialog({ members, onClose, circleId }: Props) {
   const winnerIds = members.filter((m) => statusMap[m.id] === "wining").map((m) => m.id)
 
   const submit = async () => {
+    if (!loserIds.length) return
+    if (!winnerIds.length) return
+
+    await execute({ loserIds, winnerIds, circleId })
     onClose()
-    await createGameSession({ loserIds, winnerIds, circleId })
-    router.refresh()
   }
 
   const isValid = loserIds.length > 0 && winnerIds.length > 0

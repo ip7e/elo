@@ -13,11 +13,10 @@ const MemberPill = ({ color, children, onClick }: Props) => {
     <motion.div
       onMouseDown={onClick}
       className={cn(
-        `inline-block cursor-pointer select-none rounded-full px-4 py-1 font-mono font-light`,
+        `inline-block cursor-pointer select-none rounded-full px-4 py-1 font-mono font-light dark:text-neutral-300`,
         color === "highlight" &&
           `bg-neutral-900 text-white ring-neutral-900 hover:bg-neutral-800 dark:bg-neutral-200 dark:text-black dark:ring-neutral-200 dark:hover:bg-neutral-300`,
-        color === "golden" &&
-          `ring-accent", bg-accent text-white dark:bg-neutral-200 dark:text-black`,
+        color === "golden" && `ring-accent", bg-accent text-white dark:bg-accent dark:text-black`,
       )}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
