@@ -60,7 +60,7 @@ export default function Members({
         </TableRow>
       ))}
       {newMembers.map((m) => (
-        <NewMemberRow member={m} key={m.id} />
+        <NewMemberRow member={m} key={m.id} circleId={circleId} />
       ))}
 
       <HasAccess>
@@ -70,13 +70,9 @@ export default function Members({
   )
 }
 
-const NewMemberRow = ({ member: m }: { member: Member }) => {
+const NewMemberRow = ({ member: m, circleId }: { member: Member; circleId: number }) => {
   const { isPending, execute } = useServerAction(kickMember)
   const [hovered, setHovered] = useState(false)
-
-  const handleKickMember = async (id: number) => {
-    execute({ id })
-  }
 
   return (
     <TableRow
@@ -99,7 +95,7 @@ const NewMemberRow = ({ member: m }: { member: Member }) => {
             className="flex cursor-default items-center justify-center rounded-md opacity-0 transition-colors hover:text-neutral-800 group-hover:opacity-100 dark:hover:text-neutral-200"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            onClick={() => handleKickMember(m.id)}
+            onClick={() => execute({ id: m.id, circleId })}
           >
             <Trash2 size={16} strokeWidth={1.25} />
           </button>

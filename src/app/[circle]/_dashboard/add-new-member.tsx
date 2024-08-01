@@ -84,7 +84,7 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
             className="flex w-full gap-2"
             onSubmit={async (e) => {
               e.preventDefault()
-              await execute({ name, circle_id: circleId })
+              await execute({ name, circleId })
               setPlaceholderIndex((i) => Math.min(i + 1, placeholderTexts.length - 1))
               setName("")
             }}
