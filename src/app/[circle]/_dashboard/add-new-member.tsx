@@ -9,14 +9,21 @@ import { useServerAction } from "zsa-react"
 import { NameCell, RankCell, TableRow } from "./_components/table"
 
 const placeholderTexts = [
-  "add a member",
-  "another one",
-  "and one more",
-  "one more",
-  "big group ha?",
-  "you go",
-  "enough, huh?",
+  "add member",
+  "add member",
+  "add another",
   "add more",
+  "keep 'em comin'",
+  "more friends",
+  "who's next?",
+  "one more pal",
+  "still going?",
+  "another one?",
+  "enough?",
+  "how many more?",
+  "seriously?",
+  "stop already!",
+  "too many!",
 ]
 
 // TODO: circle id via context maybe?
