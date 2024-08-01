@@ -93,7 +93,6 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
               placeholder={placeholder}
               autoFocus
               value={name}
-              onInputCapture={(e) => isPending && e.preventDefault()}
               onChange={(e) => setName(e.target.value)}
               disabled={isPending}
             />
