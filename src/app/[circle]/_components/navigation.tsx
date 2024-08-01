@@ -25,12 +25,14 @@ export default function Navigation({ circle }: Props) {
   ]
 
   return (
-    <div className="flex w-full justify-between gap-4 p-4 py-8 font-medium text-gray-400">
+    <div className="flex w-full justify-between gap-4 p-4 py-4 font-medium text-gray-400">
       <div className="flex gap-4">
         <Link href={circleRoot} className="flex items-center gap-2">
-          <Logo className="w-8 text-accent" />
+          {/* <Logo className="w-8 text-accent" />
+           */}
+          <h1>shmelo</h1>
           <div className="h-4 w-0.5 bg-gray-400/20 dark:bg-gray-200/30" />
-          <h1>{circle.name}</h1>
+          <h1>{circle.name.toLowerCase()}</h1>
         </Link>
 
         <nav className="flex gap-2">

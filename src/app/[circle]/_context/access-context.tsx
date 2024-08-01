@@ -17,7 +17,6 @@ export const AccessProvider = ({
   children,
 }: PropsWithChildren<AccessContextType>) => {
   const [hasAccess, setHasAccess] = useState<boolean>(defaultHasAccess)
-  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const supabase = createBrowserClient()
@@ -25,12 +24,13 @@ export const AccessProvider = ({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((e, session) => {
-      setHasAccess(!!session?.user?.id)
-    })
-
-    supabase.auth.getSession().then(({ data }) => {
-      setIsLoading(false)
-      setHasAccess(!!data.session?.user.id)
+      //check if user is a member of the circle
+      supabase
+        .from("circle_members")
+        .select("*")
+        .eq("user_id", session?.user?.id)
+        .single()
+        .then(({ data }) => setHasAccess(!!data))
     })
 
     return subscription.unsubscribe()

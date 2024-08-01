@@ -14,12 +14,12 @@ export default async function RootLayout({
 
   const hasAccess = await hasCurrentUserAccessToCircle(circle.id)
 
+  console.log({ hasAccess })
   return (
     <AccessProvider circle={circle} hasAccess={hasAccess}>
+      <Navigation circle={circle} />
       <div className="container mx-auto flex h-full max-w-3xl flex-col">
-        <div className="mx-auto mt-5 flex w-full items-center justify-center">
-          <Navigation circle={circle} />
-        </div>
+        <div className="mx-auto mt-5 flex w-full items-center justify-center"></div>
 
         <div className="flex-1">{children}</div>
         <div className="max-h-28 flex-1"></div>
