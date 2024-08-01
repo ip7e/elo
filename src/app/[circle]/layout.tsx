@@ -14,7 +14,6 @@ export default async function RootLayout({
 
   const hasAccess = await hasCurrentUserAccessToCircle(circle.id)
 
-  console.log({ hasAccess })
   return (
     <AccessProvider circle={circle} hasAccess={hasAccess}>
       <Navigation circle={circle} />

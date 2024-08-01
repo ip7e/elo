@@ -15,6 +15,7 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
       layout
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0, y: 10 }}
       transition={{ mass: 10, damping: 100, stiffness: 1000, type: "spring" }}
       className={cn(
         "flex h-8 w-full select-none items-center gap-4 font-mono text-base",

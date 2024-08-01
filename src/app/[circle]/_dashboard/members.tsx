@@ -1,11 +1,14 @@
 "use client"
 
 import { cn } from "@/utils/tailwind/cn"
+import { Trash2 } from "lucide-react"
+import { useState } from "react"
 import { Member, MemberStats } from "../../../server/types"
-import { NameCell, RankCell, ScoreCell, Table, TableRow } from "./_components/table"
 import HasAccess from "../_components/has-access"
-import AddNewMember from "./add-new-member"
 import Star from "../_components/star"
+import { NameCell, RankCell, ScoreCell, Table, TableRow } from "./_components/table"
+import AddNewMember from "./add-new-member"
+import { kickMember } from "@/server/actions"
 
 type Props = {
   stats: MemberStats[]
@@ -32,6 +35,14 @@ export default function Members({
     {} as Record<number, number>,
   )
 
+  const [kickingId, setKickingId] = useState<number | null>(null)
+
+  const handleKickMember = async (id: number) => {
+    const confirm = window.confirm("Are you sure you want to kick member?")
+    if (!confirm) return
+    await kickMember({ id })
+  }
+
   return (
     <Table>
       {stats.map(({ elo, name, member_id }, i) => (
@@ -56,7 +67,26 @@ export default function Members({
       {newMembers.map((m) => (
         <TableRow className="group" key={m.id} layoutId={"member-" + m.id}>
           <RankCell className="text-sm text-neutral-200 dark:text-neutral-700">{"?"}</RankCell>
-          <NameCell className={cn("text-neutral-300 dark:text-neutral-600")}>{m.name}</NameCell>
+          <NameCell
+            className={cn(
+              "text-neutral-300 transition-all dark:text-neutral-600",
+              kickingId === m.id && "line-through",
+            )}
+          >
+            {m.name}
+          </NameCell>
+          <HasAccess>
+            <ScoreCell className="text-neutral-300 dark:text-neutral-600">
+              <button
+                className="flex cursor-default items-center justify-center rounded-md opacity-0 transition-colors hover:text-neutral-800 group-hover:opacity-100"
+                onMouseEnter={() => setKickingId(m.id)}
+                onMouseLeave={() => setKickingId(null)}
+                onClick={() => handleKickMember(m.id)}
+              >
+                <Trash2 size={16} strokeWidth={1.25} />
+              </button>
+            </ScoreCell>
+          </HasAccess>
         </TableRow>
       ))}
 
