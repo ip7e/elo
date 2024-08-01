@@ -57,7 +57,7 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
   const nameIsValid = name.length > 1 && name.length < 20
 
   return (
-    <TableRow className={cn(isPending && "animate-pulse")}>
+    <TableRow className={cn(isPending && "animate-pulse")} layout layoutId="add-member">
       <RankCell className="flex w-6 justify-end">
         <button
           className={cn(
@@ -78,8 +78,8 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
             onSubmit={async (e) => {
               e.preventDefault()
               await execute({ name, circle_id: circleId })
-              setName("")
               setPlaceholderIndex((i) => Math.min(i + 1, placeholderTexts.length - 1))
+              setName("")
             }}
             ref={formRef}
           >
@@ -94,7 +94,6 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
               autoFocus
               value={name}
               onChange={(e) => setName(e.target.value)}
-              disabled={isPending}
             />
             <button
               className={cn(
