@@ -35,14 +35,25 @@ type KickMemberProps = { id: number }
 
 // TODO: secure with access control
 // TODO: dont allow kicking yourself
-export async function kickMember({ id }: KickMemberProps) {
-  const supabase = createServerClientWithCookies()
-  const { data, error } = await supabase.from("circle_members").delete().eq("id", id).single()
+export const kickMember = createServerAction()
+  .input(
+    z.object({
+      id: z.number(),
+    }),
+  )
+  .handler(async ({ input }) => {
+    const supabase = createServerClientWithCookies()
 
-  if (!error) {
-    revalidatePath("/[circle]", "layout")
-    return { data, success: true }
-  }
+    const { data, error } = await supabase
+      .from("circle_members")
+      .delete()
+      .eq("id", input.id)
+      .single()
 
-  return { error }
-}
+    if (!error) {
+      revalidatePath("/[circle]", "layout")
+      return { data, success: true }
+    }
+
+    return { error }
+  })
