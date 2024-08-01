@@ -75,8 +75,8 @@ export default function NewGameDialog({ members, onClose, circleId }: Props) {
             <Button secondary onClick={onClose}>
               close
             </Button>
-            <Button disabled={!isValid} onClick={() => submit()}>
-              add new game
+            <Button disabled={!isValid || isPending} onClick={() => submit()}>
+              {isPending ? "adding..." : "add new game"}
             </Button>
           </>
         </>
