@@ -8,8 +8,6 @@ import { Circle } from "../../../server/types"
 import { cn } from "@/utils/tailwind/cn"
 
 type Props = { circle: Circle }
-const region = process.env.AWS_REGION
-
 export default function Navigation({ circle }: Props) {
   const currentPathname = usePathname()
   const circleRoot = `/${circle.slug}`
@@ -49,7 +47,6 @@ export default function Navigation({ circle }: Props) {
         </nav>
       </div>
       <div className="flex items-center gap-2">
-        <div className="text-sm font-light">{region || "unknown region"}</div>
         <HasAccess noAuthCallback={<Link href="/auth">login</Link>}>logged in</HasAccess>
       </div>
     </div>
