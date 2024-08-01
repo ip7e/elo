@@ -1,18 +1,35 @@
 "use client"
 
+import useClickedOutside from "@/app/hooks/useClickedOutside"
+import { addMember } from "@/server/actions"
 import { cn } from "@/utils/tailwind/cn"
 import { CornerDownLeft, Plus } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { addMember } from "../control/_actions/add-member.action"
-import { useClickedOutside } from "@/app/hooks/use-clicked-outside"
+import { useServerAction } from "zsa-react"
 import { NameCell, RankCell, TableRow } from "./_components/table"
+
+const placeholderTexts = [
+  "add a member",
+  "another one",
+  "and one more",
+  "one more",
+  "big group ha?",
+  "you go",
+  "enough, huh?",
+  "add more",
+]
 
 // TODO: circle id via context maybe?
 export default function AddNewMember({ circleId }: { circleId: number }) {
   const formRef = useRef<HTMLFormElement>(null)
+
   const [isActive, setIsActive] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [name, setName] = useState("")
+  const [placeholderIndex, setPlaceholderIndex] = useState(0)
+
+  const placeholder = placeholderTexts[placeholderIndex]
+
+  const { isPending, execute } = useServerAction(addMember)
 
   useClickedOutside(formRef, () => setIsActive(false))
 
@@ -34,21 +51,13 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
   const activate = () => {
     setIsActive(true)
     setName("")
+    setPlaceholderIndex(0)
   }
 
   const nameIsValid = name.length > 1 && name.length < 20
 
-  const handleSubmit = async () => {
-    if (!nameIsValid) return
-
-    setIsLoading(true)
-    await addMember({ name, circleId: circleId })
-    setIsLoading(false)
-    setName("")
-  }
-
   return (
-    <TableRow>
+    <TableRow className={cn(isPending && "animate-pulse")}>
       <RankCell className="flex w-6 justify-end">
         <button
           className={cn(
@@ -64,15 +73,24 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
       </RankCell>
       {isActive && (
         <NameCell>
-          <form className="flex w-full gap-2" action={handleSubmit} ref={formRef}>
+          <form
+            className="flex w-full gap-2"
+            onSubmit={async (e) => {
+              e.preventDefault()
+              await execute({ name, circle_id: circleId })
+              setName("")
+              setPlaceholderIndex((i) => Math.min(i + 1, placeholderTexts.length - 1))
+            }}
+            ref={formRef}
+          >
             <input
               className={cn(
                 "w-full appearance-none bg-transparent bg-none outline-none placeholder:italic",
                 "caret-neutral-800 dark:caret-neutral-200",
-                "placeholder:text-neutral-300 dark:placeholder:text-neutral-500",
                 "text-neutral-400 dark:text-neutral-400",
+                "placeholder:text-neutral-300 dark:placeholder:text-neutral-700",
               )}
-              placeholder="type name"
+              placeholder={placeholder}
               autoFocus
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -81,9 +99,10 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
               className={cn(
                 "flex size-5 items-center justify-center rounded-md transition-colors",
                 "text-neutral-300 dark:text-neutral-500",
-                nameIsValid && "text-neutral-600 dark:text-neutral-300",
+                nameIsValid && !isPending && "text-neutral-600 dark:text-neutral-300",
               )}
               type="submit"
+              disabled={isPending}
             >
               <CornerDownLeft size={16} strokeWidth={1.25} />
             </button>

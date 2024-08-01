@@ -1,4 +1,4 @@
-import { getAllGames, getCircleBySlug, getCircleMembers, getStats } from "@/server/queries"
+import { getAllGames, getCircleBySlug, getMembers, getStats } from "@/server/queries"
 import Dashboard from "./_dashboard/dashboard"
 import NewGameOpener from "./_components/new-game/new-game-opener"
 import HasAccess from "./_components/has-access"
@@ -10,7 +10,7 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   const stats = await getStats(circle.id)
   const games = await getAllGames(circle.id)
-  const members = await getCircleMembers(circle.id)
+  const [members] = await getMembers({ circleId: circle.id })
 
   if (!members || !games || !stats) return null
 

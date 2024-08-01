@@ -1,24 +1,28 @@
 import { GameWithResults } from "@/server/types"
 import { createServerClient, createServerClientWithCookies } from "@/utils/supabase/server"
-import "server-only"
+import { createServerAction } from "zsa"
+import z from "zod"
 
+import "server-only"
 export const getCircleBySlug = async (slug: string) => {
   const supabase = createServerClient()
   const { data: circle } = await supabase.from("circles").select("*").eq("slug", slug).single()
   return circle
 }
 
-export const getCircleMembers = async (circleId: number) => {
-  const supabase = createServerClient()
+export const getMembers = createServerAction()
+  .input(z.object({ circleId: z.number() }))
+  .handler(async ({ input }) => {
+    const supabase = createServerClient()
 
-  const { data: members } = await supabase
-    .from("circle_members")
-    .select("*")
-    .eq("circle_id", circleId)
-    .order("created_at", { ascending: true })
+    const { data: members } = await supabase
+      .from("circle_members")
+      .select("*")
+      .eq("circle_id", input.circleId)
+      .order("created_at", { ascending: true })
 
-  return members
-}
+    return members
+  })
 
 export const getStats = async (circleId: number) => {
   const supabase = createServerClient()

@@ -28,7 +28,10 @@
     "react-dom": "^18",
     "server-only": "^0.0.1",
     "tailwind-merge": "^2.4.0",
-    "use-debounce": "^10.0.0"
+    "use-debounce": "^10.0.0",
+    "zod": "^3.23.8",
+    "zsa": "^0.5.1",
+    "zsa-react": "^0.2.2"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",

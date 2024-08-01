@@ -2,26 +2,34 @@
 
 import { createServerClientWithCookies } from "@/utils/supabase/server"
 import { revalidatePath } from "next/cache"
+import { createServerAction } from "zsa"
+import z from "zod"
 
-type AddMemberProps = { name: string; circleId: number }
+export const addMember = createServerAction()
+  .input(
+    z.object({
+      name: z.string().min(1).max(20),
+      circle_id: z.number(),
+    }),
+  )
+  .handler(async ({ input }) => {
+    const supabase = createServerClientWithCookies()
 
-// TODO: secure with access control
-export async function addMember({ name, circleId }: AddMemberProps) {
-  const supabase = createServerClientWithCookies()
+    const { circle_id, name } = input
 
-  const { data, error } = await supabase
-    .from("circle_members")
-    .insert({ circle_id: circleId, name: name })
-    .select("*")
-    .single()
+    const { data, error } = await supabase
+      .from("circle_members")
+      .insert({ circle_id, name: name })
+      .select("*")
+      .single()
 
-  if (!error) {
-    revalidatePath("/[circle]", "layout")
-    return { data, success: true }
-  }
+    if (!error) {
+      revalidatePath("/[circle]", "layout")
+      return { data, success: true }
+    }
 
-  return { error }
-}
+    return { error }
+  })
 
 type KickMemberProps = { id: number }
 

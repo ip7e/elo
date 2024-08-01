@@ -40,8 +40,6 @@ export default function Members({
   const [kickingId, setKickingId] = useState<number | null>(null)
 
   const handleKickMember = async (id: number) => {
-    const confirm = window.confirm("Are you sure you want to kick member?")
-    if (!confirm) return
     await kickMember({ id })
   }
 
@@ -68,10 +66,10 @@ export default function Members({
       ))}
       {newMembers.map((m) => (
         <TableRow className="group" key={m.id} layoutId={"member-" + m.id}>
-          <RankCell className="text-sm text-neutral-200 dark:text-neutral-500">{"?"}</RankCell>
+          <RankCell className="text-sm text-neutral-200 dark:text-neutral-600">{"?"}</RankCell>
           <NameCell
             className={cn(
-              "text-neutral-300 transition-all dark:text-neutral-500",
+              "text-neutral-300 transition-all dark:text-neutral-600",
               kickingId === m.id && "text-neutral-400 line-through dark:text-neutral-400",
             )}
           >
