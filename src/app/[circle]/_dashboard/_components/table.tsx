@@ -1,11 +1,15 @@
 import { cn } from "@/utils/tailwind/cn"
-import { HTMLMotionProps, motion } from "framer-motion"
+import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion"
 import { PropsWithChildren } from "react"
 
 type ChildrenWithClassName = PropsWithChildren<{ className?: string }>
 
 export function Table({ children, className }: ChildrenWithClassName) {
-  return <div className={cn("flex w-full flex-col", className)}>{children}</div>
+  return (
+    <div className={cn("flex w-full flex-col", className)}>
+      <AnimatePresence initial={false}>{children}</AnimatePresence>
+    </div>
+  )
 }
 
 type TableRowProps = PropsWithChildren<HTMLMotionProps<"div">>
@@ -15,7 +19,7 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
       layout
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, y: 10 }}
+      exit={{ opacity: 0, y: 10, transition: { duration: 0.1 } }}
       transition={{ mass: 10, damping: 100, stiffness: 1000, type: "spring" }}
       className={cn(
         "flex h-8 w-full select-none items-center gap-4 font-mono text-base",
@@ -30,7 +34,7 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
 
 export function RankCell({ children, className }: ChildrenWithClassName) {
   return (
-    <div className={cn("w-6 text-right text-neutral-300 dark:text-neutral-600", className)}>
+    <div className={cn("w-6 text-right text-neutral-300 dark:text-neutral-500", className)}>
       {children}
     </div>
   )
@@ -51,7 +55,7 @@ export function NameCell({ children, className }: ChildrenWithClassName) {
 
 export function ScoreCell({ children, className }: ChildrenWithClassName) {
   return (
-    <div className={cn("text-right font-medium text-neutral-300 dark:text-white", className)}>
+    <div className={cn("text-right font-medium text-neutral-300 dark:text-neutral-400", className)}>
       {children}
     </div>
   )

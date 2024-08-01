@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { GameWithResults, Member, Stat } from "../../../server/types"
 import BumpChart from "./bump-chart"
-import Rankings from "./rankings"
 import Members from "./members"
 
 type Props = {

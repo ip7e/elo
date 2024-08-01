@@ -51,7 +51,9 @@ export default function AddNewMember() {
       <RankCell className="flex w-6 justify-end">
         <button
           className={cn(
-            "border-1 flex size-5 translate-x-[5px] items-center justify-center rounded-md transition-opacity hover:border hover:border-neutral-300",
+            "flex size-5 translate-x-[5px] items-center justify-center rounded-md transition-opacity",
+            "text-neutral-400 dark:text-neutral-400",
+            "hover:border hover:border-neutral-300 dark:hover:border-neutral-600",
             isActive && "opacity-0",
           )}
           onClick={() => activate()}
@@ -63,7 +65,12 @@ export default function AddNewMember() {
         <NameCell>
           <form className="flex w-full gap-2" action={handleSubmit} ref={formRef}>
             <input
-              className="w-full appearance-none bg-transparent bg-none text-neutral-600 caret-neutral-800 outline-none placeholder:italic placeholder:text-neutral-300"
+              className={cn(
+                "w-full appearance-none bg-transparent bg-none outline-none placeholder:italic",
+                "caret-neutral-800 dark:caret-neutral-200",
+                "placeholder:text-neutral-300 dark:placeholder:text-neutral-500",
+                "text-neutral-400 dark:text-neutral-400",
+              )}
               placeholder="type name"
               autoFocus
               value={name}
@@ -71,9 +78,9 @@ export default function AddNewMember() {
             />
             <button
               className={cn(
-                "flex size-5 items-center justify-center rounded-md",
-                "text-neutral-300 transition-colors",
-                nameIsValid && "text-neutral-600",
+                "flex size-5 items-center justify-center rounded-md transition-colors",
+                "text-neutral-300 dark:text-neutral-500",
+                nameIsValid && "text-neutral-600 dark:text-neutral-300",
               )}
               type="submit"
             >

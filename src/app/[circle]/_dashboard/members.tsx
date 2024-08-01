@@ -66,19 +66,19 @@ export default function Members({
       ))}
       {newMembers.map((m) => (
         <TableRow className="group" key={m.id} layoutId={"member-" + m.id}>
-          <RankCell className="text-sm text-neutral-200 dark:text-neutral-700">{"?"}</RankCell>
+          <RankCell className="text-sm text-neutral-200 dark:text-neutral-500">{"?"}</RankCell>
           <NameCell
             className={cn(
-              "text-neutral-300 transition-all dark:text-neutral-600",
-              kickingId === m.id && "line-through",
+              "text-neutral-300 transition-all dark:text-neutral-500",
+              kickingId === m.id && "text-neutral-400 line-through dark:text-neutral-400",
             )}
           >
             {m.name}
           </NameCell>
           <HasAccess>
-            <ScoreCell className="text-neutral-300 dark:text-neutral-600">
+            <ScoreCell className="text-neutral-300 dark:text-neutral-500">
               <button
-                className="flex cursor-default items-center justify-center rounded-md opacity-0 transition-colors hover:text-neutral-800 group-hover:opacity-100"
+                className="flex cursor-default items-center justify-center rounded-md opacity-0 transition-colors hover:text-neutral-800 group-hover:opacity-100 dark:hover:text-neutral-200"
                 onMouseEnter={() => setKickingId(m.id)}
                 onMouseLeave={() => setKickingId(null)}
                 onClick={() => handleKickMember(m.id)}
