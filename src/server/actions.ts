@@ -17,6 +17,10 @@ export const addMember = createServerAction()
 
     const { circle_id, name } = input
 
+    if (process.env.NODE_ENV === "development") {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
+
     const { data, error } = await supabase
       .from("circle_members")
       .insert({ circle_id, name: name })
