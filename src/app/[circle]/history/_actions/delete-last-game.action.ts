@@ -1,10 +1,11 @@
 "use server"
 
-import { supabase } from "@/supabase"
+import { createServerClientWithCookies } from "@/utils/supabase/server"
 import { revalidatePath } from "next/cache"
 
 type Props = { circleId: number }
 export async function deleteLastGame({ circleId }: Props) {
+  const supabase = createServerClientWithCookies()
   const { data, error } = await supabase
     .from("games")
     .delete()

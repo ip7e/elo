@@ -4,7 +4,8 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 
 export default function Star() {
-  const [rotation, setRotation] = useState(-30 + Math.random() * 60)
+  const [rotation, setRotation] = useState(0)
+
   return (
     <span>
       <motion.svg
@@ -13,7 +14,7 @@ export default function Star() {
         onMouseEnter={() => setRotation(-30 + Math.random() * 60)}
         onClick={() => setRotation(-30 + Math.random() * 60)}
         whileTap={{ scale: 1.2 }}
-        className="inline-block w-5 h-5 mb-1 mx-[1px] outline-none"
+        className="mx-[1px] mb-1 inline-block h-5 w-5 outline-none"
         viewBox="0 0 16 15"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

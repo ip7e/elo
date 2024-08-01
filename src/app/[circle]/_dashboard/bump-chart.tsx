@@ -2,8 +2,8 @@
 
 import * as d3 from "d3"
 import { AnimatePresence, motion } from "framer-motion"
-import { GameWithResults, MemberStats } from "../types"
 import { useMemo } from "react"
+import { GameWithResults, MemberStats } from "../../../server/types"
 
 type Props = {
   stats: MemberStats[]
@@ -19,7 +19,7 @@ type GameRecord = {
   isFirstGame: boolean
 }
 
-export default function Chart({ stats: statsArr, games: games, highlight }: Props) {
+export default function BumpChart({ stats: statsArr, games: games, highlight }: Props) {
   const gamesByMember = useMemo(() => {
     let gamesByMember: Record<number, GameRecord[]> = {}
 
@@ -106,7 +106,7 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
   const selectedData = gamesByMember[highlight]
 
   return (
-    <div className={`h-[${height}px] w-fit flex justify-end`}>
+    <div className={`h-[${height}px] flex w-fit justify-end`}>
       <svg
         vectorEffect="non-scaling-stroke"
         viewBox={`0 0 ${width} ${height}`}
@@ -126,21 +126,25 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               animate={{
                 pathLength: 1,
                 transition: {
-                  mass: 1,
-                  stiffness: 10,
-                  damping: 10,
+                  duration: gamesByMember[+memberId].length * 0.05,
+                  type: "tween",
                 },
               }}
             ></motion.path>
 
-            {/* {data[data.length - 1].isFirstGame && (
-              <circle
+            {data[data.length - 1].isFirstGame && (
+              <motion.circle
                 cx={x(data[data.length - 1].game_id.toString())!}
                 cy={y(data[data.length - 1].rank)}
                 r={2}
-                className="fill-neutral-300 dark:fill-neutral-700"
-              ></circle>
-            )} */}
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: { delay: gamesByMember[+memberId].length * 0.05 },
+                }}
+                className="fill-bg stroke-neutral-300 dark:fill-black dark:stroke-neutral-500"
+              ></motion.circle>
+            )}
           </g>
         ))}
 
@@ -163,8 +167,8 @@ export default function Chart({ stats: statsArr, games: games, highlight }: Prop
               .map((record, i) => (
                 <motion.circle
                   key={`${highlight}-${record.game_id}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1, transition: { delay: i * 0.02 } }}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1, transition: { delay: i * 0.02, duration: 0.5 } }}
                   exit={{ opacity: 0, transition: { duration: 0.3 } }}
                   cx={x(record.game_id.toString())!}
                   cy={y(record.rank)}

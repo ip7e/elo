@@ -1,6 +1,6 @@
-import { supabase } from "@/supabase"
-import Navigation from "./navigation"
-import useIsAdmin from "./use-is-admin"
+import { getCircleBySlug, hasCurrentUserAccessToCircle } from "@/server/queries"
+import { AccessProvider } from "./_context/access-context"
+import Navigation from "./_components/navigation"
 
 export default async function RootLayout({
   children,
@@ -9,26 +9,20 @@ export default async function RootLayout({
   children: React.ReactNode
   params: { circle: string }
 }) {
-  const { data: circle, error } = await supabase
-    .from("circles")
-    .select("*")
-    .eq("slug", params.circle)
-    .single()
-
-  const isAdmin = await useIsAdmin(circle?.id)
-
+  const circle = await getCircleBySlug(params.circle)
   if (!circle) return null
 
+  const hasAccess = await hasCurrentUserAccessToCircle(circle.id)
+
   return (
-    <>
-      <div className="container max-w-3xl mx-auto h-full flex flex-col">
-        <div className="mx-auto mt-5 w-full flex items-center justify-center">
-          <Navigation circle={circle} isAdmin={isAdmin} />
-        </div>
+    <AccessProvider circle={circle} hasAccess={hasAccess}>
+      <Navigation circle={circle} />
+      <div className="container mx-auto flex h-full max-w-3xl flex-col">
+        <div className="mx-auto mt-5 flex w-full items-center justify-center"></div>
 
         <div className="flex-1">{children}</div>
-        <div className="flex-1 max-h-28 "></div>
+        <div className="max-h-28 flex-1"></div>
       </div>
-    </>
+    </AccessProvider>
   )
 }

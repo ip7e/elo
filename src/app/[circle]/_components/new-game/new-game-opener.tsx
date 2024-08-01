@@ -2,7 +2,7 @@
 
 import Button from "@/components/button/big-button"
 import { useState } from "react"
-import { Member } from "../types"
+import { Member } from "../../../../server/types"
 import NewGameDialog from "./new-game-dialog"
 
 type Props = {

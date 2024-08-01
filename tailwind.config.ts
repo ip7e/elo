@@ -9,15 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#ffffff",
+        bg: "#f5f5f5",
         accent: "#E6A320",
       },
       fontFamily: {
+        sans: ["var(--font-sans)"],
         mono: ["var(--font-geist-mono)"],
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       backgroundColor: {
         "debug-red": "rgba(255, 0, 0, 0.2)",

@@ -1,14 +1,28 @@
-import { supabase } from "@/supabase"
-import CircleServer from "./circle-server"
+import { getAllGames, getCircleBySlug, getMembers, getStats } from "@/server/queries"
+import Dashboard from "./_dashboard/dashboard"
+import NewGameOpener from "./_components/new-game/new-game-opener"
+import HasAccess from "./_components/has-access"
 
 export default async function CirclePage({ params }: { params: { circle: string } }) {
-  const { data: circle } = await supabase
-    .from("circles")
-    .select("*")
-    .eq("slug", params.circle)
-    .single()
+  const circle = await getCircleBySlug(params.circle)
 
   if (!circle) return null
 
-  return <CircleServer circleId={circle.id} />
+  const stats = await getStats(circle.id)
+  const games = await getAllGames(circle.id)
+  const [members] = await getMembers({ circleId: circle.id })
+
+  if (!members || !games || !stats) return null
+
+  return (
+    <div className="flex h-full flex-col justify-center">
+      <Dashboard recentGames={games} stats={stats} circleId={circle.id} members={members} />
+
+      <div className="my-8 min-h-10">
+        <HasAccess>
+          <NewGameOpener members={members} circleId={circle.id} />
+        </HasAccess>
+      </div>
+    </div>
+  )
 }

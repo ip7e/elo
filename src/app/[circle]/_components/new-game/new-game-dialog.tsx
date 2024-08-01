@@ -3,11 +3,10 @@
 import Button from "@/components/button/big-button"
 import Dialog from "@/components/dialog/dialog"
 import MemberPill from "@/components/member-pill"
-import { Tables } from "@/types/supabase"
-import { useRouter } from "next/navigation"
+import { createGameSession } from "@/server/actions"
 import { useState } from "react"
-import { createGameSession } from "../../queries/get-members"
-import { Member } from "../types"
+import { useServerAction } from "zsa-react"
+import { Member } from "../../../../server/types"
 
 type Props = {
   members: Member[]
@@ -18,9 +17,9 @@ type Props = {
 type MemberStatus = "none" | "losing" | "wining"
 
 export default function NewGameDialog({ members, onClose, circleId }: Props) {
-  const router = useRouter()
   let [statusMap, setStatusMap] = useState<Record<number, MemberStatus>>({})
 
+  const { isPending, execute } = useServerAction(createGameSession)
   const handleClick = (member: Member) => {
     const prev = statusMap[member.id] || "none"
     const next = ({ none: "losing", losing: "wining", wining: "none" } as const)[prev]
@@ -31,9 +30,11 @@ export default function NewGameDialog({ members, onClose, circleId }: Props) {
   const winnerIds = members.filter((m) => statusMap[m.id] === "wining").map((m) => m.id)
 
   const submit = async () => {
+    if (!loserIds.length) return
+    if (!winnerIds.length) return
+
+    await execute({ loserIds, winnerIds, circleId })
     onClose()
-    await createGameSession({ loserIds, winnerIds, circleId })
-    router.refresh()
   }
 
   const isValid = loserIds.length > 0 && winnerIds.length > 0
@@ -43,13 +44,13 @@ export default function NewGameDialog({ members, onClose, circleId }: Props) {
       title="Who's winning today?"
       subtitle={
         <>
-          Tap once for <span className="text-gray-900 dark:text-gray-200  font-bold">losers</span>,
-          twice for <span className="text-yellow-600 font-bold">winners</span>
+          Tap once for <span className="font-bold text-gray-900 dark:text-gray-200">losers</span>,
+          twice for <span className="font-bold text-yellow-600">winners</span>
         </>
       }
       content={
         <>
-          <div className="flex flex-wrap justify-center max-w-md gap-2 mx-auto">
+          <div className="mx-auto flex max-w-md flex-wrap justify-center gap-2">
             {members.map((m) => (
               <MemberPill
                 key={m.id}

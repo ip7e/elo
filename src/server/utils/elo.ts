@@ -10,6 +10,7 @@ type Outcome = {
 }
 
 const ELO_K = 32
+export const DEFAULT_ELO = 1100
 
 export default function calculateElo(
   startingData: Record<number, MemberInfo>,

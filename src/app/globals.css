@@ -17,12 +17,12 @@ body {
 }
 
 .bg-dot-grid {
-  background-image: radial-gradient(rgb(231, 231, 231) 1px, transparent 0);
+  background-image: radial-gradient(rgb(223, 223, 223) 1px, transparent 0);
   background-size: 12px 12px;
 }
 
 @media (prefers-color-scheme: dark) {
   .bg-dot-grid {
-    background-image: radial-gradient(rgb(32, 32, 32) 1px, transparent 0);
+    background-image: radial-gradient(rgb(40, 40, 40) 1px, transparent 0);
   }
 }
