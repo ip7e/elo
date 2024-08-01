@@ -48,7 +48,7 @@ export default function Members({
           onMouseEnter={() => onHighlightChange(member_id!)}
         >
           <RankCell>{i + 1}</RankCell>
-          <NameCell className={cn(highlightId === member_id && "text-accent")}>
+          <NameCell className={cn(highlightId === member_id && "text-accent dark:text-accent")}>
             {name}
             <span className="mx-1 tracking-widest">
               {Array.from({ length: winsByMemberId[member_id!] }, (v, i) => (
