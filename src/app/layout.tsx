@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en" className="h-full">
         <body
           className={cn(
-            `bg-background h-full w-full font-sans`,
+            `bg-background dark h-full w-full font-sans`,
             GeistMono.className,
             sans.className,
           )}

@@ -151,3 +151,38 @@ export const createGameSession = circleAdminProcedure
 
     return { success: true, message: "Game session created successfully" }
   })
+
+export const inviteMemberAsOwner = circleAdminProcedure
+  .createServerAction()
+  .input(
+    z.object({
+      email: z.string().email(),
+      memberId: z.number(),
+    }),
+  )
+  .onError((error) => console.log(error))
+  .handler(async ({ input, ctx }) => {
+    const supabase = createServerClientWithCookies()
+
+    const { data: vacantMember } = await supabase
+      .from("circle_members")
+      .select("*")
+      .eq("id", input.memberId)
+      .is("user_id", null)
+      .single()
+
+    if (!vacantMember) return { error: "Member is already linked to a user" }
+
+    const { error } = await supabase
+      .from("member_invitations")
+      .insert({
+        email: input.email,
+        member_id: input.memberId,
+        invited_by: ctx.member.id,
+      })
+      .select()
+
+    if (error) return { error: "failed to invite a member" }
+
+    return { success: true }
+  })

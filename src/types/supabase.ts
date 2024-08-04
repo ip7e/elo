@@ -200,6 +200,59 @@ export type Database = {
           },
         ]
       }
+      member_invitations: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: number
+          invited_by: number | null
+          member_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: number
+          invited_by?: number | null
+          member_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: number
+          invited_by?: number | null
+          member_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_member_invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "circle_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_member_invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "members_stats"
+            referencedColumns: ["member_id"]
+          },
+          {
+            foreignKeyName: "public_member_invitations_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "circle_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_member_invitations_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members_stats"
+            referencedColumns: ["member_id"]
+          },
+        ]
+      }
       old_members: {
         Row: {
           created_at: string
