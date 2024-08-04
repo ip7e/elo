@@ -2,7 +2,7 @@
 
 import { kickMember } from "@/server/actions"
 import { cn } from "@/utils/tailwind/cn"
-import { EllipsisVertical, ShieldCheck, Trash2 } from "lucide-react"
+import { EllipsisVertical, Info, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { Member, MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
@@ -16,6 +16,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from "@headlessui/react"
 
 type Props = {
   circleId: number
@@ -65,20 +75,45 @@ export default function Members({
           <TrailingCell>{elo}</TrailingCell>
 
           <HasAccess>
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                className={cn(
-                  "absolute -right-5 text-neutral-300 outline-none hover:text-neutral-600",
-                  "opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100",
-                )}
-              >
-                <EllipsisVertical size={16} />
-                {/* <ShieldCheck size={16} /> */}
-              </DropdownMenuTrigger>
-              <DropdownMenuContent side="bottom" align="end">
-                <DropdownMenuItem>Invite as owner</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Dialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  className={cn(
+                    "absolute -right-5 text-neutral-300 outline-none",
+                    "opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100",
+                    "hover:text-neutral-600 data-[state=open]:text-neutral-600",
+                  )}
+                >
+                  <EllipsisVertical size={16} />
+                  {/* <ShieldCheck size={16} /> */}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="bottom" align="end" className="font-sans">
+                  <DialogTrigger>
+                    <DropdownMenuItem>Invite as owner</DropdownMenuItem>
+                  </DialogTrigger>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DialogContent className="font-sans">
+                <DialogHeader>
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                </DialogHeader>
+
+                <DialogDescription>
+                  <form onSubmit={(e) => e.preventDefault()}>
+                    <label className="block">
+                      <input
+                        className="bg-background mt-1 block w-full rounded-md border-neutral-300 px-3 py-2 text-base outline-none placeholder:text-neutral-300 focus:border-accent focus:ring-accent dark:border-neutral-600 dark:bg-black dark:placeholder:text-neutral-700"
+                        placeholder="Enter email"
+                      />
+                    </label>
+                  </form>
+                </DialogDescription>
+
+                <DialogFooter>
+                  <Button type="submit">Invite</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </HasAccess>
         </TableRow>
       ))}
