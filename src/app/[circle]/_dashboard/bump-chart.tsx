@@ -142,7 +142,7 @@ export default function BumpChart({ stats: statsArr, games: games, highlight }: 
                   opacity: 1,
                   transition: { delay: gamesByMember[+memberId].length * 0.05 },
                 }}
-                className="fill-bg stroke-neutral-300 dark:fill-black dark:stroke-neutral-500"
+                className="fill-background stroke-neutral-300 dark:fill-black dark:stroke-neutral-500"
               ></motion.circle>
             )}
           </g>
@@ -175,7 +175,7 @@ export default function BumpChart({ stats: statsArr, games: games, highlight }: 
                   strokeWidth={2}
                   r={3}
                   className={`stroke-accent ${
-                    record.won ? "fill-accent" : "fill-bg dark:fill-black"
+                    record.won ? "fill-accent" : "fill-background dark:fill-black"
                   }`}
                 ></motion.circle>
               ))}

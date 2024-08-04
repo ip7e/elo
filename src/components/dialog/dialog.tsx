@@ -14,15 +14,15 @@ type Props = {
 export default function Dialog({ title, subtitle, content, footer, onClose }: Props) {
   return (
     <HeadlessDialog as="div" className="relative z-10" onClose={onClose} open={true}>
-      <div className="fixed inset-0 bg-bg/90 dark:bg-black/90" />
+      <div className="bg-background/90 fixed inset-0 dark:bg-black/90" />
 
       <div className="fixed inset-0 overflow-y-auto">
-        <div className="flex items-center justify-center min-h-full text-center">
-          <DialogPanel className="w-full max-w-lg overflow-hidden text-left align-middle transition-all transform border border-gray-200 dark:border-gray-700 shadow-xl dark:shadow-gray-800/20 bg-bg dark:bg-black rounded-2xl bg-gradient-to-b ">
-            <div className="flex flex-col justify-center gap-10 h-full py-14">
+        <div className="flex min-h-full items-center justify-center text-center">
+          <DialogPanel className="bg-background w-full max-w-lg transform overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-b text-left align-middle shadow-xl transition-all dark:border-gray-700 dark:bg-black dark:shadow-gray-800/20">
+            <div className="flex h-full flex-col justify-center gap-10 py-14">
               <DialogTitle
                 as="h3"
-                className="text-xl font-bold text-center text-gray-900 dark:text-gray-100"
+                className="text-center text-xl font-bold text-gray-900 dark:text-gray-100"
               >
                 {title}
               </DialogTitle>
@@ -36,7 +36,7 @@ export default function Dialog({ title, subtitle, content, footer, onClose }: Pr
               <div>{content}</div>
             </div>
 
-            <div className="flex justify-between w-full px-6 py-4 mt-2 border-t border-t-gray-200 dark:border-t-gray-700">
+            <div className="mt-2 flex w-full justify-between border-t border-t-gray-200 px-6 py-4 dark:border-t-gray-700">
               {footer}
             </div>
           </DialogPanel>
