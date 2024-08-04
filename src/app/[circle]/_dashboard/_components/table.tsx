@@ -22,7 +22,7 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
       exit={{ opacity: 0, y: 10, transition: { duration: 0.1 } }}
       transition={{ mass: 10, damping: 100, stiffness: 500, type: "spring" }}
       className={cn(
-        "flex h-8 w-full select-none items-center gap-4 font-mono text-base",
+        "relative flex h-8 w-full select-none items-center gap-4 font-mono text-base",
         className,
       )}
       {...props}
@@ -32,7 +32,7 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
   )
 }
 
-export function RankCell({ children, className }: ChildrenWithClassName) {
+export function LeadingCell({ children, className }: ChildrenWithClassName) {
   return (
     <div className={cn("w-6 text-right text-neutral-300 dark:text-neutral-500", className)}>
       {children}
@@ -40,7 +40,7 @@ export function RankCell({ children, className }: ChildrenWithClassName) {
   )
 }
 
-export function NameCell({ children, className }: ChildrenWithClassName) {
+export function MiddleCell({ children, className }: ChildrenWithClassName) {
   return (
     <div
       className={cn(
@@ -53,7 +53,7 @@ export function NameCell({ children, className }: ChildrenWithClassName) {
   )
 }
 
-export function ScoreCell({ children, className }: ChildrenWithClassName) {
+export function TrailingCell({ children, className }: ChildrenWithClassName) {
   return (
     <div className={cn("text-right font-medium text-neutral-300 dark:text-neutral-400", className)}>
       {children}
