@@ -4,6 +4,7 @@ import Button from "@/components/button/big-button"
 import { useState } from "react"
 import { Member } from "../../../../server/types"
 import NewGameDialog from "./new-game-dialog"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 
 type Props = {
   members: Member[]
@@ -11,19 +12,13 @@ type Props = {
 }
 
 export default function NewGameOpener({ members, circleId }: Props) {
-  let [isOpen, setIsOpen] = useState(false)
-
-  const openModal = () => setIsOpen(true)
-
   return (
-    <>
-      <div className="flex items-center justify-center">
-        <Button onClick={openModal}>new game</Button>
-      </div>
+    <Dialog>
+      <DialogTrigger className="flex items-center justify-center">
+        <Button>new game</Button>
+      </DialogTrigger>
 
-      {isOpen && (
-        <NewGameDialog circleId={circleId} members={members} onClose={() => setIsOpen(false)} />
-      )}
-    </>
+      <NewGameDialog circleId={circleId} members={members} />
+    </Dialog>
   )
 }

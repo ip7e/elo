@@ -1,22 +1,28 @@
 "use client"
 
 import Button from "@/components/button/big-button"
-import Dialog from "@/components/dialog/dialog"
 import MemberPill from "@/components/member-pill"
 import { createGameSession } from "@/server/actions"
 import { useState } from "react"
 import { useServerAction } from "zsa-react"
 import { Member } from "../../../../server/types"
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 type Props = {
   members: Member[]
   circleId: number
-  onClose: () => void
 }
 
 type MemberStatus = "none" | "losing" | "wining"
 
-export default function NewGameDialog({ members, onClose, circleId }: Props) {
+export default function NewGameDialog({ members, circleId }: Props) {
   let [statusMap, setStatusMap] = useState<Record<number, MemberStatus>>({})
 
   const { isPending, execute } = useServerAction(createGameSession)
@@ -34,54 +40,44 @@ export default function NewGameDialog({ members, onClose, circleId }: Props) {
     if (!winnerIds.length) return
 
     await execute({ loserIds, winnerIds, circleId })
-    onClose()
   }
 
   const isValid = loserIds.length > 0 && winnerIds.length > 0
 
   return (
-    <Dialog
-      title="Who's winning today?"
-      subtitle={
-        <>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Who&apos;s winning today?</DialogTitle>
+        <DialogDescription className="py-4">
           Tap once for <span className="font-bold text-gray-900 dark:text-gray-200">losers</span>,
           twice for <span className="font-bold text-yellow-600">winners</span>
-        </>
-      }
-      content={
-        <>
-          <div className="mx-auto flex max-w-md flex-wrap justify-center gap-2">
-            {members.map((m) => (
-              <MemberPill
-                key={m.id}
-                color={
-                  statusMap[m.id] === "losing"
-                    ? "highlight"
-                    : statusMap[m.id] === "wining"
-                      ? "golden"
-                      : undefined
-                }
-                onClick={() => handleClick(m)}
-              >
-                {m.name}
-              </MemberPill>
-            ))}
-          </div>
-        </>
-      }
-      footer={
-        <>
-          <>
-            <Button secondary onClick={onClose}>
-              close
-            </Button>
-            <Button disabled={!isValid || isPending} onClick={() => submit()}>
-              {isPending ? "adding..." : "add new game"}
-            </Button>
-          </>
-        </>
-      }
-      onClose={onClose}
-    ></Dialog>
+        </DialogDescription>
+      </DialogHeader>
+      <div className="mx-auto flex max-w-md flex-wrap justify-center gap-2">
+        {members.map((m) => (
+          <MemberPill
+            key={m.id}
+            color={
+              statusMap[m.id] === "losing"
+                ? "highlight"
+                : statusMap[m.id] === "wining"
+                  ? "golden"
+                  : undefined
+            }
+            onClick={() => handleClick(m)}
+          >
+            {m.name}
+          </MemberPill>
+        ))}
+      </div>
+      <DialogFooter>
+        <DialogClose>
+          <Button secondary>close</Button>
+        </DialogClose>
+        <Button disabled={!isValid || isPending} onClick={() => submit()}>
+          {isPending ? "adding..." : "add new game"}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
   )
 }
