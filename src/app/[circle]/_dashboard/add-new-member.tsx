@@ -6,7 +6,7 @@ import { cn } from "@/utils/tailwind/cn"
 import { CornerDownLeft, Plus } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useServerAction } from "zsa-react"
-import { NameCell, RankCell, TableRow } from "./_components/table"
+import { MiddleCell, LeadingCell, TableRow } from "./_components/table"
 
 const placeholderTexts = [
   "add member",
@@ -65,7 +65,7 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
 
   return (
     <TableRow className={cn(isPending && "animate-pulse")} layout layoutId="add-member">
-      <RankCell className="flex w-6 justify-end">
+      <LeadingCell className="flex w-6 justify-end">
         <button
           className={cn(
             "flex size-5 translate-x-[5px] items-center justify-center rounded-md transition-opacity",
@@ -77,9 +77,9 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
         >
           <Plus size={12} strokeWidth={1} />
         </button>
-      </RankCell>
+      </LeadingCell>
       {isActive && (
-        <NameCell>
+        <MiddleCell>
           <form
             className="flex w-full gap-2"
             onSubmit={async (e) => {
@@ -114,7 +114,7 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
               <CornerDownLeft size={16} strokeWidth={1.25} />
             </button>
           </form>
-        </NameCell>
+        </MiddleCell>
       )}
     </TableRow>
   )
