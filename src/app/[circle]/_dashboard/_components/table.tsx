@@ -22,7 +22,7 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
       exit={{ opacity: 0, y: 10, transition: { duration: 0.1 } }}
       transition={{ mass: 10, damping: 100, stiffness: 500, type: "spring" }}
       className={cn(
-        "relative flex h-8 w-full select-none items-center gap-4 font-mono text-base",
+        "flex h-8 w-full select-none items-center gap-4 font-mono text-base",
         className,
       )}
       {...props}
