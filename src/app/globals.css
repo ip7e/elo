@@ -4,6 +4,11 @@
 
 @layer base {
   :root {
+    --accent: 37 79% 49%;
+    --accent-foreground: 0 0% 100%;
+    /* --accent: 353 100% 50%;
+    --accent-foreground: 0 0% 100%; */
+
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -16,8 +21,7 @@
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 353 100% 50%;
-    --accent-foreground: 0 0% 100%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
@@ -32,6 +36,9 @@
   }
 
   .dark {
+    --accent: 37 79% 49%;
+    --accent-foreground: 0 0% 100%;
+
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
@@ -63,16 +70,14 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-}
 
-.bg-dot-grid {
-  background-image: radial-gradient(rgb(223, 223, 223) 1px, transparent 0);
-  background-size: 12px 12px;
-}
+    .bg-dot-grid {
+      /* background-image: radial-gradient(rgb(223, 223, 223) 1px, transparent 0); */
+      background-size: 12px 12px;
+    }
 
-@media (prefers-color-scheme: dark) {
-  .bg-dot-grid {
-    background-image: radial-gradient(rgb(40, 40, 40) 1px, transparent 0);
+    .dark .bg-dot-grid {
+      background-image: radial-gradient(rgb(40, 40, 40) 1px, transparent 0);
+    }
   }
 }
