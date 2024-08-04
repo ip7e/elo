@@ -1,6 +1,7 @@
 import { getCircleBySlug, hasCurrentUserAccessToCircle } from "@/server/queries"
 import { AccessProvider } from "./_context/access-context"
 import Navigation from "./_components/navigation"
+import { Suspense } from "react"
 
 export default async function RootLayout({
   children,
@@ -20,7 +21,17 @@ export default async function RootLayout({
       <div className="container mx-auto flex h-full max-w-3xl flex-col">
         <div className="mx-auto mt-5 flex w-full items-center justify-center"></div>
 
-        <div className="flex-1">{children}</div>
+        <div className="flex-1">
+          <Suspense
+            fallback={
+              <div className="flex h-3/4 w-full flex-col justify-center text-center font-mono text-neutral-300">
+                loading...
+              </div>
+            }
+          >
+            {children}
+          </Suspense>
+        </div>
         <div className="max-h-28 flex-1"></div>
       </div>
     </AccessProvider>
