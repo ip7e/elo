@@ -2,7 +2,7 @@
 
 import { kickMember } from "@/server/actions"
 import { cn } from "@/utils/tailwind/cn"
-import { Trash2 } from "lucide-react"
+import { EllipsisVertical, ShieldCheck, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { Member, MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
@@ -10,6 +10,12 @@ import Star from "../_components/star"
 import { MiddleCell, LeadingCell, TrailingCell, Table, TableRow } from "./_components/table"
 import AddNewMember from "./add-new-member"
 import { useServerAction } from "zsa-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 type Props = {
   circleId: number
@@ -42,7 +48,7 @@ export default function Members({
     <Table>
       {stats.map(({ elo, name, member_id }, i) => (
         <TableRow
-          className="group"
+          className="group relative"
           key={member_id}
           layoutId={"member-" + member_id}
           onMouseEnter={() => onHighlightChange(member_id!)}
@@ -57,6 +63,23 @@ export default function Members({
             </span>
           </MiddleCell>
           <TrailingCell>{elo}</TrailingCell>
+
+          <HasAccess>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className={cn(
+                  "absolute -right-5 text-neutral-300 outline-none hover:text-neutral-600",
+                  "opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100",
+                )}
+              >
+                <EllipsisVertical size={16} />
+                {/* <ShieldCheck size={16} /> */}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="bottom" align="end">
+                <DropdownMenuItem>Invite as owner</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </HasAccess>
         </TableRow>
       ))}
       {newMembers.map((m) => (
