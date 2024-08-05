@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import z from "zod"
 import { createServerActionProcedure } from "zsa"
 import calculateElo, { DEFAULT_ELO } from "./utils/elo"
+import { resolveInvitation } from "./admin"
 
 const authedProcedure = createServerActionProcedure().handler(async () => {
   const supabase = createServerClientWithCookies()
@@ -184,5 +185,7 @@ export const inviteMemberAsOwner = circleAdminProcedure
 
     if (error) return { error: "failed to invite a member" }
 
-    return { success: true }
+    const [data] = await resolveInvitation({ email: input.email })
+
+    return { success: true, resolved: data?.resolved }
   })

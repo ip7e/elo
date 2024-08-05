@@ -203,24 +203,24 @@ export type Database = {
       member_invitations: {
         Row: {
           created_at: string
-          email: string | null
+          email: string
           id: number
-          invited_by: number | null
-          member_id: number | null
+          invited_by: number
+          member_id: number
         }
         Insert: {
           created_at?: string
-          email?: string | null
+          email: string
           id?: number
-          invited_by?: number | null
-          member_id?: number | null
+          invited_by: number
+          member_id: number
         }
         Update: {
           created_at?: string
-          email?: string | null
+          email?: string
           id?: number
-          invited_by?: number | null
-          member_id?: number | null
+          invited_by?: number
+          member_id?: number
         }
         Relationships: [
           {
@@ -277,6 +277,32 @@ export type Database = {
             foreignKeyName: "members_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
