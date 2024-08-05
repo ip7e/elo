@@ -31,7 +31,6 @@ export default function InviteDialogContent({ circleId, memberId }: Props) {
           onSubmit={(e) => {
             e.preventDefault()
             execute({ email: email.trim(), circleId, memberId })
-            if (isSuccess) setEmail("")
           }}
         >
           <DialogHeader>
@@ -62,9 +61,9 @@ export default function InviteDialogContent({ circleId, memberId }: Props) {
       {isSuccess && (
         <>
           <DialogHeader>
-            <DialogTitle>Invitation sent</DialogTitle>
+            <DialogTitle>Owner permissions granted</DialogTitle>
             <DialogDescription className="py-4">
-              Member will receive an email with a link to accept the invitation
+              Member simply needs to login to the app to receive owner permissions.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
