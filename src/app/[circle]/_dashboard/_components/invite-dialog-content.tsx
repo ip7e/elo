@@ -36,7 +36,7 @@ export default function InviteDialogContent({ circleId, memberId }: Props) {
           <DialogHeader>
             <DialogTitle>Invite member as owner</DialogTitle>
             <DialogDescription className="py-4">
-              This member will be able to add and remove game sessions, as well ass add and remove
+              This member will be able to add and remove game sessions, as well as add and remove
               other members (including you)
             </DialogDescription>
           </DialogHeader>
