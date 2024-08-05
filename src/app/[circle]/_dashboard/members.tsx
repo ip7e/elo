@@ -95,7 +95,7 @@ export default function Members({
                   >
                     <EllipsisVertical size={16} />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent side="bottom" align="end" className="font-sans">
+                  <DropdownMenuContent side="bottom" align="end">
                     <DialogTrigger>
                       <DropdownMenuItem>Invite as owner</DropdownMenuItem>
                     </DialogTrigger>

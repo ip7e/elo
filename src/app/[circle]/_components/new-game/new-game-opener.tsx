@@ -1,10 +1,9 @@
 "use client"
 
 import Button from "@/components/button/big-button"
-import { useState } from "react"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Member } from "../../../../server/types"
 import NewGameDialog from "./new-game-dialog"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 
 type Props = {
   members: Member[]
@@ -14,9 +13,7 @@ type Props = {
 export default function NewGameOpener({ members, circleId }: Props) {
   return (
     <Dialog>
-      <DialogTrigger className="flex items-center justify-center">
-        <Button>new game</Button>
-      </DialogTrigger>
+      <DialogTrigger className="flex items-center justify-center">new game</DialogTrigger>
 
       <NewGameDialog circleId={circleId} members={members} />
     </Dialog>
