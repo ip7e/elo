@@ -71,7 +71,7 @@ export default function NewGameDialog({ members, circleId }: Props) {
         ))}
       </div>
       <DialogFooter>
-        <DialogClose>
+        <DialogClose asChild>
           <Button secondary>close</Button>
         </DialogClose>
         <Button disabled={!isValid || isPending} onClick={() => submit()}>

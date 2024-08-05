@@ -25,7 +25,7 @@ export default function InviteDialogContent({ circleId, memberId }: Props) {
     onSuccess: () => setEmail(""),
   })
   return (
-    <DialogContent className="font-sans">
+    <DialogContent>
       {!isSuccess && (
         <form
           onSubmit={(e) => {

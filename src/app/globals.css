@@ -70,14 +70,5 @@
   }
   body {
     @apply bg-background text-foreground;
-
-    .bg-dot-grid {
-      /* background-image: radial-gradient(rgb(223, 223, 223) 1px, transparent 0); */
-      background-size: 12px 12px;
-    }
-
-    .dark .bg-dot-grid {
-      background-image: radial-gradient(rgb(40, 40, 40) 1px, transparent 0);
-    }
   }
 }
