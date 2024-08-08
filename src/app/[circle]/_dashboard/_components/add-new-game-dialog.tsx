@@ -59,7 +59,12 @@ export function AddNewGameDialog({ members, circleId, onSubmitted }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="absolute right-28 top-4 rounded-full" variant="accent">
+        <Button
+          size={"sm"}
+          className="absolute right-28 top-4 rounded-full"
+          variant="accent"
+          disabled={isPending}
+        >
           <Swords size={16} className="mr-2" />
           new game
         </Button>

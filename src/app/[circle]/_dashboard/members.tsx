@@ -19,6 +19,7 @@ import Star from "../_components/star"
 import InviteDialogContent from "./_components/invite-dialog-content"
 import { LeadingCell, MiddleCell, Table, TableRow, TrailingCell } from "./_components/table"
 import AddNewMember from "./add-new-member"
+import NumberLoadingComponent from "../_components/numbers-shuffler"
 
 type Props = {
   circleId: number
@@ -69,7 +70,9 @@ export default function Members({
               ))}
             </span>
           </MiddleCell>
-          <TrailingCell>{pendingMemberIds.includes(member_id!) ? "????" : elo}</TrailingCell>
+          <TrailingCell>
+            <NumberLoadingComponent isLoading={pendingMemberIds.includes(member_id!)} value={elo} />
+          </TrailingCell>
 
           <HasAccess>
             {ownerMembers.includes(member_id!) ? (
