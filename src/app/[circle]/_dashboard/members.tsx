@@ -27,6 +27,7 @@ type Props = {
   recentWinners: number[]
   onHighlightChange: (id: number) => void
   highlightId: number
+  pendingMemberIds: number[]
 }
 
 export default function Members({
@@ -36,6 +37,7 @@ export default function Members({
   recentWinners,
   members,
   stats,
+  pendingMemberIds,
 }: Props) {
   const newMembers = members.filter((m) => !stats.find((s) => s.member_id === m.id))
 
@@ -67,12 +69,13 @@ export default function Members({
               ))}
             </span>
           </MiddleCell>
-          <TrailingCell>{elo}</TrailingCell>
+          <TrailingCell>{pendingMemberIds.includes(member_id!) ? "????" : elo}</TrailingCell>
 
           <HasAccess>
             {ownerMembers.includes(member_id!) ? (
               <Tooltip>
                 <TooltipTrigger
+                  tabIndex={-1}
                   className={cn(
                     "absolute -right-6 pl-2 text-neutral-300 outline-none",
                     "opacity-0 transition-opacity group-hover:opacity-100",
@@ -87,6 +90,7 @@ export default function Members({
               <Dialog>
                 <DropdownMenu>
                   <DropdownMenuTrigger
+                    tabIndex={-1}
                     className={cn(
                       "absolute -right-6 pl-2 text-neutral-300 outline-none",
                       "opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100",
