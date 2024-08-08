@@ -6,6 +6,7 @@ import { GameWithResults, Member, Stat } from "../../../server/types"
 import { AddNewGameDialog } from "./_components/add-new-game-dialog"
 import BumpChart from "./bump-chart"
 import Members from "./members"
+import HasAccess from "../_components/has-access"
 
 type Props = {
   recentGames: GameWithResults[]
@@ -30,11 +31,13 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
 
   return (
     <>
-      <AddNewGameDialog
-        members={members}
-        circleId={circleId}
-        onSubmitted={(ids) => setPendingMemberIds(ids)}
-      />
+      <HasAccess>
+        <AddNewGameDialog
+          members={members}
+          circleId={circleId}
+          onSubmitted={(ids) => setPendingMemberIds(ids)}
+        />
+      </HasAccess>
 
       <div className="flex h-full flex-col justify-center">
         <div className="flex flex-col-reverse justify-center gap-10 rounded-lg px-4 sm:flex-row sm:gap-0 sm:px-4">
