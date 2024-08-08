@@ -99,7 +99,6 @@ export const createGameSession = circleAdminProcedure
     const { loserIds, winnerIds } = input
     const { member } = ctx
 
-    await new Promise((resolve) => setTimeout(resolve, 3000))
     const { data: membersStats } = await supabase
       .from("members_stats")
       .select(`*`)
