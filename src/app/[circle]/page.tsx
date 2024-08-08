@@ -1,7 +1,5 @@
 import { getAllGames, getCircleBySlug, getMembers, getStats } from "@/server/queries"
 import Dashboard from "./_dashboard/dashboard"
-import NewGameOpener from "./_components/new-game/new-game-opener"
-import HasAccess from "./_components/has-access"
 
 export default async function CirclePage({ params }: { params: { circle: string } }) {
   const circle = await getCircleBySlug(params.circle)
@@ -14,15 +12,5 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   if (!members || !games || !stats) return null
 
-  return (
-    <div className="flex h-full flex-col justify-center">
-      <Dashboard recentGames={games} stats={stats} circleId={circle.id} members={members} />
-
-      <div className="my-8 min-h-10">
-        <HasAccess>
-          <NewGameOpener members={members} circleId={circle.id} />
-        </HasAccess>
-      </div>
-    </div>
-  )
+  return <Dashboard recentGames={games} stats={stats} circleId={circle.id} members={members} />
 }

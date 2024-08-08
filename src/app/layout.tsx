@@ -3,10 +3,10 @@ import PlausibleProvider from "next-plausible"
 import "./globals.css"
 
 import { GeistMono } from "geist/font/mono"
-import { Inter } from "next/font/google"
+import { GeistSans } from "geist/font/sans"
 import { cn } from "@/utils/tailwind/cn"
 
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans" })
+// const sans = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
   title: "Shmelo.io",
@@ -25,7 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <PlausibleProvider domain="shmelo.io">
       <html lang="en" className="h-full">
         <body
-          className={cn(`bg-background h-full w-full font-sans`, sans.variable, GeistMono.variable)}
+          className={cn(
+            `h-full w-full bg-background font-sans`,
+            GeistMono.variable,
+            GeistSans.variable,
+          )}
         >
           {/* <MainNavigation /> */}
 

@@ -1,11 +1,10 @@
 "use client"
 
-import Logo from "@/components/logo"
+import { cn } from "@/utils/tailwind/cn"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import HasAccess from "./has-access"
 import { Circle } from "../../../server/types"
-import { cn } from "@/utils/tailwind/cn"
+import HasAccess from "./has-access"
 
 type Props = { circle: Circle }
 export default function Navigation({ circle }: Props) {
@@ -24,7 +23,7 @@ export default function Navigation({ circle }: Props) {
   ]
 
   return (
-    <div className="flex w-full justify-between gap-4 p-4 py-4 font-medium text-gray-400">
+    <div className="fixed top-0 z-auto flex w-full justify-between gap-4 p-4 py-4 font-medium text-gray-400">
       <div className="flex gap-4">
         <Link href={circleRoot} className="flex items-center gap-2">
           {/* <Logo className="w-8 text-accent" />

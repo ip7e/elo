@@ -51,7 +51,12 @@ export default function InviteDialogContent({ circleId, memberId }: Props) {
             />
           </div>
           <DialogFooter>
-            <Button type="submit" className={cn(isPending && "animate-pulse")} disabled={isPending}>
+            <Button
+              type="submit"
+              className={cn(isPending && "animate-pulse")}
+              disabled={isPending}
+              variant={"accent"}
+            >
               Invite
             </Button>
           </DialogFooter>
@@ -67,7 +72,7 @@ export default function InviteDialogContent({ circleId, memberId }: Props) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <DialogClose>
+            <DialogClose asChild>
               <Button>Close</Button>
             </DialogClose>
           </DialogFooter>
