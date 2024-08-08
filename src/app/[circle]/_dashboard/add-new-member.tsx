@@ -106,7 +106,8 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
               className={cn(
                 "flex size-5 items-center justify-center rounded-md transition-colors",
                 "text-neutral-300 dark:text-neutral-500",
-                nameIsValid && !isPending && "text-neutral-600 dark:text-neutral-300",
+                nameIsValid && "text-neutral-600",
+                isPending && "dark:text-neutral-300",
               )}
               type="submit"
               disabled={isPending}
