@@ -5,6 +5,7 @@ import "./globals.css"
 import { GeistMono } from "geist/font/mono"
 import { GeistSans } from "geist/font/sans"
 import { cn } from "@/utils/tailwind/cn"
+import { ThemeProvider } from "next-themes"
 
 // const sans = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -31,9 +32,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             GeistSans.variable,
           )}
         >
-          {/* <MainNavigation /> */}
-
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            {/* <MainNavigation /> */}
+          </ThemeProvider>
         </body>
       </html>
     </PlausibleProvider>

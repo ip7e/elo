@@ -1,3 +1,4 @@
+import { easeElasticOut } from "d3"
 import { animate, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 
@@ -7,7 +8,11 @@ const generateRandomSymbols = (length: number, existing: string) => {
   return newValue
 }
 
-const SymbolDisplay = ({ isLoading, value }: any) => {
+type Props = {
+  isLoading: boolean
+  value: number
+}
+export default function NumberShuffler({ isLoading, value }: Props) {
   const [displayValue, setDisplayValue] = useState(value.toString())
   const [isAnimating, setIsAnimating] = useState(false)
 
@@ -40,11 +45,9 @@ const SymbolDisplay = ({ isLoading, value }: any) => {
   }, [isAnimating])
 
   useEffect(() => {
-    if (isLoading) animate(v, 4, { duration: 1 })
-    else animate(v, 0, { duration: 1 })
+    if (isLoading) animate(v, 4, { duration: 1, ease: "circOut" })
+    else animate(v, 0, { duration: 1, ease: "circOut" })
   }, [isLoading, v])
 
   return <>{displayValue}</>
 }
-
-export default SymbolDisplay
