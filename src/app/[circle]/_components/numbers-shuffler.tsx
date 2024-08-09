@@ -46,7 +46,7 @@ export default function NumberShuffler({ isLoading, value }: Props) {
 
   useEffect(() => {
     if (isLoading) animate(v, 4, { duration: 1, ease: "circOut" })
-    else animate(v, [4, 0], { duration: 1.5, ease: "circOut" })
+    else animate(v, v.get() ? [4, 0] : 0, { duration: 1.5, ease: "circOut" })
   }, [isLoading, v])
 
   return <>{displayValue}</>
