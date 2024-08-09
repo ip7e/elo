@@ -71,7 +71,10 @@ export default function Members({
             </span>
           </MiddleCell>
           <TrailingCell>
-            <NumberLoadingComponent isLoading={pendingMemberIds.includes(member_id!)} value={elo} />
+            <NumberLoadingComponent
+              isLoading={pendingMemberIds.includes(member_id!)}
+              value={elo!}
+            />
           </TrailingCell>
 
           <HasAccess>
