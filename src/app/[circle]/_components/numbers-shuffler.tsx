@@ -25,7 +25,6 @@ export default function NumberShuffler({ isLoading, value }: Props) {
   const vt = useTransform(v, (n) => Math.round(n))
 
   useMotionValueEvent(vt, "change", (n) => {
-    console.log(n)
     if (n) nRef.current = n
     setIsAnimating(Boolean(n))
   })
@@ -39,6 +38,7 @@ export default function NumberShuffler({ isLoading, value }: Props) {
         setDisplayValue(newValue)
       }, 50)
     } else {
+      setDisplayValue(valueRef.current)
       clearInterval(interval)
     }
     return () => clearInterval(interval)
@@ -46,7 +46,7 @@ export default function NumberShuffler({ isLoading, value }: Props) {
 
   useEffect(() => {
     if (isLoading) animate(v, 4, { duration: 1, ease: "circOut" })
-    else animate(v, 0, { duration: 1, ease: "circOut" })
+    else animate(v, [4, 0], { duration: 1.5, ease: "circOut" })
   }, [isLoading, v])
 
   return <>{displayValue}</>
