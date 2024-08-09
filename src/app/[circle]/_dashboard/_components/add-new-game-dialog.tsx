@@ -61,7 +61,7 @@ export function AddNewGameDialog({ members, circleId, onSubmitted }: Props) {
       <DialogTrigger asChild>
         <Button
           size={"sm"}
-          className="absolute right-28 top-4 rounded-full"
+          className="absolute right-28 top-5 rounded-full"
           variant="accent"
           disabled={isPending}
         >

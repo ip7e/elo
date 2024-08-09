@@ -15,11 +15,11 @@ import { useState } from "react"
 import { useServerAction } from "zsa-react"
 import { Member, MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
+import NumberLoadingComponent from "../_components/numbers-shuffler"
 import Star from "../_components/star"
 import InviteDialogContent from "./_components/invite-dialog-content"
 import { LeadingCell, MiddleCell, Table, TableRow, TrailingCell } from "./_components/table"
 import AddNewMember from "./add-new-member"
-import NumberLoadingComponent from "../_components/numbers-shuffler"
 
 type Props = {
   circleId: number
@@ -56,12 +56,12 @@ export default function Members({
     <Table>
       {stats.map(({ elo, name, member_id }, i) => (
         <TableRow
-          className="group relative"
+          className={cn("group relative", pendingMemberIds.includes(member_id!) && "animate-pulse")}
           key={member_id}
           layoutId={"member-" + member_id}
           onMouseEnter={() => onHighlightChange(member_id!)}
         >
-          <LeadingCell>{i + 1}</LeadingCell>
+          <LeadingCell> {i + 1}</LeadingCell>
           <MiddleCell className={cn(highlightId === member_id && "text-accent dark:text-accent")}>
             {name}
             <span className="mx-1 tracking-widest">

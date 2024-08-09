@@ -39,7 +39,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             disableTransitionOnChange
           >
             {children}
-            {/* <MainNavigation /> */}
           </ThemeProvider>
         </body>
       </html>

@@ -25,8 +25,8 @@ export default function Navigation({ circle }: Props) {
 
   return (
     <div className="fixed top-0 z-auto flex w-full justify-between gap-4 p-4 py-4 font-medium text-gray-400 dark:text-gray-300">
-      <div className="flex items-start gap-4">
-        <Logo className="text-gray-600 dark:text-gray-200" />
+      <div className="flex items-center gap-4">
+        <Logo className="w-16 text-gray-600 dark:text-gray-200" />
         <div className="flex items-center gap-4">
           <Link href={circleRoot} className="flex h-fit items-center gap-2">
             <h1 className="ml-2">{circle.name.toLowerCase()}</h1>
@@ -46,7 +46,7 @@ export default function Navigation({ circle }: Props) {
           </nav>
         </div>
       </div>
-      <div className="flex items-start gap-2">
+      <div className="flex items-center gap-2">
         <HasAccess noAuthCallback={<Link href="/auth">login</Link>}>logged in</HasAccess>
       </div>
     </div>
