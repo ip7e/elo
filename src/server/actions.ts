@@ -6,15 +6,7 @@ import z from "zod"
 import { createServerActionProcedure } from "zsa"
 import calculateElo, { DEFAULT_ELO } from "./utils/elo"
 import { resolveInvitation } from "./admin"
-
-const authedProcedure = createServerActionProcedure().handler(async () => {
-  const supabase = createServerClientWithCookies()
-  const { data } = await supabase.auth.getUser()
-
-  if (!data.user) throw new Error("User not authenticated")
-
-  return { user: data.user }
-})
+import { authedProcedure } from "./procedures"
 
 const circleAdminProcedure = createServerActionProcedure(authedProcedure)
   .input(z.object({ circleId: z.number() }))
