@@ -4,6 +4,7 @@ import { createServerAction } from "zsa"
 import z from "zod"
 
 import "server-only"
+import { authedProcedure } from "./procedures"
 export const getCircleBySlug = async (slug: string) => {
   const supabase = createServerClient()
   const { data: circle } = await supabase.from("circles").select("*").eq("slug", slug).single()
@@ -70,3 +71,16 @@ export const hasCurrentUserAccessToCircle = async (circleId: number) => {
 
   return !!circle
 }
+
+export const getMyCircles = authedProcedure.createServerAction().handler(async ({ ctx }) => {
+  const supabase = createServerClient()
+  const { user } = ctx
+
+  // get circles, where circle_members.user_id = user.id
+  const { data: circles } = await supabase
+    .from("circles")
+    .select("*, circle_members(*)")
+    .eq("circle_members.user_id", user.id)
+
+  return circles
+})
