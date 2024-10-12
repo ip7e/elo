@@ -18,25 +18,23 @@ export default async function RootLayout({
 
   return (
     <AccessProvider circle={circle} hasAccess={hasAccess}>
-      <TooltipProvider>
-        <Navigation circle={circle} />
-        <div className="container mx-auto flex h-full max-w-3xl flex-col">
-          <div className="mx-auto mt-5 flex w-full items-center justify-center"></div>
+      <Navigation circle={circle} />
+      <div className="container mx-auto flex h-full max-w-3xl flex-col">
+        <div className="mx-auto mt-5 flex w-full items-center justify-center"></div>
 
-          <div className="flex-1">
-            <Suspense
-              fallback={
-                <div className="flex h-3/4 w-full flex-col justify-center text-center font-mono text-neutral-300">
-                  loading...
-                </div>
-              }
-            >
-              {children}
-            </Suspense>
-          </div>
-          <div className="max-h-28 flex-1"></div>
+        <div className="flex-1">
+          <Suspense
+            fallback={
+              <div className="flex h-3/4 w-full flex-col justify-center text-center font-mono text-neutral-300">
+                loading...
+              </div>
+            }
+          >
+            {children}
+          </Suspense>
         </div>
-      </TooltipProvider>
+        <div className="max-h-28 flex-1"></div>
+      </div>
     </AccessProvider>
   )
 }

@@ -6,8 +6,7 @@ import { GeistMono } from "geist/font/mono"
 import { GeistSans } from "geist/font/sans"
 import { cn } from "@/utils/tailwind/cn"
 import { ThemeProvider } from "next-themes"
-
-// const sans = Inter({ subsets: ["latin"], variable: "--font-sans" })
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 export const metadata: Metadata = {
   title: "Shmelo.io",
@@ -38,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <TooltipProvider>{children}</TooltipProvider>
           </ThemeProvider>
         </body>
       </html>
