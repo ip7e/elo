@@ -39,7 +39,7 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
         />
       </HasAccess>
 
-      <div className="flex h-full flex-col justify-center">
+      <div className="flex flex-col">
         <div className="flex flex-col-reverse justify-center gap-10 rounded-lg px-4 sm:flex-row sm:gap-0 sm:px-4">
           <div
             className={cn(
