@@ -3,7 +3,7 @@
 import { createServerClientWithCookies } from "@/utils/supabase/server"
 import { revalidatePath } from "next/cache"
 import z from "zod"
-import { createServerActionProcedure } from "zsa"
+import { ZSAError, createServerActionProcedure } from "zsa"
 import calculateElo, { DEFAULT_ELO } from "./utils/elo"
 import { resolveInvitation } from "./admin"
 import { authedProcedure } from "./procedures"
@@ -20,7 +20,7 @@ const circleAdminProcedure = createServerActionProcedure(authedProcedure)
       .eq("user_id", ctx.user.id)
       .single()
 
-    if (!member) throw new Error("Has no access to this circle")
+    if (!member) throw "Has no access to this circle"
 
     // TODO: this returns circle_member, not circle
     return { member, user: ctx.user }
@@ -96,7 +96,7 @@ export const createGameSession = circleAdminProcedure
       .select(`*`)
       .eq("circle_id", member.circle_id)
 
-    if (!membersStats) throw new Error("Failed to get members elo")
+    if (!membersStats) throw "Failed to get members elo"
 
     const existingEloMap = Object.fromEntries(
       membersStats.map((member) => [member.member_id, member.elo]),
@@ -125,7 +125,7 @@ export const createGameSession = circleAdminProcedure
       .insert({ circle_id: member.circle_id })
       .select()
 
-    if (!game?.length) throw new Error("Failed to create game")
+    if (!game?.length) throw "Failed to create game"
 
     await supabase
       .from("game_results")
@@ -164,7 +164,7 @@ export const inviteMemberAsOwner = circleAdminProcedure
       .is("user_id", null)
       .single()
 
-    if (!vacantMember) return { error: "Member is already linked to a user" }
+    if (!vacantMember) return "Member is already linked to a user"
 
     const { error } = await supabase
       .from("member_invitations")
@@ -175,9 +175,64 @@ export const inviteMemberAsOwner = circleAdminProcedure
       })
       .select()
 
-    if (error) return { error: "failed to invite a member" }
+    if (error) throw "failed to invite a member"
 
     const [data] = await resolveInvitation({ email: input.email })
 
     return { success: true, resolved: data?.resolved }
+  })
+
+export const createCircle = authedProcedure
+  .createServerAction()
+  .input(
+    z.object({
+      name: z.string().min(1).max(20),
+      slug: z.string().min(1).max(20),
+      nickname: z.string().min(1).max(20),
+      members: z.string().optional().default(""),
+    }),
+  )
+  .onError((error) => console.log(error))
+  .handler(async ({ input, ctx }) => {
+    const supabase = createServerClientWithCookies()
+
+    const { name, slug, members, nickname } = input
+
+    // check if slug is already taken
+    const { data: circles } = await supabase.from("circles").select("*").eq("slug", slug).single()
+
+    if (circles) throw `slug '/${slug}' is already taken`
+
+    // create circle
+    const { data: circle, error } = await supabase
+      .from("circles")
+      .insert({ name, slug })
+      .select()
+      .single()
+
+    if (error) throw "failed to create circle"
+
+    // create circle_members
+    const { error: membersError } = await supabase
+      .from("circle_members")
+      .insert([
+        {
+          name: nickname,
+          circle_id: circle.id,
+          user_id: ctx.user.id,
+        },
+        ...members
+          .split(",")
+          .map((m) => m.trim())
+          .filter(Boolean)
+          .map((member) => ({
+            name: member,
+            circle_id: circle.id,
+          })),
+      ])
+      .select()
+
+    if (membersError) throw "failed to add circle members"
+
+    return { success: true, circle }
   })

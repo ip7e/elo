@@ -1,8 +1,7 @@
 import { getCircleBySlug, hasCurrentUserAccessToCircle } from "@/server/queries"
-import { AccessProvider } from "./_context/access-context"
-import Navigation from "./_components/navigation"
 import { Suspense } from "react"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import Navigation from "./_components/navigation"
+import { AccessProvider } from "./_context/access-context"
 
 export default async function RootLayout({
   children,
