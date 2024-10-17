@@ -4,7 +4,8 @@ import { format } from "date-fns"
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { GameWithResults, Member } from "../../../server/types"
-import { deleteLastGame } from "./_actions/delete-last-game.action"
+import { useServerAction } from "zsa-react"
+import { deleteLastGame } from "@/server/actions"
 
 type Props = {
   games: GameWithResults[]
@@ -12,21 +13,23 @@ type Props = {
   circleId: number
 }
 
-export default function HistoryClient({ games, members, circleId }: Props) {
+export default function HistoryClient({ games: defaultGames, members, circleId }: Props) {
   const membersMap = new Map(members.map((m) => [m.id, m]))
-  const [optimisticGames, setOptimisticGames] = useState(games)
+  const [games, setGames] = useState(defaultGames)
+
+  const { isPending, execute } = useServerAction(deleteLastGame)
 
   const handleDeleteLastGame = async () => {
     const confirm = window.confirm("Are you sure you want to delete the last game?")
     if (!confirm) return
-    const res = await deleteLastGame({ circleId: circleId })
-    if (res.success) setOptimisticGames(optimisticGames.slice(1))
+    const [data, error] = await execute({ circleId: circleId })
+    if (data?.success) setGames(games.slice(1))
     else alert("Something went wrong")
   }
 
   return (
     <div className="mx-auto my-48 flex max-w-md flex-col gap-16">
-      {optimisticGames.map((game, i) => (
+      {games.map((game, i) => (
         <motion.div
           className={`group flex w-full flex-col items-center gap-1 py-1 text-gray-500`}
           key={game.id}

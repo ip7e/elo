@@ -1,17 +1,17 @@
 "use server"
 
-import { createServerClientWithCookies } from "@/utils/supabase/server"
 import { revalidatePath } from "next/cache"
 import z from "zod"
-import { ZSAError, createServerActionProcedure } from "zsa"
-import calculateElo, { DEFAULT_ELO } from "./utils/elo"
+import { createServerActionProcedure } from "zsa"
 import { resolveInvitation } from "./admin"
 import { authedProcedure } from "./procedures"
+import createSuperClient from "./supabase"
+import calculateElo, { DEFAULT_ELO } from "./utils/elo"
 
 const circleAdminProcedure = createServerActionProcedure(authedProcedure)
   .input(z.object({ circleId: z.number() }))
   .handler(async ({ input, ctx }) => {
-    const supabase = createServerClientWithCookies()
+    const supabase = createSuperClient()
 
     const { data: member } = await supabase
       .from("circle_members")
@@ -34,7 +34,7 @@ export const addMember = circleAdminProcedure
     }),
   )
   .handler(async ({ input, ctx }) => {
-    const supabase = createServerClientWithCookies()
+    const supabase = createSuperClient()
 
     const { name } = input
 
@@ -60,7 +60,7 @@ export const kickMember = circleAdminProcedure
     }),
   )
   .handler(async ({ input, ctx }) => {
-    const supabase = createServerClientWithCookies()
+    const supabase = createSuperClient()
 
     const { data, error } = await supabase
       .from("circle_members")
@@ -87,7 +87,7 @@ export const createGameSession = circleAdminProcedure
   )
   .onError((error) => console.log(error))
   .handler(async ({ input, ctx }) => {
-    const supabase = createServerClientWithCookies()
+    const supabase = createSuperClient()
     const { loserIds, winnerIds } = input
     const { member } = ctx
 
@@ -155,7 +155,7 @@ export const inviteMemberAsOwner = circleAdminProcedure
   )
   .onError((error) => console.log(error))
   .handler(async ({ input, ctx }) => {
-    const supabase = createServerClientWithCookies()
+    const supabase = createSuperClient()
 
     const { data: vacantMember } = await supabase
       .from("circle_members")
@@ -194,7 +194,7 @@ export const createCircle = authedProcedure
   )
   .onError((error) => console.log(error))
   .handler(async ({ input, ctx }) => {
-    const supabase = createServerClientWithCookies()
+    const supabase = createSuperClient()
 
     const { name, slug, members, nickname } = input
 
@@ -210,7 +210,10 @@ export const createCircle = authedProcedure
       .select()
       .single()
 
-    if (error) throw "failed to create circle"
+    if (error) {
+      console.log(error)
+      throw "failed to create circle"
+    }
 
     // create circle_members
     const { error: membersError } = await supabase
@@ -232,7 +235,37 @@ export const createCircle = authedProcedure
       ])
       .select()
 
-    if (membersError) throw "failed to add circle members"
+    if (membersError) {
+      throw "failed to add circle members"
+    }
 
     return { success: true, circle }
+  })
+
+export const deleteLastGame = circleAdminProcedure
+  .createServerAction()
+  .input(
+    z.object({
+      circleId: z.number(),
+    }),
+  )
+  .handler(async ({ input, ctx }) => {
+    const supabase = createSuperClient()
+    const { circleId } = input
+    const { member } = ctx
+
+    const { data, error } = await supabase
+      .from("games")
+      .delete()
+      .eq("circle_id", circleId)
+      .order("id", { ascending: false })
+      .limit(1)
+      .single()
+
+    if (!error) {
+      revalidatePath("/[circle]", "layout")
+      return { success: true }
+    }
+
+    return { error }
   })
