@@ -16,7 +16,6 @@ type Props = {
 export default function MyCircles({ circles: defaultCircles }: Props) {
   const [circles, setCircles] = useState<Circle[]>(defaultCircles)
 
-  const [isOpen, setIsOpen] = useState(false)
   return (
     <div className="container mx-auto flex h-full max-w-3xl flex-col">
       <div className="mx-auto mt-5 flex w-full items-center justify-center"></div>

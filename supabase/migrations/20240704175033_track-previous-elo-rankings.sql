@@ -1,7 +1,6 @@
 -- Step 1: Add the new column 'previous_elo'
 ALTER TABLE game_results
 ADD COLUMN IF NOT EXISTS previous_elo smallint;
-
 -- Step 2: Populate the 'previous_elo' column with a default value of 1100 for the first game
 DO $$
 BEGIN
@@ -18,8 +17,6 @@ BEGIN
     FROM ranked_games rg
     WHERE gs.id = rg.id;
 END $$;
-
-
 -- Step 3: Set 'previous_elo' to NOT NULL
 ALTER TABLE game_results
 ALTER COLUMN previous_elo SET NOT NULL;

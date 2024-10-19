@@ -1,9 +1,6 @@
 alter table "public"."circle_members" add column "user_id" uuid;
-
 alter table "public"."circle_members" add constraint "public_circle_members_user_id_fkey" FOREIGN KEY (user_id) REFERENCES auth.users(id) not valid;
-
 alter table "public"."circle_members" validate constraint "public_circle_members_user_id_fkey";
-
 create or replace view "public"."members_stats" as  SELECT DISTINCT ON (circle_members.id) circle_members.name,
     circle_members.circle_id,
     circle_members.id AS member_id,
@@ -27,6 +24,3 @@ create or replace view "public"."members_stats" as  SELECT DISTINCT ON (circle_m
            FROM game_results
           GROUP BY game_results.member_id) total_games ON ((total_games.member_id = circle_members.id)))
   ORDER BY circle_members.id, circle_members.circle_id, latest_result.created_at DESC, first_result.created_at;
-
-
-
