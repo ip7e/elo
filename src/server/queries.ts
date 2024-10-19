@@ -76,10 +76,9 @@ export const getMyCircles = authedProcedure.createServerAction().handler(async (
   const supabase = createServerClient()
   const { user } = ctx
 
-  // get circles, where circle_members.user_id = user.id
   const { data: circles } = await supabase
     .from("circles")
-    .select("*, circle_members(*)")
+    .select("*, circle_members!inner(*)")
     .eq("circle_members.user_id", user.id)
 
   return circles
