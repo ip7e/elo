@@ -1,13 +1,13 @@
 "use client"
 
-import { cn } from "@/lib/utils"
-import Link from "next/link"
-import { Card } from "./_components/cards"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-import { Plus } from "lucide-react"
-import NewCircleDialogContent from "./_components/new-circle-dialog-content"
+import { cn } from "@/lib/utils"
 import { Circle } from "@/server/types"
+import { Plus } from "lucide-react"
+import Link from "next/link"
 import { useState } from "react"
+import { Card } from "./_components/cards"
+import NewCircleDialogContent from "./_components/new-circle-dialog-content"
 
 type Props = {
   circles: Circle[]

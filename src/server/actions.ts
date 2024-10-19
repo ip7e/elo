@@ -2,29 +2,14 @@
 
 import { revalidatePath } from "next/cache"
 import z from "zod"
-import { createServerActionProcedure } from "zsa"
 import { resolveInvitation } from "./admin"
-import { authedProcedure } from "./procedures"
+import { authedProcedure, circleAdminProcedure } from "./procedures"
 import createSuperClient from "./supabase"
 import calculateElo, { DEFAULT_ELO } from "./utils/elo"
 
-const circleAdminProcedure = createServerActionProcedure(authedProcedure)
-  .input(z.object({ circleId: z.number() }))
-  .handler(async ({ input, ctx }) => {
-    const supabase = createSuperClient()
-
-    const { data: member } = await supabase
-      .from("circle_members")
-      .select("*")
-      .eq("circle_id", input.circleId)
-      .eq("user_id", ctx.user.id)
-      .single()
-
-    if (!member) throw "Has no access to this circle"
-
-    // TODO: this returns circle_member, not circle
-    return { member, user: ctx.user }
-  })
+export const TestAdminProcedure = circleAdminProcedure
+  .createServerAction()
+  .handler(async () => "test")
 
 export const addMember = circleAdminProcedure
   .createServerAction()
@@ -192,7 +177,6 @@ export const createCircle = authedProcedure
       members: z.string().optional().default(""),
     }),
   )
-  .onError((error) => console.log(error))
   .handler(async ({ input, ctx }) => {
     const supabase = createSuperClient()
 
@@ -252,7 +236,6 @@ export const deleteLastGame = circleAdminProcedure
   .handler(async ({ input, ctx }) => {
     const supabase = createSuperClient()
     const { circleId } = input
-    const { member } = ctx
 
     const { data, error } = await supabase
       .from("games")
