@@ -7,6 +7,7 @@ import { CornerDownLeft, Plus } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useServerAction } from "zsa-react"
 import { MiddleCell, LeadingCell, TableRow } from "./_components/table"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 const placeholderTexts = [
   "add member",
@@ -27,8 +28,19 @@ const placeholderTexts = [
 ]
 
 // TODO: circle id via context maybe?
-export default function AddNewMember({ circleId }: { circleId: number }) {
+type Props = {
+  circleId: number
+  showTooltip: boolean
+}
+export default function AddNewMember({ circleId, showTooltip: showInitialTooltip }: Props) {
   const formRef = useRef<HTMLFormElement>(null)
+
+  const [showTooltip, setShowTooltip] = useState(false)
+
+  useEffect(() => {
+    if (!showInitialTooltip) return
+    setTimeout(() => setShowTooltip(true), 250)
+  }, [showInitialTooltip])
 
   const [isActive, setIsActive] = useState(false)
   const [name, setName] = useState("")
@@ -56,6 +68,7 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
   }, [isActive])
 
   const activate = () => {
+    setShowTooltip(false)
     setIsActive(true)
     setName("")
     setPlaceholderIndex(0)
@@ -66,17 +79,29 @@ export default function AddNewMember({ circleId }: { circleId: number }) {
   return (
     <TableRow className={cn(isPending && "animate-pulse")} layout layoutId="add-member">
       <LeadingCell className="flex w-6 justify-end">
-        <button
-          className={cn(
-            "flex size-5 translate-x-[5px] items-center justify-center rounded-md transition-opacity",
-            "text-neutral-400 dark:text-neutral-400",
-            "hover:border hover:border-neutral-300 dark:hover:border-neutral-600",
-            isActive && "opacity-0",
-          )}
-          onClick={() => activate()}
-        >
-          <Plus size={12} strokeWidth={1} />
-        </button>
+        <Tooltip open={showTooltip}>
+          <TooltipTrigger asChild>
+            <button
+              className={cn(
+                "flex size-5 translate-x-[5px] items-center justify-center rounded-md transition-opacity",
+                "text-neutral-400 dark:text-neutral-400",
+                "hover:border hover:border-neutral-300 dark:hover:border-neutral-600",
+                isActive && "opacity-0",
+              )}
+              onClick={() => activate()}
+            >
+              <Plus size={12} strokeWidth={1} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent
+            align="center"
+            side="right"
+            onClick={() => activate()}
+            className="cursor-pointer"
+          >
+            add member
+          </TooltipContent>
+        </Tooltip>
       </LeadingCell>
       {isActive && (
         <MiddleCell>

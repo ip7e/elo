@@ -1,15 +1,13 @@
 import "server-only"
 
-import { createServerClient } from "../utils/supabase/server"
-import { createServerAction } from "zsa"
 import { z } from "zod"
-
-// TODO: Setup admin role for supabase
+import { createServerAction } from "zsa"
+import createSuperClient from "./supabase"
 
 export const upsertUserProfile = createServerAction()
   .input(z.object({ email: z.string(), userId: z.string() }))
   .handler(async ({ input }) => {
-    const supabase = createServerClient()
+    const supabase = createSuperClient()
 
     const { data, error } = await supabase
       .from("profiles")
@@ -28,7 +26,7 @@ export const upsertUserProfile = createServerAction()
 export const resolveInvitation = createServerAction()
   .input(z.object({ email: z.string() }))
   .handler(async ({ input }) => {
-    const supabase = createServerClient()
+    const supabase = createSuperClient()
 
     const { data: user, error } = await supabase
       .from("profiles")

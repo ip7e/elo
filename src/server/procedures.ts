@@ -1,3 +1,4 @@
+import "server-only"
 import { createServerClientWithCookies } from "@/utils/supabase/server"
 import { createServerActionProcedure } from "zsa"
 import createSuperClient from "./supabase"

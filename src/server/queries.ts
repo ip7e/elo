@@ -1,9 +1,9 @@
+import "server-only"
 import { GameWithResults } from "@/server/types"
 import { createServerClient, createServerClientWithCookies } from "@/utils/supabase/server"
 import { createServerAction } from "zsa"
 import z from "zod"
 
-import "server-only"
 import { authedProcedure } from "./procedures"
 export const getCircleBySlug = async (slug: string) => {
   const supabase = createServerClient()

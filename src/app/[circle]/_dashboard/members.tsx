@@ -53,7 +53,7 @@ export default function Members({
   const ownerMembers = members.filter((m) => !!m.user_id).map((m) => m.id)
 
   return (
-    <Table>
+    <Table className="relative">
       {stats.map(({ elo, name, member_id }, i) => (
         <TableRow
           className={cn("group relative", pendingMemberIds.includes(member_id!) && "animate-pulse")}
@@ -122,7 +122,9 @@ export default function Members({
       ))}
 
       <HasAccess>
-        <AddNewMember circleId={circleId} />
+        <div className="absolute -bottom-8 left-0 w-full">
+          <AddNewMember circleId={circleId} showTooltip={members.length < 2} />
+        </div>
       </HasAccess>
     </Table>
   )

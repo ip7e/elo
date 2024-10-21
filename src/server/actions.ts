@@ -138,7 +138,6 @@ export const inviteMemberAsOwner = circleAdminProcedure
       memberId: z.number(),
     }),
   )
-  .onError((error) => console.log(error))
   .handler(async ({ input, ctx }) => {
     const supabase = createSuperClient()
 
@@ -182,12 +181,10 @@ export const createCircle = authedProcedure
 
     const { name, slug, members, nickname } = input
 
-    // check if slug is already taken
     const { data: circles } = await supabase.from("circles").select("*").eq("slug", slug).single()
 
     if (circles) throw `slug '/${slug}' is already taken`
 
-    // create circle
     const { data: circle, error } = await supabase
       .from("circles")
       .insert({ name, slug })
@@ -199,7 +196,6 @@ export const createCircle = authedProcedure
       throw "failed to create circle"
     }
 
-    // create circle_members
     const { error: membersError } = await supabase
       .from("circle_members")
       .insert([
@@ -233,7 +229,7 @@ export const deleteLastGame = circleAdminProcedure
       circleId: z.number(),
     }),
   )
-  .handler(async ({ input, ctx }) => {
+  .handler(async ({ input }) => {
     const supabase = createSuperClient()
     const { circleId } = input
 

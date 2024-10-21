@@ -93,7 +93,7 @@ export default function BumpChart({ stats: statsArr, games: games, highlight }: 
   const y = d3
     .scaleLinear()
     .domain([0, statsArr.length])
-    .range([lineHeight / 3, height + lineHeight / 3])
+    .range([15, height + 15])
 
   // Create line generator
   const line = d3

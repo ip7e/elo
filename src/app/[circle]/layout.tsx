@@ -18,10 +18,10 @@ export default async function RootLayout({
   return (
     <AccessProvider circle={circle} hasAccess={hasAccess}>
       <Navigation circle={circle} />
-      <div className="container mx-auto flex h-full max-w-3xl flex-col">
+      <div className="container mx-auto flex h-full max-w-3xl flex-col px-4">
         <div className="min-h-28 flex-1"></div>
 
-        <div className="flex-[2]">
+        <div className="flex-[3]">
           <Suspense
             fallback={
               <div className="flex h-3/4 w-full flex-col justify-center text-center font-mono text-neutral-300">
