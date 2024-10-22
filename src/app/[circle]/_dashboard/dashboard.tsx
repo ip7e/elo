@@ -24,6 +24,16 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
 
   const hasGames = recentGames.length > 0
+  const has3Games = recentGames.length > 2
+
+  const showChart = recentGames.length > 2
+  const noChartMessage =
+    !showChart &&
+    {
+      0: "no games yet",
+      1: "add 2 more games to see the chart",
+      2: "add 1 more game to see the chart",
+    }[recentGames.length]
 
   useEffect(() => {
     setPendingMemberIds([])
@@ -37,10 +47,19 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
             className={cn(
               `relative flex min-h-16 w-full flex-1 items-start justify-end overflow-hidden`,
               "bg-[radial-gradient(rgb(223,223,223)_1px,transparent_0)] bg-[size:12px_12px] dark:bg-[radial-gradient(rgb(40,40,40)_1px,transparent_0)]",
+              // hide empty chart on mobile
+              !showChart && "hidden sm:flex",
             )}
           >
-            {hasGames && (
+            {has3Games && (
               <BumpChart games={recentGames} stats={stats} highlight={selectedMemberId} />
+            )}
+            {!has3Games && (
+              <div className="flex h-full min-h-16 w-full items-center justify-center">
+                <span className="dark:text-neutral-sm rounded-md border border-neutral-100 bg-background px-2 py-1 font-mono text-sm text-neutral-300 dark:border-neutral-600 dark:text-neutral-600">
+                  {noChartMessage}
+                </span>
+              </div>
             )}
           </div>
 

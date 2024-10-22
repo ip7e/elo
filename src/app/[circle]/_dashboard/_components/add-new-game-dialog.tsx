@@ -56,6 +56,8 @@ export function AddNewGameDialog({ members, circleId, onSubmitted }: Props) {
     !open && setStatusMap({})
   }, [open])
 
+  if (members.length < 2) return null
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
