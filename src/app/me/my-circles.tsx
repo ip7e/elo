@@ -54,12 +54,12 @@ export default function MyCircles({ circles: defaultCircles }: Props) {
               <div
                 className={cn(
                   "relative flex size-full flex-col items-center justify-center rounded-md text-center",
-                  "bg-neutral-100/80",
-                  "text-neutral-400",
+                  "bg-neutral-100/80 dark:bg-neutral-800",
+                  "text-neutral-400 dark:text-neutral-300",
                 )}
               >
-                <Plus strokeWidth="2" size={16} />
-                <span className="absolute top-1/2 translate-y-2 text-sm opacity-0 group-hover:opacity-100">
+                <Plus strokeWidth="2" size={16} className="dark:stroke-neutral-500" />
+                <span className="absolute top-1/2 translate-y-2 text-sm opacity-0 group-hover:opacity-100 dark:text-neutral-400">
                   create new
                 </span>
               </div>

@@ -1,9 +1,11 @@
-import { getMyCircles } from "@/server/queries"
+import { getCurrentUser, getMyCircles } from "@/server/queries"
 import MyCircles from "./my-circles"
-import { useServerAction } from "zsa-react"
-import { TestAdminProcedure } from "@/server/actions"
+import { redirect } from "next/navigation"
 
 export default async function Page() {
+  const user = await getCurrentUser()
+  if (!user) redirect("/auth")
+
   const [circles, error] = await getMyCircles()
   if (!circles) return
 
