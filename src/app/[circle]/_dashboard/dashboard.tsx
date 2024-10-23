@@ -1,5 +1,6 @@
 "use client"
 
+import { DotGrid } from "@/app/_components/dot-grid"
 import { cn } from "@/utils/tailwind/cn"
 import { useEffect, useState } from "react"
 import { GameWithResults, Member, Stat } from "../../../server/types"
@@ -43,11 +44,9 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
     <>
       <div className="flex flex-col">
         <div className="flex flex-col-reverse justify-center gap-10 rounded-lg sm:flex-row sm:gap-0 sm:px-4">
-          <div
+          <DotGrid
             className={cn(
               `relative flex min-h-16 w-full flex-1 items-start justify-end overflow-hidden`,
-              "bg-[radial-gradient(rgb(223,223,223)_1px,transparent_0)] bg-[size:12px_12px] dark:bg-[radial-gradient(rgb(40,40,40)_1px,transparent_0)]",
-              // hide empty chart on mobile
               !showChart && "hidden sm:flex",
             )}
           >
@@ -61,7 +60,7 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
                 </span>
               </div>
             )}
-          </div>
+          </DotGrid>
 
           <div className="flex flex-col sm:w-56">
             <Members

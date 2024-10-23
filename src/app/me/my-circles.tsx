@@ -6,6 +6,7 @@ import { Circle } from "@/server/types"
 import { Plus } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import { DotGrid } from "../_components/dot-grid"
 import { Card } from "./_components/cards"
 import NewCircleDialogContent from "./_components/new-circle-dialog-content"
 
@@ -22,7 +23,7 @@ export default function MyCircles({ circles: defaultCircles }: Props) {
 
       <div className={cn("flex flex-col gap-2")}>
         <h2 className="font-sans text-lg font-semibold text-neutral-600">My Circles</h2>
-        <div
+        <DotGrid
           className={cn(
             "grid h-auto grid-cols-4 gap-4 rounded-lg border p-6",
             "bg-[mask-image:radial-gradient(farthest-side_at_50%_50%,black,transparent)] bg-[radial-gradient(rgb(223,223,223)_1px,transparent_0)] bg-[size:12px_12px] dark:bg-[radial-gradient(rgb(40,40,40)_1px,transparent_0)]",
@@ -72,7 +73,7 @@ export default function MyCircles({ circles: defaultCircles }: Props) {
               }}
             ></NewCircleDialogContent>
           </Dialog>
-        </div>
+        </DotGrid>
       </div>
     </div>
   )

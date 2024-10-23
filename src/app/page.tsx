@@ -6,6 +6,7 @@ export default function Page() {
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center">
       <div className="flex flex-1"></div>
+
       <div className="flex size-full flex-[4] flex-col items-center justify-start">
         <QueenVsKing className="w-52" />
         <h1 className="mt-2 h-20 -rotate-2 justify-center overflow-visible text-5xl font-bold lowercase text-accent">
