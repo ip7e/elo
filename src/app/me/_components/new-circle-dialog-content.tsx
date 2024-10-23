@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { createCircle, inviteMemberAsOwner } from "@/server/actions"
+import { createCircle } from "@/server/actions"
 import { Circle } from "@/server/types"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -49,7 +49,7 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
     setMembers("")
   }
 
-  const slug = customSlug || defaultSlug
+  const slug = customSlug ?? defaultSlug
   const isValid = Boolean(name && slug && nickname)
 
   return (

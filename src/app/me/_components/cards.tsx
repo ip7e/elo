@@ -16,6 +16,7 @@ export function Card({ children, className }: Props) {
   return (
     <motion.div
       className={cn(
+        "border border-muted",
         "dark: flex h-32 flex-col justify-between rounded-lg bg-background p-4",
         className,
       )}
