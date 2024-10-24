@@ -86,7 +86,7 @@ export default function Members({
           <LeadingCell> {i + 1}</LeadingCell>
           <MiddleCell className={cn(highlightId === id && "text-accent dark:text-accent")}>
             {name}
-            <span className="mx-1 inline-block">
+            <span className="mx-1 tracking-widest">
               {Array.from({ length: winningStreaksByMemberId[id!] }, (v, i) => (
                 <Star key={i} />
               ))}
