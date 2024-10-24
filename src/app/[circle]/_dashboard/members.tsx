@@ -9,11 +9,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { kickMember } from "@/server/actions"
+import { MembersWithStats } from "@/server/queries"
 import { cn } from "@/utils/tailwind/cn"
 import { EllipsisVertical, ShieldCheck, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useServerAction } from "zsa-react"
-import { Member, MemberStats } from "../../../server/types"
+import { Member } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import NumberLoadingComponent from "../_components/numbers-shuffler"
 import Star from "../_components/star"
@@ -23,8 +24,7 @@ import AddNewMember from "./add-new-member"
 
 type Props = {
   circleId: number
-  stats: MemberStats[]
-  members: Member[]
+  membersWithStats: MembersWithStats
   recentWinners: number[]
   onHighlightChange: (id: number) => void
   highlightId: number
@@ -36,11 +36,11 @@ export default function Members({
   highlightId,
   onHighlightChange,
   recentWinners,
-  members,
-  stats,
+  membersWithStats,
   pendingMemberIds,
 }: Props) {
-  const newMembers = members.filter((m) => !stats.find((s) => s.member_id === m.id))
+  const newMembers = membersWithStats.filter((m) => m.latest_game.length === 0)
+  const membersWithGames = membersWithStats.filter((m) => m.latest_game.length > 0)
 
   const winsByMemberId = recentWinners.reduce(
     (acc, winner) => ({
@@ -50,35 +50,35 @@ export default function Members({
     {} as Record<number, number>,
   )
 
-  const ownerMembers = members.filter((m) => !!m.user_id).map((m) => m.id)
+  const ownerMembers = membersWithStats.filter((m) => !!m.user_id).map((m) => m.id)
 
   return (
     <Table className="relative">
-      {stats.map(({ elo, name, member_id }, i) => (
+      {membersWithGames.map(({ latest_game, name, id }, i) => (
         <TableRow
-          className={cn("group relative", pendingMemberIds.includes(member_id!) && "animate-pulse")}
-          key={member_id}
-          layoutId={"member-" + member_id}
-          onMouseEnter={() => onHighlightChange(member_id!)}
+          className={cn("group relative", pendingMemberIds.includes(id!) && "animate-pulse")}
+          key={id}
+          layoutId={"member-" + id}
+          onMouseEnter={() => onHighlightChange(id!)}
         >
           <LeadingCell> {i + 1}</LeadingCell>
-          <MiddleCell className={cn(highlightId === member_id && "text-accent dark:text-accent")}>
+          <MiddleCell className={cn(highlightId === id && "text-accent dark:text-accent")}>
             {name}
             <span className="mx-1 tracking-widest">
-              {Array.from({ length: winsByMemberId[member_id!] }, (v, i) => (
+              {Array.from({ length: winsByMemberId[id!] }, (v, i) => (
                 <Star key={i} />
               ))}
             </span>
           </MiddleCell>
           <TrailingCell>
             <NumberLoadingComponent
-              isLoading={pendingMemberIds.includes(member_id!)}
-              value={elo!}
+              isLoading={pendingMemberIds.includes(id!)}
+              value={latest_game?.[0]?.elo}
             />
           </TrailingCell>
 
           <HasAccess>
-            {ownerMembers.includes(member_id!) ? (
+            {ownerMembers.includes(id!) ? (
               <Tooltip>
                 <TooltipTrigger
                   tabIndex={-1}
@@ -111,7 +111,7 @@ export default function Members({
                     </DialogTrigger>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <InviteDialogContent circleId={circleId} memberId={member_id!} />
+                <InviteDialogContent circleId={circleId} memberId={id!} />
               </Dialog>
             )}
           </HasAccess>
@@ -123,7 +123,7 @@ export default function Members({
 
       <HasAccess>
         <div className="absolute -bottom-8 left-0 w-full">
-          <AddNewMember circleId={circleId} showTooltip={members.length < 2} />
+          <AddNewMember circleId={circleId} showTooltip={membersWithStats.length < 2} />
         </div>
       </HasAccess>
     </Table>
