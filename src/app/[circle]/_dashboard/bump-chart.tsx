@@ -3,10 +3,11 @@
 import * as d3 from "d3"
 import { AnimatePresence, motion } from "framer-motion"
 import { useMemo } from "react"
-import { GameWithResults, MemberStats } from "../../../server/types"
+import { GameWithResults } from "../../../server/types"
+import { MembersWithStats } from "@/server/queries"
 
 type Props = {
-  stats: MemberStats[]
+  membersWithStats: MembersWithStats
   games: GameWithResults[]
   highlight: number
 }
@@ -18,19 +19,33 @@ type GameRecord = {
   won: boolean
   isFirstGame: boolean
 }
-
-export default function BumpChart({ stats: statsArr, games: games, highlight }: Props) {
+type MemberStat = {
+  member_id: number
+  elo: number
+  first_game: number
+  latest_game: number
+  name: string
+}
+export default function BumpChart({ membersWithStats, games: games, highlight }: Props) {
   const gamesByMember = useMemo(() => {
     let gamesByMember: Record<number, GameRecord[]> = {}
 
     // will mutate while looping through games
-    const rollingStats = statsArr.reduce(
-      (acc, s) => ({
-        ...acc,
-        [s.member_id!]: { ...s },
-      }),
-      {} as Record<number, MemberStats>,
-    )
+    const rollingStats = membersWithStats
+      .filter((s) => s.latest_game[0])
+      .reduce(
+        (acc, s) => ({
+          ...acc,
+          [s.id]: {
+            member_id: s.id,
+            elo: s.latest_game[0].elo,
+            first_game: s.first_game[0].id,
+            latest_game: s.latest_game[0].id,
+            name: s.name,
+          } as MemberStat,
+        }),
+        {},
+      ) as Record<number, MemberStat>
 
     // loop through games starting with the most recent one
     games.forEach((game, i) => {
@@ -75,13 +90,13 @@ export default function BumpChart({ stats: statsArr, games: games, highlight }: 
     })
 
     return gamesByMember
-  }, [games, statsArr])
+  }, [games, membersWithStats])
 
   if (!gamesByMember) return null
 
   const width = games.length * 45
   const lineHeight = 32
-  const height = statsArr.length * lineHeight
+  const height = membersWithStats.length * lineHeight
 
   // Create scales
   const x = d3
@@ -92,7 +107,7 @@ export default function BumpChart({ stats: statsArr, games: games, highlight }: 
 
   const y = d3
     .scaleLinear()
-    .domain([0, statsArr.length])
+    .domain([0, membersWithStats.length])
     .range([15, height + 15])
 
   // Create line generator

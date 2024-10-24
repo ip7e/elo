@@ -1,7 +1,7 @@
 import "server-only"
 import { GameWithResults } from "@/server/types"
 import { createServerClient, createServerClientWithCookies } from "@/utils/supabase/server"
-import { createServerAction } from "zsa"
+import { createServerAction, inferServerActionReturnData } from "zsa"
 import z from "zod"
 
 import { authedProcedure } from "./procedures"
@@ -25,16 +25,32 @@ export const getMembers = createServerAction()
     return members
   })
 
-export const getStats = async (circleId: number) => {
-  const supabase = createServerClient()
-  const { data: stats, error } = await supabase
-    .from("members_stats")
-    .select("*")
-    .eq("circle_id", circleId)
-    .order("elo", { ascending: false })
+export const getMembersWithStats = createServerAction()
+  .input(z.object({ circleId: z.number() }))
+  .handler(async ({ input }) => {
+    const supabase = createServerClient()
 
-  return stats
-}
+    const { data: members, error } = await supabase
+      .from("circle_members")
+      .select(
+        `*, 
+          wins:game_results(count), 
+          latest_game:game_results(*), 
+          first_game:game_results(*)
+        `,
+      )
+      .order("created_at", { referencedTable: "latest_game", ascending: false })
+      .order("created_at", { referencedTable: "first_game", ascending: true })
+
+      .limit(1, { referencedTable: "latest_game" })
+      .limit(1, { referencedTable: "first_game" })
+      .eq("wins.winner", true)
+      .eq("circle_id", input.circleId)
+
+    return members?.sort((a, b) => b.latest_game?.[0]?.elo! - a.latest_game?.[0]?.elo!)
+  })
+
+export type MembersWithStats = inferServerActionReturnData<typeof getMembersWithStats>
 
 export const getAllGames = async (circleId: number) => {
   const supabase = createServerClient()

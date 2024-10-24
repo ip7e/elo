@@ -8,24 +8,21 @@ import HasAccess from "../_components/has-access"
 import { AddNewGameDialog } from "./_components/add-new-game-dialog"
 import BumpChart from "./bump-chart"
 import Members from "./members"
+import { MembersWithStats } from "@/server/queries"
 
 type Props = {
   recentGames: GameWithResults[]
-  stats: Stat[]
-  members: Member[]
+  membersWithStats: MembersWithStats
   circleId: number
 }
 
-export default function Dashboard({ recentGames, stats, members, circleId }: Props) {
+export default function Dashboard({ recentGames, membersWithStats, circleId }: Props) {
   const recentWinners = [...recentGames]
     .slice(0, 3)
     .map((game) => game.game_results.find((r) => r.winner)!.member_id)
 
-  const [selectedMemberId, setSelectedMemberId] = useState(stats[0]?.member_id || 0)
+  const [selectedMemberId, setSelectedMemberId] = useState(membersWithStats[0]?.id || 0)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
-
-  const hasGames = recentGames.length > 0
-  const has3Games = recentGames.length > 2
 
   const showChart = recentGames.length > 2
   const noChartMessage =
@@ -38,7 +35,7 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
 
   useEffect(() => {
     setPendingMemberIds([])
-  }, [stats])
+  }, [membersWithStats])
 
   return (
     <>
@@ -50,10 +47,14 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
               !showChart && "hidden sm:flex",
             )}
           >
-            {has3Games && (
-              <BumpChart games={recentGames} stats={stats} highlight={selectedMemberId} />
+            {showChart && (
+              <BumpChart
+                games={recentGames}
+                membersWithStats={membersWithStats}
+                highlight={selectedMemberId}
+              />
             )}
-            {!has3Games && (
+            {!showChart && (
               <div className="flex h-full min-h-16 w-full items-center justify-center">
                 <span className="dark:text-neutral-sm rounded-md border border-neutral-100 bg-background px-2 py-1 font-mono text-sm text-neutral-300 dark:border-neutral-600 dark:text-neutral-600">
                   {noChartMessage}
@@ -65,8 +66,7 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
           <div className="flex flex-col sm:w-56">
             <Members
               circleId={circleId}
-              stats={stats}
-              members={members}
+              membersWithStats={membersWithStats}
               recentWinners={recentWinners}
               highlightId={selectedMemberId}
               onHighlightChange={(id) => setSelectedMemberId(id)}
@@ -83,7 +83,7 @@ export default function Dashboard({ recentGames, stats, members, circleId }: Pro
             )}
           >
             <AddNewGameDialog
-              members={members}
+              members={membersWithStats}
               circleId={circleId}
               onSubmitted={(ids) => setPendingMemberIds(ids)}
             />

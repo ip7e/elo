@@ -25,7 +25,7 @@ export default function MyCircles({ circles: defaultCircles }: Props) {
         <h2 className="font-sans text-lg font-semibold text-neutral-600">My Circles</h2>
         <DotGrid
           className={cn(
-            "grid h-auto grid-cols-4 gap-4 rounded-lg border p-6",
+            "flex flex-wrap gap-7 rounded-lg border p-5",
             "bg-[mask-image:radial-gradient(farthest-side_at_50%_50%,black,transparent)] bg-[radial-gradient(rgb(223,223,223)_1px,transparent_0)] bg-[size:12px_12px] dark:bg-[radial-gradient(rgb(40,40,40)_1px,transparent_0)]",
           )}
         >
