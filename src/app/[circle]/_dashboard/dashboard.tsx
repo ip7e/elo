@@ -67,7 +67,7 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
             <Members
               circleId={circleId}
               membersWithStats={membersWithStats}
-              recentWinners={recentWinners}
+              recentGames={recentGames}
               highlightId={selectedMemberId}
               onHighlightChange={(id) => setSelectedMemberId(id)}
               pendingMemberIds={pendingMemberIds}

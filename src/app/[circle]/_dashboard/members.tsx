@@ -12,9 +12,9 @@ import { kickMember } from "@/server/actions"
 import { MembersWithStats } from "@/server/queries"
 import { cn } from "@/utils/tailwind/cn"
 import { EllipsisVertical, ShieldCheck, Trash2 } from "lucide-react"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useServerAction } from "zsa-react"
-import { Member } from "../../../server/types"
+import { GameWithResults, Member } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import NumberLoadingComponent from "../_components/numbers-shuffler"
 import Star from "../_components/star"
@@ -25,7 +25,7 @@ import AddNewMember from "./add-new-member"
 type Props = {
   circleId: number
   membersWithStats: MembersWithStats
-  recentWinners: number[]
+  recentGames: GameWithResults[]
   onHighlightChange: (id: number) => void
   highlightId: number
   pendingMemberIds: number[]
@@ -35,22 +35,44 @@ export default function Members({
   circleId,
   highlightId,
   onHighlightChange,
-  recentWinners,
+  recentGames,
   membersWithStats,
   pendingMemberIds,
 }: Props) {
   const newMembers = membersWithStats.filter((m) => m.latest_game.length === 0)
   const membersWithGames = membersWithStats.filter((m) => m.latest_game.length > 0)
-
-  const winsByMemberId = recentWinners.reduce(
-    (acc, winner) => ({
-      ...acc,
-      [winner]: acc[winner] ? acc[winner] + 1 : 1,
-    }),
-    {} as Record<number, number>,
-  )
-
   const ownerMembers = membersWithStats.filter((m) => !!m.user_id).map((m) => m.id)
+
+  const winningStreaksByMemberId = useMemo(() => {
+    if (!recentGames.length) return {}
+    const latestWinners = recentGames.at(0)!.game_results.filter((r) => r.winner)
+
+    const streaksById = Object.fromEntries(latestWinners.map((r) => [r.member_id, 1]))
+
+    let currentStreak = 1
+    while (true) {
+      const game = recentGames.at(currentStreak)
+      if (!game) break
+
+      let isMoving = false
+
+      const winners = game.game_results.filter((r) => r.winner)
+
+      if (!winners.length) break
+
+      winners.forEach((r) => {
+        if (streaksById[r.member_id] === currentStreak) {
+          isMoving = true
+          streaksById[r.member_id]++
+        }
+      })
+
+      if (!isMoving) break
+      currentStreak++
+    }
+
+    return streaksById
+  }, [recentGames])
 
   return (
     <Table className="relative">
@@ -64,8 +86,8 @@ export default function Members({
           <LeadingCell> {i + 1}</LeadingCell>
           <MiddleCell className={cn(highlightId === id && "text-accent dark:text-accent")}>
             {name}
-            <span className="mx-1 tracking-widest">
-              {Array.from({ length: winsByMemberId[id!] }, (v, i) => (
+            <span className="mx-1 inline-block">
+              {Array.from({ length: winningStreaksByMemberId[id!] }, (v, i) => (
                 <Star key={i} />
               ))}
             </span>

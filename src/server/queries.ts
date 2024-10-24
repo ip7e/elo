@@ -1,10 +1,10 @@
-import "server-only"
 import { GameWithResults } from "@/server/types"
 import { createServerClient, createServerClientWithCookies } from "@/utils/supabase/server"
-import { createServerAction, inferServerActionReturnData } from "zsa"
+import "server-only"
 import z from "zod"
-
+import { createServerAction, inferServerActionReturnData } from "zsa"
 import { authedProcedure } from "./procedures"
+
 export const getCircleBySlug = async (slug: string) => {
   const supabase = createServerClient()
   const { data: circle } = await supabase.from("circles").select("*").eq("slug", slug).single()
@@ -44,6 +44,8 @@ export const getMembersWithStats = createServerAction()
 
       .limit(1, { referencedTable: "latest_game" })
       .limit(1, { referencedTable: "first_game" })
+
+      .order("created_at", { ascending: true })
       .eq("wins.winner", true)
       .eq("circle_id", input.circleId)
 
