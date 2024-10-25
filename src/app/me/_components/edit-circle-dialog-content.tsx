@@ -1,56 +1,28 @@
 "use client"
+import { DialogContent, DialogTitle } from "@/components/ui/dialog"
+
 import { Button } from "@/components/ui/button"
-import {
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { DialogClose, DialogDescription, DialogFooter, DialogHeader } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { createCircle } from "@/server/actions"
+import { editCircle } from "@/server/actions"
 import { Circle } from "@/server/types"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useServerAction } from "zsa-react"
 
 type Props = {
-  onCreated?: (circle: Circle) => void
+  circle: Circle
 }
 
-export default function NewCircleDialogContent({ onCreated }: Props) {
-  const [name, setName] = useState("")
-  const [customSlug, setCustomSlug] = useState<string | null>(null)
-  const [defaultSlug, setDefaultSlug] = useState("")
-  const [nickname, setNickname] = useState("")
-  const [members, setMembers] = useState("")
+export default function EditCircleDialogContent({ circle }: Props) {
+  const [name, setName] = useState(circle.name)
+  const [slug, setSlug] = useState<string>(circle.slug)
 
-  useEffect(() => {
-    if (customSlug) return
+  const { isPending, execute, isSuccess, isError, error, data } = useServerAction(editCircle, {})
 
-    // convert name to slug
-    const nameToSlug = name.toLowerCase().replaceAll(" ", "-")
-    setDefaultSlug(nameToSlug)
-  }, [name, customSlug])
-
-  const { isPending, execute, isSuccess, isError, error, data } = useServerAction(createCircle, {
-    onSuccess: ({ data }) => {
-      onCreated?.(data.circle)
-      reset()
-    },
-  })
-
-  const reset = () => {
-    setName("")
-    setCustomSlug(null)
-    setMembers("")
-  }
-
-  const slug = customSlug ?? defaultSlug
-  const isValid = Boolean(name && slug && nickname)
+  const isValid = Boolean(name && slug)
 
   return (
     <DialogContent>
@@ -58,16 +30,17 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
         <form
           onSubmit={(e) => {
             e.preventDefault()
+
+            if (!isValid) return
             execute({
-              name: name,
-              slug: slug,
-              nickname,
-              members,
+              circleId: circle.id,
+              name,
+              slug,
             })
           }}
         >
           <DialogHeader>
-            <DialogTitle>Create new Circle</DialogTitle>
+            <DialogTitle>Edit Circle</DialogTitle>
           </DialogHeader>
 
           <div className="my-10 grid gap-6">
@@ -97,38 +70,12 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
                   id="slug"
                   type="text"
                   value={slug}
-                  onChange={(e) => setCustomSlug(e.target.value)}
+                  onChange={(e) => setSlug(e.target.value)}
                   className="w-full pl-[92px]"
                 />
               </div>
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="nickname">Your Nickname</Label>
-              <Input
-                id="nickname"
-                type="text"
-                className="w-full"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="members">
-                Other Member Names <span className="text-neutral-300">(Optional)</span>
-              </Label>
-              <Input
-                id="members"
-                type="text"
-                className="w-full"
-                value={members}
-                onChange={(e) => setMembers(e.target.value)}
-              />
-              <p className="text-sm text-muted-foreground">
-                Separate names with a comma. You can also add them later.
-              </p>
-            </div>
             {isError && (
               <div className="rounded bg-destructive p-2 text-destructive-foreground">
                 <p className="">{error?.message}</p>
@@ -143,7 +90,7 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
               disabled={isPending || !isValid}
               variant={"accent"}
             >
-              Create
+              Edit
             </Button>
           </DialogFooter>
         </form>
@@ -152,10 +99,9 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
       {isSuccess && (
         <>
           <DialogHeader>
-            <DialogTitle>Awesome</DialogTitle>
+            <DialogTitle>Success</DialogTitle>
             <DialogDescription className="flex flex-col gap-2 py-4">
-              <p>You just created a new circle!</p>
-              <p>Head over to the circle page and start tracking your wins!</p>
+              <p>Circle name and link has been updated!</p>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

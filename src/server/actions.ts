@@ -222,6 +222,68 @@ export const createCircle = authedProcedure
     return { success: true, circle }
   })
 
+export const editCircle = circleAdminProcedure
+  .createServerAction()
+  .input(
+    z.object({
+      name: z.string().min(1).max(20),
+      slug: z.string().min(1).max(20),
+    }),
+  )
+  .handler(async ({ input, ctx }) => {
+    const supabase = createSuperClient()
+
+    const { name, slug } = input
+
+    const { data: circles } = await supabase.from("circles").select("*").eq("slug", slug).single()
+
+    if (circles) throw `shmelo.io/${slug} is already taken`
+
+    const { data: circle, error } = await supabase
+      .from("circles")
+      .update({
+        name: name,
+        slug: slug,
+      })
+      .eq("id", ctx.member.circle_id)
+      .select()
+      .single()
+
+    if (error) {
+      console.log(error)
+      throw "failed to edit circle"
+    }
+
+    return { success: true, circle }
+  })
+
+export const deleteCircle = circleAdminProcedure
+  .createServerAction()
+  .input(
+    z.object({
+      circleId: z.number(),
+      confirmName: z.string(),
+    }),
+  )
+  .handler(async ({ input, ctx }) => {
+    const supabase = createSuperClient()
+    const { circleId } = input
+
+    const { data, error } = await supabase
+      .from("circles")
+      .delete()
+      .eq("id", circleId)
+      .eq("name", input.confirmName)
+      .single()
+
+    if (error) {
+      console.log(error)
+      throw "failed to delete circle"
+    }
+
+    return { success: true }
+  })
+
 export const deleteLastGame = circleAdminProcedure
   .createServerAction()
   .input(

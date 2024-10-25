@@ -107,7 +107,7 @@ export default function Members({
                   className={cn(
                     "absolute -right-6 pl-2 text-neutral-300 outline-none",
                     "opacity-0 transition-opacity group-hover:opacity-100",
-                    "dark:text-neutral-700",
+                    "cursor-default dark:text-neutral-700",
                   )}
                 >
                   <ShieldCheck size={16} />

@@ -4,10 +4,10 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { Circle } from "@/server/types"
 import { Plus } from "lucide-react"
-import Link from "next/link"
 import { useState } from "react"
 import { DotGrid } from "../_components/dot-grid"
 import { Card } from "./_components/cards"
+import CircleCard from "./_components/circle-card"
 import NewCircleDialogContent from "./_components/new-circle-dialog-content"
 
 type Props = {
@@ -23,33 +23,9 @@ export default function MyCircles({ circles: defaultCircles }: Props) {
 
       <div className={cn("flex flex-col gap-2")}>
         <h2 className="font-sans text-lg font-semibold text-neutral-600">My Circles</h2>
-        <DotGrid
-          className={cn(
-            "flex flex-wrap gap-7 rounded-lg border p-5",
-            "bg-[mask-image:radial-gradient(farthest-side_at_50%_50%,black,transparent)] bg-[radial-gradient(rgb(223,223,223)_1px,transparent_0)] bg-[size:12px_12px] dark:bg-[radial-gradient(rgb(40,40,40)_1px,transparent_0)]",
-          )}
-        >
+        <DotGrid className={cn("flex flex-wrap gap-7 rounded-lg border p-5")}>
           {circles.map((circle) => (
-            <Link href={`/${circle.slug}`} key={circle.id}>
-              <Card>
-                <div className="text-base font-semibold text-accent">{circle.name}</div>
-
-                <div className="flex flex-col gap-0 text-base">
-                  <div className="font-mono font-extrabold">
-                    <span className="dark:text-neutral-100">#1</span>
-                    <span className="text-neutral-300 dark:text-neutral-600">/6</span>
-                  </div>
-                  <div
-                    className={cn(
-                      "leading-0 text-sm leading-3",
-                      "text-neutral-300 dark:text-neutral-600",
-                    )}
-                  >
-                    your rank
-                  </div>
-                </div>
-              </Card>
-            </Link>
+            <CircleCard key={circle.id} circle={circle} />
           ))}
           <Dialog>
             <DialogTrigger className="outline-none">
