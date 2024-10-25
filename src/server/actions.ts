@@ -183,7 +183,7 @@ export const createCircle = authedProcedure
 
     const { data: circles } = await supabase.from("circles").select("*").eq("slug", slug).single()
 
-    if (circles) throw `slug '/${slug}' is already taken`
+    if (circles) throw `shmelo.io/${slug} is already taken`
 
     const { data: circle, error } = await supabase
       .from("circles")
@@ -235,9 +235,10 @@ export const editCircle = circleAdminProcedure
 
     const { name, slug } = input
 
-    const { data: circles } = await supabase.from("circles").select("*").eq("slug", slug).single()
-
-    if (circles) throw `shmelo.io/${slug} is already taken`
+    if (slug !== ctx.circle?.slug) {
+      const { data } = await supabase.from("circles").select("*").eq("slug", slug).single()
+      if (data) throw `shmelo.io/${slug} is already taken`
+    }
 
     const { data: circle, error } = await supabase
       .from("circles")

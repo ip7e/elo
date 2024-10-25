@@ -83,16 +83,13 @@ export default function EditCircleDialogContent({ circle }: Props) {
           <DialogHeader>
             <DialogTitle>Success</DialogTitle>
             <DialogDescription className="flex flex-col gap-2 py-4">
-              <p>Circle name and link has been updated!</p>
+              <p>Circle has been deleted!</p>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
               <Button variant={"ghost"}>Close</Button>
             </DialogClose>
-            <Link href={data.circle.slug}>
-              <Button variant="accent">Open {data.circle.name}</Button>
-            </Link>
           </DialogFooter>
         </>
       )}
