@@ -6,6 +6,7 @@ import { useState } from "react"
 import { GameWithResults, Member } from "../../../server/types"
 import { useServerAction } from "zsa-react"
 import { deleteLastGame } from "@/server/actions"
+import HasAccess from "../_components/has-access"
 
 type Props = {
   games: GameWithResults[]
@@ -62,11 +63,13 @@ export default function HistoryClient({ games: defaultGames, members, circleId }
               </span>
             ))}
           </div>
-          {i == 0 && (
-            <button className="font-light" onClick={handleDeleteLastGame}>
-              delete
-            </button>
-          )}
+          <HasAccess>
+            {i == 0 && (
+              <button className="font-light" onClick={handleDeleteLastGame}>
+                delete
+              </button>
+            )}
+          </HasAccess>
         </motion.div>
       ))}
     </div>

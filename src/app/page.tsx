@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils"
 import QueenVsKing from "./_assets/queen-vs-king"
 import "./globals.css"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function Page() {
   return (
@@ -18,9 +20,11 @@ export default function Page() {
           competitive
         </p>
 
-        <p className={cn("mt-8 text-center text-lg", "text-neutral-200 dark:text-neutral-400")}>
-          coming soon
-        </p>
+        <div className={cn("mt-8 text-center text-lg", "text-neutral-200 dark:text-neutral-400")}>
+          <Link href="/me">
+            <Button>Get Started</Button>
+          </Link>
+        </div>
       </div>
     </div>
   )
