@@ -9,8 +9,9 @@ import { ThemeProvider } from "next-themes"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 export const metadata: Metadata = {
-  title: "Shmelo.io",
-  description: "Ranking system for board games",
+  title: "Shmelo - Stay Competitive",
+  description:
+    "Leaderboard for games like board games, chess, tennis, padel, or any game worth a competition. Track wins, follow rankings, and stay competitive.",
   icons: [
     {
       rel: "icon",
@@ -18,6 +19,20 @@ export const metadata: Metadata = {
       url: "/favicon.svg",
     },
   ],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://shmelo.io",
+    siteName: "Shmelo",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Shmelo - Stay Competitive",
+      },
+    ],
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
