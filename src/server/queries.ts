@@ -96,8 +96,27 @@ export const getMyCircles = authedProcedure.createServerAction().handler(async (
 
   const { data: circles } = await supabase
     .from("circles")
-    .select("*, circle_members!inner(*)")
-    .eq("circle_members.user_id", user.id)
+    .select(
+      `*, 
+        me:circle_members!inner(*), 
+        members:circle_members(
+          *,
+          latest_game:game_results!inner(*)
+        )
+      `,
+    )
+    .order("created_at", { referencedTable: "members.latest_game", ascending: false })
+    .eq("me.user_id", user.id)
 
-  return circles
+  if (!circles) return []
+
+  return circles.map((circle) => {
+    const myRank = circle.members
+      .sort((a, b) => b.latest_game?.[0]?.elo! - a.latest_game?.[0]?.elo!)
+      .findIndex((m) => m.id === circle.me[0].id)
+
+    return { ...circle, myRank: myRank === -1 ? undefined : myRank + 1 }
+  })
 })
+
+export type CircleWithMyRank = inferServerActionReturnData<typeof getMyCircles>

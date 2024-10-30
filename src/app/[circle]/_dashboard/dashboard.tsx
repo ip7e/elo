@@ -17,10 +17,6 @@ type Props = {
 }
 
 export default function Dashboard({ recentGames, membersWithStats, circleId }: Props) {
-  const recentWinners = [...recentGames]
-    .slice(0, 3)
-    .map((game) => game.game_results.find((r) => r.winner)!.member_id)
-
   const [selectedMemberId, setSelectedMemberId] = useState(membersWithStats[0]?.id || 0)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
 

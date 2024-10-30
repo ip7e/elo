@@ -6,6 +6,7 @@ import { resolveInvitation } from "./admin"
 import { authedProcedure, circleAdminProcedure } from "./procedures"
 import createSuperClient from "./supabase"
 import calculateElo, { DEFAULT_ELO } from "./utils/elo"
+import { reservedSlugs } from "./constants"
 
 export const TestAdminProcedure = circleAdminProcedure
   .createServerAction()
@@ -181,6 +182,9 @@ export const createCircle = authedProcedure
 
     const { name, slug, members, nickname } = input
 
+    // reserved slugs
+    if (reservedSlugs.includes(slug)) throw `shmelo.io/${slug} is already taken`
+
     const { data: circles } = await supabase.from("circles").select("*").eq("slug", slug).single()
 
     if (circles) throw `shmelo.io/${slug} is already taken`
@@ -191,10 +195,7 @@ export const createCircle = authedProcedure
       .select()
       .single()
 
-    if (error) {
-      console.log(error)
-      throw "failed to create circle"
-    }
+    if (error) throw "failed to create circle"
 
     const { error: membersError } = await supabase
       .from("circle_members")
@@ -215,9 +216,9 @@ export const createCircle = authedProcedure
       ])
       .select()
 
-    if (membersError) {
-      throw "failed to add circle members"
-    }
+    if (membersError) throw "failed to add circle members"
+
+    revalidatePath("/me")
 
     return { success: true, circle }
   })
@@ -278,9 +279,10 @@ export const deleteCircle = circleAdminProcedure
       .single()
 
     if (error) {
-      console.log(error)
       throw "failed to delete circle"
     }
+
+    revalidatePath("/me", "layout")
 
     return { success: true }
   })

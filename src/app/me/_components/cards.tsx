@@ -1,7 +1,7 @@
 "use client"
 import { cn } from "@/lib/utils"
 import { motion, Variants } from "framer-motion"
-import React, { PropsWithChildren, useState } from "react"
+import React, { PropsWithChildren, useEffect, useState } from "react"
 
 const getRandomRotation = () => (Math.random() - 0.5) * 7
 type Props = PropsWithChildren<{
@@ -27,15 +27,20 @@ const cardVariants: Variants = {
 }
 
 export function Card({ forceHoverState, children, className }: Props) {
-  const [randomRotation, setRandomRotation] = useState(getRandomRotation)
+  const [randomRotation, setRandomRotation] = useState(0)
 
   const rotate = () => setRandomRotation(getRandomRotation())
+
+  useEffect(() => {
+    rotate()
+  }, [])
 
   return (
     <motion.div
       className={cn(
+        "size-40 sm:size-32 md:size-36",
         "border border-muted",
-        "dark: flex size-36 flex-col justify-between rounded-lg bg-background p-4",
+        "flex flex-col justify-between rounded-lg bg-background p-4",
         className,
       )}
       onMouseLeave={rotate}

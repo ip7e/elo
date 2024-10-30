@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import { Circle } from "@/server/types"
+import { CircleWithMyRank } from "@/server/queries"
 import { EllipsisVertical } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
@@ -15,12 +15,11 @@ import DeleteCircleDialogContent from "./delete-circle-dialog-content"
 import EditCircleDialogContent from "./edit-circle-dialog-content"
 
 type Props = {
-  circle: Circle
+  circle: CircleWithMyRank[0]
 }
 export default function CircleCard({ circle }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-
-  const [dialogContentType, setDialogContentType] = useState<"edit" | "delete">("edit")
+  const [dialogContentType, setDialogContentType] = useState<"edit" | "delete" | null>(null)
 
   return (
     <Dialog>
@@ -40,29 +39,44 @@ export default function CircleCard({ circle }: Props) {
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" side="right">
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation(), setDialogContentType("edit")
-                  }}
-                >
-                  <DialogTrigger>Rename</DialogTrigger>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation(), setDialogContentType("delete")
-                  }}
-                >
-                  <DialogTrigger>Delete</DialogTrigger>
-                </DropdownMenuItem>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setDialogContentType("edit")
+                    }}
+                  >
+                    Rename
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setDialogContentType("delete")
+                    }}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </DialogTrigger>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
 
           <div className="flex flex-col gap-0 text-base">
-            <div className="font-mono font-extrabold">
-              <span className="dark:text-neutral-100">#1</span>
-              <span className="text-neutral-300 dark:text-neutral-600">/6</span>
-            </div>
+            {circle.myRank && (
+              <div className="font-mono font-extrabold">
+                <span className="dark:text-neutral-100">#{circle.myRank}</span>
+                <span className="text-neutral-300 dark:text-neutral-600">
+                  /{circle.members.length}
+                </span>
+              </div>
+            )}
+            {!circle.myRank && (
+              <div className="font-mono">
+                <span className="text-neutral-300 dark:text-neutral-600">n/a</span>
+              </div>
+            )}
             <div
               className={cn(
                 "leading-0 text-sm leading-3",

@@ -40,20 +40,22 @@ export default function EditCircleDialogContent({ circle }: Props) {
           <DialogHeader>
             <DialogTitle>
               <TriangleAlert className="mr-2 inline-block text-destructive" size={18} />
-              Delete Circle
+              Confirm Circle Deletion
             </DialogTitle>
           </DialogHeader>
 
           <div className="bg my-6 grid gap-6">
-            <p className="">You&apos;re about to delete the circle &quot;{circle.name}&quot;</p>
+            <p className="">
+              You are about to permanently delete the circle &quot;{circle.name}&quot;.
+            </p>
 
             <div className="grid gap-2">
-              <Label htmlFor="circle">Confirm by typing circle name</Label>
+              <Label htmlFor="circle">Please type the circle name to confirm</Label>
               <Input
                 id="circle"
                 type="text"
                 className="w-full"
-                value={name}
+                defaultValue={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -72,7 +74,7 @@ export default function EditCircleDialogContent({ circle }: Props) {
               disabled={isPending || !isValid}
               variant={"destructive"}
             >
-              Delete
+              Delete Circle
             </Button>
           </DialogFooter>
         </form>

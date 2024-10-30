@@ -1,0 +1,17 @@
+export const reservedSlugs = [
+  "me",
+  "new",
+  "terms",
+  "privacy",
+  "about",
+  "faq",
+  "contact",
+  "login",
+  "signup",
+  "reset",
+  "auth",
+  "verify",
+  "callback",
+  "logout",
+  "recovery",
+]
