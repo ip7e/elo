@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils"
 import QueenVsKing from "./_assets/queen-vs-king"
-import "./globals.css"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
