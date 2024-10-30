@@ -39,8 +39,8 @@ export default function BumpChart({ membersWithStats, games: games, highlight }:
           [s.id]: {
             member_id: s.id,
             elo: s.latest_game[0].elo,
-            first_game: s.first_game[0].id,
-            latest_game: s.latest_game[0].id,
+            first_game: s.first_game[0].game_id,
+            latest_game: s.latest_game[0].game_id,
             name: s.name,
           } as MemberStat,
         }),

@@ -1,14 +1,14 @@
 "use client"
 
 import { DotGrid } from "@/app/_components/dot-grid"
+import { MembersWithStats } from "@/server/queries"
 import { cn } from "@/utils/tailwind/cn"
 import { useEffect, useState } from "react"
-import { GameWithResults, Member, Stat } from "../../../server/types"
+import { GameWithResults } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import { AddNewGameDialog } from "./_components/add-new-game-dialog"
 import BumpChart from "./bump-chart"
 import Members from "./members"
-import { MembersWithStats } from "@/server/queries"
 
 type Props = {
   recentGames: GameWithResults[]
@@ -39,6 +39,7 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
         <div className="flex flex-col-reverse justify-center gap-10 rounded-lg sm:flex-row sm:gap-0 sm:px-4">
           <DotGrid
             className={cn(
+              "rounded-lg border border-neutral-100 p-2 dark:border-neutral-800",
               `relative flex min-h-16 w-full flex-1 items-start justify-end overflow-hidden`,
               !showChart && "hidden sm:flex",
             )}
@@ -59,7 +60,7 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
             )}
           </DotGrid>
 
-          <div className="flex flex-col sm:w-56">
+          <div className="flex flex-col py-2 sm:w-56">
             <Members
               circleId={circleId}
               membersWithStats={membersWithStats}
