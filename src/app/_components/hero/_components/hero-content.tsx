@@ -19,7 +19,7 @@ export default function HeroContent() {
   return (
     <div className="justify-items-center text-center lg:justify-items-start lg:text-left">
       <RevealHeadline className="text-primary">
-        Never let your friends forget who&apos;s winning
+        Never let your friends forget who is the winner
       </RevealHeadline>
       <motion.p
         {...fadeInUpAnimation}
