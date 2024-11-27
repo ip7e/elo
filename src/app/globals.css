@@ -34,10 +34,9 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    &.dark {
-      --accent: 37 79% 49%;
-      --accent-foreground: 0 0% 100%;
+    --stroke: var(--primary);
 
+    &.dark {
       --background: 0 0% 3.9%;
       --foreground: 0 0% 98%;
       --card: 0 0% 3.9%;
@@ -60,6 +59,8 @@
       --chart-3: 30 80% 55%;
       --chart-4: 280 65% 60%;
       --chart-5: 340 75% 55%;
+
+      --stroke: 0 0% 80%;
     }
   }
 }
