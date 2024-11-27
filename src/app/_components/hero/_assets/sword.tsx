@@ -2,11 +2,11 @@ import type { SVGProps } from "react"
 const Sword = (props: SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 15 39" {...props}>
     <path
-      fill="#fff"
+      className="fill-background"
       d="M13.88 12.019 12.185 1.387l-6.64 7.179-2.14 21.758 4.235 1.635 6.24-19.94Z"
     />
     <path
-      stroke="#000"
+      className="stroke-stroke"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth=".452"
