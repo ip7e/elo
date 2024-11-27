@@ -50,7 +50,9 @@ export default function Members({
     const streaksById = Object.fromEntries(latestWinners.map((r) => [r.member_id, 1]))
 
     let currentStreak = 1
-    while (true) {
+    let maxStreak = 3
+
+    while (true && currentStreak < maxStreak) {
       const game = recentGames.at(currentStreak)
       if (!game) break
 
