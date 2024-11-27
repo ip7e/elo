@@ -4,7 +4,7 @@ import { motion, Transition } from "framer-motion"
 import { BaseDelay } from "../constants"
 
 const pathTransition = {
-  delay: BaseDelay.chart,
+  delay: BaseDelay.chart + 0.2,
   duration: 1,
   type: "tween",
 } satisfies Transition

@@ -3,5 +3,5 @@ export const BaseDelay = {
   description: 0.4,
   callToAction: 0.6,
   chart: 1.4,
-  characters: 1.7,
+  characters: 1.8,
 }
