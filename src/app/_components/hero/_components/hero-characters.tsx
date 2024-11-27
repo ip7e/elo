@@ -42,24 +42,25 @@ export default function HeroCharacters() {
     <div
       className={cn(
         "absolute flex items-end gap-4",
-        "left-1/2 top-[106px] -translate-x-1/2",
+        "left-1/2 top-1/2 -translate-x-1/2",
+        "sm:left-1/2 sm:top-[106px] sm:-translate-x-1/2",
         "lg:left-auto lg:right-16 lg:top-[106px] lg:-translate-x-0",
       )}
     >
       <AnimatedIcon delay={0}>
-        <Queen className={cn("h-28", "lg:h-24")} />
+        <Queen className={cn("h-20", "sm:h-28", "lg:h-24")} />
       </AnimatedIcon>
 
       <AnimatedIcon delay={0.2} className="mr-4">
-        <Racket className={cn("h-20", "lg:h-16")} />
+        <Racket className={cn("h-16", "sm:h-20", "lg:h-16")} />
       </AnimatedIcon>
 
       <AnimatedIcon delay={0.3}>
-        <Sword className={cn("h-20 scale-x-[-1]", "lg:h-16")} />
+        <Sword className={cn("h-16 scale-x-[-1]", "sm:h-20", "lg:h-16")} />
       </AnimatedIcon>
 
       <AnimatedIcon delay={0.1}>
-        <King className={cn("h-28 scale-x-[-1]", "lg:h-24")} />
+        <King className={cn("h-20 scale-x-[-1]", "sm:h-28", "lg:h-24")} />
       </AnimatedIcon>
     </div>
   )

@@ -7,7 +7,7 @@ export default function Hero() {
     <div className="mx-auto max-w-2xl py-20 lg:max-w-5xl lg:py-56">
       <div className="grid grid-cols-1 items-center gap-y-8 lg:grid-cols-[1fr_min-content] lg:gap-x-12">
         <HeroContent />
-        <div className="relative w-[500px] justify-self-center rounded-lg bg-background">
+        <div className="relative w-[300px] justify-self-center rounded-lg bg-background sm:w-[500px]">
           <HeroChart />
           <HeroCharacters />
         </div>
