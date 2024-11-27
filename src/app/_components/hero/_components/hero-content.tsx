@@ -34,7 +34,7 @@ export default function HeroContent() {
         className="mt-10 flex flex-col items-center gap-x-4 gap-y-3 lg:flex-row"
       >
         <Button asChild>
-          <Link href="/auth">Get started</Link>
+          <Link href="/me">Get started</Link>
         </Button>
         <span className="text-sm text-muted-foreground">it&apos;s free</span>
       </motion.div>
