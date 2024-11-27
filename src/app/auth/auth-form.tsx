@@ -1,6 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 import { Database } from "@/types/supabase"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useState } from "react"
@@ -12,6 +13,8 @@ export default function AuthForm() {
   const [email, setEmail] = useState<string | null>(null)
 
   const [isSent, setIsSent] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
   const redirectTo = isDev
     ? "http://localhost:3000/auth/callback"
     : "https://www.shmelo.io/auth/callback"
@@ -31,6 +34,7 @@ export default function AuthForm() {
       onSubmit={async (e) => {
         e.preventDefault()
         if (!isValidEmail) return
+        setIsLoading(true)
         await supabase.auth.signInWithOtp({
           email: email.trim(),
           options: {
@@ -38,11 +42,16 @@ export default function AuthForm() {
           },
         })
         setIsSent(true)
+        setIsLoading(false)
       }}
     >
       <div className="flex w-full max-w-md flex-col gap-4">
         <Input placeholder="Email" className="w-full" onChange={(e) => setEmail(e.target.value)} />
-        <Button variant="accent" disabled={!isValidEmail}>
+        <Button
+          variant="accent"
+          disabled={!isValidEmail || isLoading}
+          className={cn(isLoading && "animate-pulse")}
+        >
           Send me Magic Link
         </Button>
       </div>
