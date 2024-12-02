@@ -5,6 +5,8 @@ import { cn } from "@/utils/tailwind/cn"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Circle } from "../../../server/types"
+import LoggedIn from "@/app/_components/logged-in"
+import LoggedOut from "@/app/_components/logged-out"
 
 type Props = { circle: Circle }
 export default function Navigation({ circle }: Props) {
@@ -24,11 +26,22 @@ export default function Navigation({ circle }: Props) {
   return (
     <div className="fixed top-0 z-auto flex w-full justify-between gap-4 p-4 py-4 font-medium text-gray-400 dark:text-gray-300">
       <div className="flex items-center gap-4">
-        <Logo className="w-16 text-gray-600 dark:text-gray-200" />
-        <div className="flex items-center gap-4">
-          <Link href={"/me"} className="flex h-fit items-center gap-2">
-            <h1 className="ml-2">{circle.name.toLowerCase()}</h1>
+        <LoggedIn>
+          <Link href={"/me"}>
+            <Logo className="w-16 text-gray-600 dark:text-gray-200" />
           </Link>
+        </LoggedIn>
+        <LoggedOut>
+          <Link href={"/"}>
+            <Logo className="w-16 text-gray-600 dark:text-gray-200" />
+          </Link>
+        </LoggedOut>
+
+        <div className="flex items-center gap-4">
+          <div className="flex h-fit items-center gap-2">
+            <h1 className="ml-2">{circle.name.toLowerCase()}</h1>
+          </div>
+
           <div className="h-4 w-0.5 bg-gray-400/20 dark:bg-gray-200/30" />
 
           <nav className="flex gap-2">
