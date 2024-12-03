@@ -16,7 +16,7 @@ import { useMemo, useState } from "react"
 import { useServerAction } from "zsa-react"
 import { GameWithResults, Member } from "../../../server/types"
 import HasAccess from "../_components/has-access"
-import NumberLoadingComponent from "../_components/numbers-shuffler"
+import NumbersShuffler from "../_components/numbers-shuffler"
 import Star from "../_components/star"
 import InviteDialogContent from "./_components/invite-dialog-content"
 import { LeadingCell, MiddleCell, Table, TableRow, TrailingCell } from "./_components/table"
@@ -80,7 +80,7 @@ export default function Members({
     <Table className="relative">
       {membersWithGames.map(({ latest_game, name, id }, i) => (
         <TableRow
-          className={cn("group relative", pendingMemberIds.includes(id!) && "animate-pulse")}
+          className={cn("group relative")}
           key={id}
           layoutId={"member-" + id}
           onMouseEnter={() => onHighlightChange(id!)}
@@ -95,10 +95,7 @@ export default function Members({
             </span>
           </MiddleCell>
           <TrailingCell>
-            <NumberLoadingComponent
-              isLoading={pendingMemberIds.includes(id!)}
-              value={latest_game?.[0]?.elo}
-            />
+            <NumbersShuffler spin={pendingMemberIds.includes(id!)} value={latest_game?.[0]?.elo} />
           </TrailingCell>
 
           <HasAccess>
