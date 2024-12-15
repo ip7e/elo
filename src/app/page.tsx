@@ -18,10 +18,7 @@ export default function Example() {
           <a href="https://x.com/itsikap" className="underline hover:text-primary/80">
             x
           </a>{" "}
-          <a
-            href="https://bsky.app/profile/ikap7e.bsky.social"
-            className="underline hover:text-primary/80"
-          >
+          <a href="https://bsky.app/profile/ika.im" className="underline hover:text-primary/80">
             bluesky
           </a>
         </p>
