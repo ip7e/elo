@@ -38,11 +38,10 @@ export default function Navigation({ circle }: Props) {
         </LoggedOut>
 
         <div className="flex items-center gap-4">
-          <div className="flex h-fit items-center gap-2">
+          <div className="hidden h-fit items-center gap-4 sm:flex">
             <h1 className="ml-2">{circle.name.toLowerCase()}</h1>
+            <div className="h-4 w-0.5 bg-gray-400/20 dark:bg-gray-200/30" />
           </div>
-
-          <div className="h-4 w-0.5 bg-gray-400/20 dark:bg-gray-200/30" />
 
           <nav className="flex gap-2">
             {routes.map(({ pathname, label }) => (
@@ -57,7 +56,7 @@ export default function Navigation({ circle }: Props) {
           </nav>
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="hidden items-center gap-2 sm:flex">
         <Link href="/me">my circles</Link>
       </div>
     </div>
