@@ -19,7 +19,7 @@ function useRedirectUrl() {
 
 export default function AuthForm() {
   const supabase = createClientComponentClient<Database>()
-  const redirectUrl = useRedirectUrl()
+  const redirectTo = useRedirectUrl()
   const [email, setEmail] = useState<string | null>(null)
 
   const [isSent, setIsSent] = useState(false)
@@ -32,9 +32,22 @@ export default function AuthForm() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: redirectUrl,
+        redirectTo: redirectTo,
       },
     })
+    setIsLoading(false)
+  }
+
+  const handleEmailSignIn = async () => {
+    setIsLoading(true)
+    if (!isValidEmail) return
+    await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: {
+        emailRedirectTo: redirectTo,
+      },
+    })
+    setIsSent(true)
     setIsLoading(false)
   }
 
@@ -84,16 +97,7 @@ export default function AuthForm() {
       <form
         onSubmit={async (e) => {
           e.preventDefault()
-          if (!isValidEmail) return
-          setIsLoading(true)
-          await supabase.auth.signInWithOtp({
-            email: email.trim(),
-            options: {
-              emailRedirectTo: redirectTo,
-            },
-          })
-          setIsSent(true)
-          setIsLoading(false)
+          await handleEmailSignIn()
         }}
       >
         <div className="flex w-full flex-col gap-4">
