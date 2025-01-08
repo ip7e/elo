@@ -4,20 +4,26 @@ import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { Database } from "@/types/supabase"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-const isDev = process.env.NODE_ENV === "development"
+function useRedirectUrl() {
+  const isDev = process.env.NODE_ENV === "development"
+  const [origin, setOrigin] = useState("")
+
+  useEffect(() => {
+    setOrigin(window.location.origin)
+  }, [])
+
+  return isDev ? "http://localhost:3000/auth/callback" : `${origin}/auth/callback`
+}
 
 export default function AuthForm() {
   const supabase = createClientComponentClient<Database>()
+  const redirectUrl = useRedirectUrl()
   const [email, setEmail] = useState<string | null>(null)
 
   const [isSent, setIsSent] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-
-  const redirectTo = isDev
-    ? "http://localhost:3000/auth/callback"
-    : "https://www.shmelo.io/auth/callback"
 
   const isValidEmail = email && /^\S+@\S+\.\S+$/.test(email.trim())
 
@@ -26,7 +32,7 @@ export default function AuthForm() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo,
+        redirectTo: redirectUrl,
       },
     })
     setIsLoading(false)
