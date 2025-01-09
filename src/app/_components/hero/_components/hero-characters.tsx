@@ -44,7 +44,7 @@ export default function HeroCharacters() {
         "absolute flex items-end gap-4",
         "left-1/2 top-1/2 -translate-x-1/2",
         "sm:left-1/2 sm:top-[106px] sm:-translate-x-1/2",
-        "lg:left-auto lg:right-16 lg:top-[106px] lg:-translate-x-0",
+        "scale-90 lg:left-auto lg:right-[200px] lg:top-[106px] lg:-translate-x-0",
       )}
     >
       <AnimatedIcon delay={0}>
