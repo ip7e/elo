@@ -10,7 +10,7 @@ export default function Example() {
       </div>
       <footer className="text-center text-xs text-primary/30">
         <p>
-          created by{" "}
+          made by{" "}
           <a href="https://ika.im" className="underline hover:text-primary/80">
             Ika
           </a>{" "}
