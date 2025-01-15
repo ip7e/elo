@@ -28,13 +28,23 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
   const [nickname, setNickname] = useState("")
   const [members, setMembers] = useState("")
 
+  const sanitizeSlug = (value: string) => {
+    return value
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "")
+  }
+
   useEffect(() => {
     if (customSlug) return
-
-    // convert name to slug
-    const nameToSlug = name.toLowerCase().replaceAll(" ", "-")
-    setDefaultSlug(nameToSlug)
+    setDefaultSlug(sanitizeSlug(name))
   }, [name, customSlug])
+
+  const handleCustomSlug = (value: string) => {
+    setCustomSlug(sanitizeSlug(value))
+  }
 
   const { isPending, execute, isSuccess, isError, error, data } = useServerAction(createCircle, {
     onSuccess: ({ data }) => {
@@ -97,7 +107,7 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
                   id="slug"
                   type="text"
                   value={slug}
-                  onChange={(e) => setCustomSlug(e.target.value)}
+                  onChange={(e) => handleCustomSlug(e.target.value)}
                   className="w-full pl-[92px]"
                 />
               </div>
