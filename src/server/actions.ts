@@ -78,14 +78,15 @@ export const createGameSession = circleAdminProcedure
     const { member } = ctx
 
     const { data: membersStats } = await supabase
-      .from("members_stats")
-      .select(`*`)
+      .from("circle_members")
+      .select(`*, latest_game:game_results!inner(*)`)
       .eq("circle_id", member.circle_id)
+      .order("created_at", { referencedTable: "latest_game", ascending: false })
 
     if (!membersStats) throw "Failed to get members elo"
 
     const existingEloMap = Object.fromEntries(
-      membersStats.map((member) => [member.member_id, member.elo]),
+      membersStats.map((member) => [member.id, member.latest_game[0].elo]),
     )
     const winnersMap = Object.fromEntries(winnerIds.map((id) => [id, true]))
 
