@@ -2,6 +2,9 @@ import { curveMonotoneX, line } from "d3-shape"
 import { BumpChartProvider, useChart } from "./bump-chart-context"
 import { GameRecord } from "./types"
 import { cn } from "@/lib/utils"
+import { motion, SVGMotionProps } from "framer-motion"
+import { useEffect, useReducer } from "react"
+import { useState } from "react"
 
 type Props = {
   data: GameRecord[][]
@@ -36,10 +39,42 @@ export function BumpChart({ data, selectedMemberId }: Props) {
 }
 
 function WinningLineWithDots({ memberId }: { memberId: number }) {
+  const { gamesByMember } = useChart()
+  const myGames = gamesByMember.get(memberId) || []
+
+  const [firstRender, renderedOnce] = useReducer(() => false, true)
+
+  useEffect(renderedOnce, [memberId])
+
+  const duration = firstRender ? myGames.length * 0.1 : 0
+
   return (
     <>
-      <MemberLine memberId={memberId} className="stroke-accent stroke-2" />
-      <MemberDots memberId={memberId} />
+      <MemberLine
+        key={`wining-line-${memberId}`}
+        memberId={memberId}
+        className="stroke-accent stroke-2"
+        initial={{ opacity: 0, pathLength: firstRender ? 0 : 1 }}
+        animate={{ opacity: 1, pathLength: 1 }}
+        transition={{ duration }}
+      />
+      {myGames.map(
+        (game, index) =>
+          game.played && (
+            <Dot
+              key={`winning-dot-${memberId}-${game.id}`}
+              gameIndex={index}
+              rank={game.rank}
+              initial={{ opacity: 0, scale: 0.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.2, delay: index * 0.01 + Math.min(duration, 1) }}
+              className={cn(
+                "fill-background stroke-accent stroke-2",
+                game.won ? "fill-accent" : "",
+              )}
+            />
+          ),
+      )}
     </>
   )
 }
@@ -49,8 +84,14 @@ function MemberLines() {
 
   return (
     <>
-      {Array.from(gamesByMember.entries()).map(([memberId]) => (
-        <MemberLine key={memberId} memberId={memberId} />
+      {Array.from(gamesByMember.entries()).map(([memberId, games]) => (
+        <MemberLine
+          key={memberId}
+          memberId={memberId}
+          initial={{ opacity: 0, pathLength: 0 }}
+          animate={{ opacity: 1, pathLength: 1 }}
+          transition={{ duration: 0.1 * games.length }}
+        />
       ))}
     </>
   )
@@ -59,9 +100,9 @@ function MemberLines() {
 type MemberLineProps = {
   memberId: number
   className?: string
-}
+} & SVGMotionProps<SVGPathElement>
 
-function MemberLine({ memberId, className }: MemberLineProps) {
+function MemberLine({ memberId, className, ...props }: MemberLineProps) {
   const { gamesByMember, xScale, yScale, data } = useChart()
   const myGames = gamesByMember.get(memberId) || []
   const totalGames = data.length
@@ -72,7 +113,8 @@ function MemberLine({ memberId, className }: MemberLineProps) {
     .curve(curveMonotoneX)
 
   return (
-    <path
+    <motion.path
+      {...props}
       d={lineGenerator(myGames) || ""}
       fill="none"
       className={cn("stroke-secondary stroke-1", className)}
@@ -81,24 +123,19 @@ function MemberLine({ memberId, className }: MemberLineProps) {
   )
 }
 
-function MemberDots({ memberId }: { memberId: number }) {
-  const { gamesByMember } = useChart()
-  const myGames = gamesByMember.get(memberId) || []
-  return myGames.map((game, index) => <Dot key={index} gameIndex={index} rank={game.rank} />)
-}
-
 type DotProps = {
   gameIndex: number
   rank: number
   className?: string
-}
+} & SVGMotionProps<SVGCircleElement>
 
-function Dot({ gameIndex, rank, className }: DotProps) {
+function Dot({ gameIndex, rank, className, ...props }: DotProps) {
   const { data, xScale, yScale } = useChart()
 
   const totalGames = data.length
   return (
-    <circle
+    <motion.circle
+      {...props}
       cx={xScale(totalGames - gameIndex)}
       cy={yScale(rank)}
       r={3}

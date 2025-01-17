@@ -16,6 +16,7 @@ export function getGameSeries(
           elo: m.latest_game?.elo ?? 1100,
           member_id: m.id,
           firstGameId: m.first_game?.game_id,
+          won: m.latest_game?.winner ?? false,
         },
       ]),
   )
@@ -36,6 +37,7 @@ export function getGameSeries(
       if (currentMemberStats.has(result.member_id)) {
         const stats = currentMemberStats.get(result.member_id)!
         stats.elo = result.elo
+        stats.won = result.winner ?? false
       }
     })
 
@@ -52,6 +54,8 @@ export function getGameSeries(
         member: membersWithStats.find((m) => m.id === memberId)!,
         played: participants.has(memberId),
         isFirstGame: stats.firstGameId === game.id,
+        won: stats.won,
+        id: game.id,
       })
 
       // Remove member if this was their first game

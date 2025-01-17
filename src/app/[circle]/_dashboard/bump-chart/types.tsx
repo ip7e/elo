@@ -6,4 +6,6 @@ export type GameRecord = {
   isFirstGame: boolean
   played: boolean
   member: Member
+  won: boolean
+  id: number
 }

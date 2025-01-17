@@ -49,7 +49,7 @@ export function BumpChartProvider({
     () =>
       scaleLinear()
         .domain([0, data.length])
-        .range([padding, width - padding]),
+        .range([16, width - 16]),
     [data.length, width, padding],
   )
 
