@@ -52,8 +52,8 @@ export const getMembersWithStats = createServerAction()
     return (response ?? [])
       .map((v) => ({
         ...v,
-        latest_game: v.latest_game?.[0] as GameResult | null,
-        first_game: v.first_game?.[0] as GameResult | null,
+        latest_game: v.latest_game?.[0] as GameResult,
+        first_game: v.first_game?.[0] as GameResult,
       }))
       .sort((a, b) => (b.latest_game?.elo ?? 0) - (a.latest_game?.elo ?? 0))
   })
