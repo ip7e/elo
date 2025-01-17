@@ -1,14 +1,14 @@
 "use client"
 
-import { DotGrid } from "@/app/_components/dot-grid"
 import { MembersWithStats } from "@/server/queries"
 import { cn } from "@/utils/tailwind/cn"
 import { useEffect, useState } from "react"
 import { GameWithResults } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import { AddNewGameDialog } from "./_components/add-new-game-dialog"
-import BumpChart from "./bump-chart"
 import Members from "./members"
+import { getGameSeries } from "./prepare-data"
+import { BumpChart } from "./bump-chart/bump-chart"
 
 type Props = {
   recentGames: GameWithResults[]
@@ -20,7 +20,10 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
   const [selectedMemberId, setSelectedMemberId] = useState(membersWithStats[0]?.id || 0)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
 
-  const showChart = recentGames.length > 2
+  const chartData = getGameSeries(membersWithStats, recentGames)
+
+  // const showChart = recentGames.length > 2
+  const showChart = recentGames.length > 0
   const noChartMessage =
     !showChart &&
     {
@@ -37,20 +40,14 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
     <>
       <div className="flex flex-col">
         <div className="flex flex-col-reverse justify-center gap-10 rounded-lg sm:flex-row sm:gap-0 sm:px-4">
-          <DotGrid
+          <div
             className={cn(
-              "rounded-lg border border-neutral-100 p-2 dark:border-neutral-800",
+              "rounded-lg border border-neutral-100 py-2 dark:border-neutral-800",
               `relative flex min-h-16 w-full flex-1 items-start justify-end overflow-hidden`,
               !showChart && "hidden sm:flex",
             )}
           >
-            {showChart && (
-              <BumpChart
-                games={recentGames}
-                membersWithStats={membersWithStats}
-                highlight={selectedMemberId}
-              />
-            )}
+            {showChart && <BumpChart data={chartData} selectedMemberId={selectedMemberId} />}
             {!showChart && (
               <div className="flex h-full min-h-16 w-full items-center justify-center">
                 <span className="dark:text-neutral-sm rounded-md border border-neutral-100 bg-background px-2 py-1 font-mono text-sm text-neutral-300 dark:border-neutral-600 dark:text-neutral-600">
@@ -58,7 +55,7 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
                 </span>
               </div>
             )}
-          </DotGrid>
+          </div>
 
           <div className="flex flex-col py-2 sm:w-56">
             <Members

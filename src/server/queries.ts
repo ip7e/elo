@@ -1,4 +1,4 @@
-import { GameWithResults } from "@/server/types"
+import { GameResult, GameWithResults } from "@/server/types"
 import { createServerClient, createServerClientWithCookies } from "@/utils/supabase/server"
 import "server-only"
 import z from "zod"
@@ -30,7 +30,7 @@ export const getMembersWithStats = createServerAction()
   .handler(async ({ input }) => {
     const supabase = createServerClient()
 
-    const { data: members, error } = await supabase
+    const { data: response, error } = await supabase
       .from("circle_members")
       .select(
         `*, 
@@ -49,7 +49,13 @@ export const getMembersWithStats = createServerAction()
       .eq("wins.winner", true)
       .eq("circle_id", input.circleId)
 
-    return members?.sort((a, b) => b.latest_game?.[0]?.elo! - a.latest_game?.[0]?.elo!)
+    return (response ?? [])
+      .map((v) => ({
+        ...v,
+        latest_game: v.latest_game?.[0] as GameResult | null,
+        first_game: v.first_game?.[0] as GameResult | null,
+      }))
+      .sort((a, b) => (b.latest_game?.elo ?? 0) - (a.latest_game?.elo ?? 0))
   })
 
 export type MembersWithStats = inferServerActionReturnData<typeof getMembersWithStats>

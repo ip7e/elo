@@ -39,8 +39,8 @@ export default function Members({
   membersWithStats,
   pendingMemberIds,
 }: Props) {
-  const newMembers = membersWithStats.filter((m) => m.latest_game.length === 0)
-  const membersWithGames = membersWithStats.filter((m) => m.latest_game.length > 0)
+  const newMembers = membersWithStats.filter((m) => !m.latest_game)
+  const membersWithGames = membersWithStats.filter((m) => !!m.latest_game)
   const ownerMembers = membersWithStats.filter((m) => !!m.user_id).map((m) => m.id)
 
   const winningStreaksByMemberId = useMemo(() => {
@@ -95,7 +95,7 @@ export default function Members({
             </span>
           </MiddleCell>
           <TrailingCell>
-            <NumbersShuffler spin={pendingMemberIds.includes(id!)} value={latest_game?.[0]?.elo} />
+            <NumbersShuffler spin={pendingMemberIds.includes(id!)} value={latest_game?.elo} />
           </TrailingCell>
 
           <HasAccess>
