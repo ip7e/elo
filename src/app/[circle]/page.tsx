@@ -9,7 +9,9 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   const games = await getAllGames(circle.id)
 
-  const [membersWithStats] = await getMembersWithStats({ circleId: circle.id })
+  const [membersWithStats, error] = await getMembersWithStats({ circleId: circle.id })
+
+  console.log({ membersWithStats, games, error })
 
   if (!membersWithStats || !games) return null
 
