@@ -27,6 +27,7 @@ type Props = {
   onHighlightChange: (id: number) => void
   highlightId: number
   pendingMemberIds: number[]
+  selectedGameIndex: number | null
 }
 
 export default function Members({
@@ -36,6 +37,7 @@ export default function Members({
   recentGames,
   membersWithStats,
   pendingMemberIds,
+  selectedGameIndex,
 }: Props) {
   const ownerMembers = membersWithStats.filter((m) => !!m.user_id).map((m) => m.id)
 

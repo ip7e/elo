@@ -9,6 +9,7 @@ import { AddNewGameDialog } from "./_components/add-new-game-dialog"
 import Members from "./members"
 import { getGameSeries } from "./prepare-data"
 import { BumpChart } from "./bump-chart/bump-chart"
+import { SpotlightMembers } from "./spotlight-members"
 
 type Props = {
   recentGames: GameWithResults[]
@@ -19,8 +20,14 @@ type Props = {
 export default function Dashboard({ recentGames, membersWithStats, circleId }: Props) {
   const [selectedMemberId, setSelectedMemberId] = useState(membersWithStats[0]?.id || 0)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
+  const [selectedGameIndex, setSelectedGameIndex] = useState<number | null>(null)
 
   const chartData = getGameSeries(membersWithStats, recentGames)
+
+  const handleGameSelect = (index: number | null) => {
+    if (selectedGameIndex === index) setSelectedGameIndex(null)
+    else setSelectedGameIndex(index)
+  }
 
   // const showChart = recentGames.length > 2
   const showChart = recentGames.length > 0
@@ -50,6 +57,8 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
                 data={chartData}
                 selectedMemberId={selectedMemberId}
                 className={cn(!showChart && "hidden sm:flex")}
+                selectedGameIndex={selectedGameIndex}
+                onGameSelect={handleGameSelect}
               />
             )}
             {!showChart && (
@@ -62,14 +71,23 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
           </div>
 
           <div className="flex flex-col py-2 sm:w-56">
-            <Members
-              circleId={circleId}
-              membersWithStats={membersWithStats}
-              recentGames={recentGames}
-              highlightId={selectedMemberId}
-              onHighlightChange={(id) => setSelectedMemberId(id)}
-              pendingMemberIds={pendingMemberIds}
-            />
+            {selectedGameIndex === null ? (
+              <Members
+                circleId={circleId}
+                membersWithStats={membersWithStats}
+                recentGames={recentGames}
+                highlightId={selectedMemberId}
+                onHighlightChange={(id) => setSelectedMemberId(id)}
+                pendingMemberIds={pendingMemberIds}
+                selectedGameIndex={selectedGameIndex}
+              />
+            ) : (
+              <SpotlightMembers
+                membersWithStats={membersWithStats}
+                recentGames={recentGames}
+                selectedGameIndex={selectedGameIndex}
+              />
+            )}
           </div>
         </div>
 
@@ -83,7 +101,10 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
             <AddNewGameDialog
               members={membersWithStats}
               circleId={circleId}
-              onSubmitted={(ids) => setPendingMemberIds(ids)}
+              onSubmitted={(ids) => {
+                setPendingMemberIds(ids)
+                setSelectedGameIndex(null)
+              }}
             />
           </div>
         </HasAccess>
