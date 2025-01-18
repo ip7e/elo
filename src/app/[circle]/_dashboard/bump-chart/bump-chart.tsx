@@ -34,6 +34,7 @@ export function BumpChart({
   const isGameSelected = selectedGameIndex !== null
 
   const enableGameSelect = onGameSelect !== undefined
+
   return (
     <div
       className={cn(
