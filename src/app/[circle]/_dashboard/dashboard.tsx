@@ -42,7 +42,7 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
         <div className="flex flex-col-reverse justify-center gap-10 rounded-lg sm:flex-row sm:gap-0 sm:px-4">
           <div
             className={cn(
-              "rounded-lg border border-neutral-100 py-2 dark:border-neutral-800",
+              "rounded-lg border border-neutral-100 dark:border-neutral-800",
               `relative flex min-h-16 w-full flex-1 items-start justify-end overflow-hidden`,
               !showChart && "hidden sm:flex",
             )}

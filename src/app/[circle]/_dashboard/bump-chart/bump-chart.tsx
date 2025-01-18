@@ -14,7 +14,7 @@ type Props = {
 export function BumpChart({ data, selectedMemberId }: Props) {
   const itemWidth = 50
   const itemHeight = 32
-  const padding = 0
+  const padding = 8
 
   const width = data.length * itemWidth + padding * 2
   const height = data[0].length * itemHeight + padding * 2
@@ -29,8 +29,10 @@ export function BumpChart({ data, selectedMemberId }: Props) {
       itemHeight={itemHeight}
     >
       <div className="flex justify-end">
-        <svg width={width} height={height}>
+        <svg width={width} height={height} className="">
+          {/* <HoverCols /> */}
           <MemberLines />
+          <FirstGameDots />
           <WinningLineWithDots memberId={selectedMemberId} />
         </svg>
       </div>
@@ -55,7 +57,7 @@ function WinningLineWithDots({ memberId }: { memberId: number }) {
         memberId={memberId}
         className="stroke-accent stroke-2"
         initial={{ opacity: 0, pathLength: firstRender ? 0 : 1 }}
-        animate={{ opacity: 1, pathLength: 1 }}
+        animate={{ opacity: [0, 1, 1], pathLength: 1 }}
         transition={{ duration }}
       />
       {myGames.map(
@@ -67,7 +69,7 @@ function WinningLineWithDots({ memberId }: { memberId: number }) {
               rank={game.rank}
               initial={{ opacity: 0, scale: 0.1 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.2, delay: index * 0.01 + Math.min(duration, 1) }}
+              transition={{ duration: 0.2, delay: index * 0.005 + Math.min(duration, 1) }}
               className={cn(
                 "fill-background stroke-accent stroke-2",
                 game.won ? "fill-accent" : "",
@@ -89,10 +91,35 @@ function MemberLines() {
           key={memberId}
           memberId={memberId}
           initial={{ opacity: 0, pathLength: 0 }}
-          animate={{ opacity: 1, pathLength: 1 }}
+          animate={{ opacity: [0, 1, 1], pathLength: 1 }}
           transition={{ duration: 0.1 * games.length }}
         />
       ))}
+    </>
+  )
+}
+
+function FirstGameDots() {
+  const { gamesByMember } = useChart()
+
+  return (
+    <>
+      {Array.from(gamesByMember.entries()).map(([memberId, games]) => {
+        const firstGameIndex = games.findIndex((game) => game.isFirstGame)
+        const firstGame = games[firstGameIndex]
+        return (
+          <Dot
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.1, delay: games.length * 0.1 }}
+            key={memberId}
+            gameIndex={firstGameIndex}
+            rank={firstGame.rank}
+            className={cn("fill-background stroke-secondary")}
+            r={2}
+          />
+        )
+      })}
     </>
   )
 }
@@ -135,11 +162,48 @@ function Dot({ gameIndex, rank, className, ...props }: DotProps) {
   const totalGames = data.length
   return (
     <motion.circle
-      {...props}
       cx={xScale(totalGames - gameIndex)}
       cy={yScale(rank)}
       r={3}
+      {...props}
       className={cn("fill-accent stroke-accent", className)}
     />
+  )
+}
+
+function HoverCols() {
+  const { data, xScale, yScale } = useChart()
+
+  const totalGames = data.length
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(4)
+
+  return (
+    <>
+      {data.map((_, index) => (
+        <g key={`hover-col-${index}`} className="group">
+          <motion.rect
+            key={index}
+            x={xScale(totalGames - index) - 25}
+            width={50}
+            height="100%"
+            className="group fill-transparent"
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
+          />
+        </g>
+      ))}
+      {hoveredIndex !== null && (
+        <>
+          <motion.line
+            key={`hover-line-${hoveredIndex}`}
+            x1={xScale(totalGames - hoveredIndex)}
+            y1={yScale(0)}
+            x2={xScale(totalGames - hoveredIndex)}
+            y2={yScale(data[hoveredIndex].length - 1)}
+            className="stroke-muted"
+          />
+        </>
+      )}
+    </>
   )
 }
