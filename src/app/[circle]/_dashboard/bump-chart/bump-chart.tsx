@@ -9,9 +9,10 @@ import { useState } from "react"
 type Props = {
   data: GameRecord[][]
   selectedMemberId: number
+  className?: string
 }
 
-export function BumpChart({ data, selectedMemberId }: Props) {
+export function BumpChart({ data, selectedMemberId, className }: Props) {
   const itemWidth = 50
   const itemHeight = 32
   const padding = 8
@@ -20,23 +21,31 @@ export function BumpChart({ data, selectedMemberId }: Props) {
   const height = data[0].length * itemHeight + padding * 2
 
   return (
-    <BumpChartProvider
-      data={data}
-      width={width}
-      height={height}
-      padding={padding}
-      itemWidth={itemWidth}
-      itemHeight={itemHeight}
+    <div
+      className={cn(
+        "rounded-lg border border-neutral-100 dark:border-neutral-800",
+        `relative flex min-h-16 w-full flex-1 items-start justify-end overflow-hidden`,
+        className,
+      )}
     >
-      <div className="flex justify-end">
-        <svg width={width} height={height} className="">
-          {/* <HoverCols /> */}
-          <MemberLines />
-          <FirstGameDots />
-          <WinningLineWithDots memberId={selectedMemberId} />
-        </svg>
-      </div>
-    </BumpChartProvider>
+      <BumpChartProvider
+        data={data}
+        width={width}
+        height={height}
+        padding={padding}
+        itemWidth={itemWidth}
+        itemHeight={itemHeight}
+      >
+        <div className="flex justify-end">
+          <svg width={width} height={height} className="">
+            {/* <HoverCols /> */}
+            <MemberLines />
+            <FirstGameDots />
+            <WinningLineWithDots memberId={selectedMemberId} />
+          </svg>
+        </div>
+      </BumpChartProvider>
+    </div>
   )
 }
 
@@ -46,7 +55,7 @@ function WinningLineWithDots({ memberId }: { memberId: number }) {
 
   const [firstRender, renderedOnce] = useReducer(() => false, true)
 
-  useEffect(renderedOnce, [memberId])
+  useEffect(renderedOnce, [memberId, renderedOnce])
 
   const duration = firstRender ? myGames.length * 0.1 : 0
 
