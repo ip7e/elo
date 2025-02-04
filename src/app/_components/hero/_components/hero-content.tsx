@@ -17,7 +17,7 @@ const textTransition = {
 
 export default function HeroContent() {
   return (
-    <div className="justify-items-center text-center lg:justify-items-start lg:text-left">
+    <div className="justify-items-center text-center">
       <RevealHeadline className="text-primary">
         Never let your friends forget who is the winner
       </RevealHeadline>
@@ -26,7 +26,7 @@ export default function HeroContent() {
         transition={{ ...textTransition, delay: BaseDelay.description }}
         className="mt-8 max-w-md text-pretty text-lg font-light text-primary/70 lg:text-xl/8"
       >
-        A scoreboard for competitive games to track results, rankings, and winning streaks
+        A very good leaderboard app for competitive games.
       </motion.p>
       <motion.div
         {...fadeInUpAnimation}
