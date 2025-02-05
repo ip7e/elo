@@ -34,7 +34,7 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
 
 export function LeadingCell({ children, className }: ChildrenWithClassName) {
   return (
-    <div className={cn("w-6 text-right text-neutral-300 dark:text-neutral-500", className)}>
+    <div className={cn("w-2 text-right text-neutral-300 dark:text-neutral-500", className)}>
       {children}
     </div>
   )
