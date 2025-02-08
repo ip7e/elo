@@ -2128,6 +2128,7 @@ export default function Demo() {
                 members={DEMO_MEMBERS}
                 highlightId={highlightedId}
                 onHighlightChange={setHighlightedId}
+                hideRankingOnMobile
               />
             </div>
           </div>

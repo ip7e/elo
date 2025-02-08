@@ -114,8 +114,12 @@ export default function Members({
       />
 
       <HasAccess>
-        <div className="absolute -bottom-8 left-0 w-full">
-          <AddNewMember circleId={circleId} showTooltip={membersWithStats.length < 2} />
+        <div className={cn("absolute -bottom-8 w-full")}>
+          <AddNewMember
+            circleId={circleId}
+            showTooltip={membersWithStats.length < 2}
+            leadingCellSize={membersWithStats.length > 9 ? "w-6" : "w-3"}
+          />
         </div>
       </HasAccess>
     </div>
