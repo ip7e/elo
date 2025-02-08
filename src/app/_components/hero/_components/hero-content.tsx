@@ -17,17 +17,19 @@ const textTransition = {
 
 export default function HeroContent() {
   return (
-    <div className="justify-items-center text-center">
-      <RevealHeadline className="text-primary">
+    <div className="flex flex-col items-center text-center">
+      <RevealHeadline className="text-balance">
         Never let your friends forget who is the winner
       </RevealHeadline>
+
       <motion.p
         {...fadeInUpAnimation}
         transition={{ ...textTransition, delay: BaseDelay.description }}
-        className="mt-8 max-w-md text-pretty text-xl/8 font-light text-primary/70"
+        className="mt-8 flex max-w-md text-pretty text-xl/6 font-light text-primary/70"
       >
-        A very good leaderboard app for competitive games.
+        A very good leaderboard app for <br /> competitive games.
       </motion.p>
+
       <motion.div
         {...fadeInUpAnimation}
         transition={{ ...textTransition, delay: BaseDelay.callToAction }}
