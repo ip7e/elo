@@ -156,7 +156,7 @@ function NewMemberActions({ memberId, circleId }: { memberId: number; circleId: 
 
   return (
     <button
-      className="absolute -right-6 flex cursor-default items-center justify-center rounded-md pl-2 text-neutral-300 opacity-0 transition-colors hover:text-neutral-800 group-hover:opacity-100 dark:text-neutral-500 dark:hover:text-neutral-200"
+      className="absolute right-0 flex cursor-default items-center justify-center rounded-md pl-2 text-neutral-300 opacity-0 transition-colors hover:text-neutral-800 group-hover:opacity-100 dark:text-neutral-500 dark:hover:text-neutral-200"
       onClick={() => execute({ id: memberId, circleId })}
     >
       <Trash2 size={16} strokeWidth={1.25} />
