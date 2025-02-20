@@ -22,7 +22,10 @@ export default function BigButton({ children, secondary, ...btnProps }: Props) {
   return (
     <button
       type="button"
-      className={`inline-flex justify-center rounded-full border-none px-4 py-2 text-sm outline-none sm:mt-0 sm:w-auto ${color} ${disabled ? "cursor-default opacity-50" : ""} `}
+      className={`inline-flex justify-center px-4 py-2 text-sm sm:mt-0 sm:w-auto rounded-full border-none outline-none
+        ${color}
+        ${disabled ? " opacity-50 cursor-default" : ""}
+        `}
       {...btnProps}
     >
       {children}

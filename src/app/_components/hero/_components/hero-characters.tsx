@@ -39,7 +39,14 @@ function AnimatedIcon({
 
 export default function HeroCharacters() {
   return (
-    <div className={cn("relative flex items-end gap-4")}>
+    <div
+      className={cn(
+        "absolute flex items-end gap-4",
+        "left-1/2 top-1/2 -translate-x-1/2",
+        "sm:left-1/2 sm:top-[106px] sm:-translate-x-1/2",
+        "scale-90 lg:left-auto lg:right-[200px] lg:top-[106px] lg:-translate-x-0",
+      )}
+    >
       <AnimatedIcon delay={0}>
         <Queen className={cn("h-20", "sm:h-28", "lg:h-24")} />
       </AnimatedIcon>
