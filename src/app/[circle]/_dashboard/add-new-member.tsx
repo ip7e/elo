@@ -30,13 +30,8 @@ const placeholderTexts = [
 type Props = {
   circleId: number
   showTooltip: boolean
-  leadingCellSize?: string
 }
-export default function AddNewMember({
-  circleId,
-  showTooltip: showInitialTooltip,
-  leadingCellSize,
-}: Props) {
+export default function AddNewMember({ circleId, showTooltip: showInitialTooltip }: Props) {
   const formRef = useRef<HTMLFormElement>(null)
 
   const [showTooltip, setShowTooltip] = useState(false)
@@ -82,12 +77,12 @@ export default function AddNewMember({
 
   return (
     <TableRow className={cn(isPending && "animate-pulse")} layout layoutId="add-member">
-      <LeadingCell className={cn("flex justify-end", leadingCellSize)}>
+      <LeadingCell className="flex w-6 justify-end">
         <Tooltip open={showTooltip}>
           <TooltipTrigger asChild>
             <button
               className={cn(
-                "flex size-5 shrink-0 translate-x-[5px] items-center justify-center rounded-md transition-opacity",
+                "flex size-5 translate-x-[5px] items-center justify-center rounded-md transition-opacity",
                 "text-neutral-400 dark:text-neutral-400",
                 "hover:border hover:border-neutral-300 dark:hover:border-neutral-600",
                 isActive && "opacity-0",

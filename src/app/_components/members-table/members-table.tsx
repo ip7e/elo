@@ -26,7 +26,6 @@ type Props = {
   highlightId?: number
   className?: string
   renderActions?: (member: MemberRowData) => React.ReactNode
-  hideRankingOnMobile?: boolean
 }
 
 export function MembersTable({
@@ -35,7 +34,6 @@ export function MembersTable({
   onHighlightChange,
   className,
   renderActions,
-  hideRankingOnMobile = false,
 }: Props) {
   const activeMembers = members.filter((m) => !m.isNew)
   const newMembers = members.filter((m) => m.isNew)
@@ -50,12 +48,7 @@ export function MembersTable({
           layoutId={"member-" + member.id}
           onMouseEnter={() => onHighlightChange?.(member.id)}
         >
-          <LeadingCell
-            className={cn(
-              hideRankingOnMobile ? "hidden sm:block" : "block",
-              hasTwoDigitRank && "w-6",
-            )}
-          >
+          <LeadingCell className={cn("hidden sm:block", hasTwoDigitRank && "w-8")}>
             {member.rank || "?"}
           </LeadingCell>
           <MiddleCell className={cn(highlightId === member.id && "text-accent dark:text-accent")}>
@@ -90,7 +83,7 @@ export function MembersTable({
           <LeadingCell
             className={cn(
               "text-sm text-neutral-200 dark:text-neutral-600",
-              hasTwoDigitRank && "w-6",
+              hasTwoDigitRank && "w-8",
             )}
           >
             {"?"}
