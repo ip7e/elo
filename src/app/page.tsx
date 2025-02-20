@@ -14,7 +14,7 @@ export default function Example() {
         <Demo />
       </div>
 
-      <footer className="mt-32 pb-4 text-center text-xs text-primary/30">
+      <footer className="mt-32 text-center text-xs text-primary/30">
         <p>
           made by{" "}
           <a href="https://ika.im" className="underline hover:text-primary/80">
@@ -23,8 +23,7 @@ export default function Example() {
           <span className="mx-1">•</span>
           <a href="https://x.com/itsikap" className="underline hover:text-primary/80">
             x
-          </a>
-          {" | "}
+          </a>{" "}
           <a href="https://bsky.app/profile/ika.im" className="underline hover:text-primary/80">
             bluesky
           </a>
