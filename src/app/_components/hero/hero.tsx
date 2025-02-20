@@ -1,4 +1,5 @@
 import HeroCharacters from "./_components/hero-characters"
+import HeroChart from "./_components/hero-chart"
 import HeroContent from "./_components/hero-content"
 
 export default function Hero() {

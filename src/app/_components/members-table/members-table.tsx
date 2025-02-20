@@ -1,5 +1,5 @@
-import NumbersShuffler from "@/app/[circle]/_components/numbers-shuffler"
-import Star from "@/app/[circle]/_components/star"
+import { cn } from "@/utils/tailwind/cn"
+import { motion } from "framer-motion"
 import {
   LeadingCell,
   MiddleCell,
@@ -7,8 +7,8 @@ import {
   TableRow,
   TrailingCell,
 } from "@/app/[circle]/_dashboard/_components/table"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { cn } from "@/utils/tailwind/cn"
+import Star from "@/app/[circle]/_components/star"
+import NumbersShuffler from "@/app/[circle]/_components/numbers-shuffler"
 
 export type MemberRowData = {
   id: number
@@ -48,26 +48,17 @@ export function MembersTable({
           layoutId={"member-" + member.id}
           onMouseEnter={() => onHighlightChange?.(member.id)}
         >
-          <LeadingCell className={cn("hidden sm:block", hasTwoDigitRank && "w-8")}>
+          <LeadingCell className={cn("hidden md:block", hasTwoDigitRank && "w-8")}>
             {member.rank || "?"}
           </LeadingCell>
           <MiddleCell className={cn(highlightId === member.id && "text-accent dark:text-accent")}>
             {member.name}
             {member.winningStreak ? (
-              <Tooltip delayDuration={500}>
-                <TooltipTrigger>
-                  <span className="mx-1 tracking-widest">
-                    {Array.from({ length: member.winningStreak }, (_, i) => (
-                      <Star key={i} />
-                    ))}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {member.winningStreak === 1
-                    ? "won the last game"
-                    : `${member.winningStreak} wins in a row`}
-                </TooltipContent>
-              </Tooltip>
+              <span className="mx-1 tracking-widest">
+                {Array.from({ length: member.winningStreak }, (_, i) => (
+                  <Star key={i} />
+                ))}
+              </span>
             ) : null}
           </MiddleCell>
           <TrailingCell>
