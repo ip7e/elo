@@ -12,13 +12,15 @@ import { kickMember } from "@/server/actions"
 import { MembersWithStats } from "@/server/queries"
 import { cn } from "@/utils/tailwind/cn"
 import { EllipsisVertical, ShieldCheck, Trash2 } from "lucide-react"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useServerAction } from "zsa-react"
-import { GameWithResults } from "../../../server/types"
+import { GameWithResults, Member } from "../../../server/types"
 import HasAccess from "../_components/has-access"
+import NumbersShuffler from "../_components/numbers-shuffler"
+import Star from "../_components/star"
 import InviteDialogContent from "./_components/invite-dialog-content"
+import { LeadingCell, MiddleCell, Table, TableRow, TrailingCell } from "./_components/table"
 import AddNewMember from "./add-new-member"
-import { MembersTable, MemberRowData } from "@/app/_components/members-table/members-table"
 
 type Props = {
   circleId: number
@@ -37,6 +39,8 @@ export default function Members({
   membersWithStats,
   pendingMemberIds,
 }: Props) {
+  const newMembers = membersWithStats.filter((m) => !m.latest_game)
+  const membersWithGames = membersWithStats.filter((m) => !!m.latest_game)
   const ownerMembers = membersWithStats.filter((m) => !!m.user_id).map((m) => m.id)
 
   const winningStreaksByMemberId = useMemo(() => {
@@ -72,25 +76,30 @@ export default function Members({
     return streaksById
   }, [recentGames])
 
-  const members: MemberRowData[] = membersWithStats.map((m, i) => ({
-    id: m.id!,
-    name: m.name || "Unknown",
-    rank: m.latest_game ? i + 1 : undefined,
-    elo: m.latest_game?.elo,
-    winningStreak: winningStreaksByMemberId[m.id!],
-    isNew: !m.latest_game,
-    isPending: pendingMemberIds.includes(m.id!),
-  }))
-
   return (
-    <div className="relative">
-      <MembersTable
-        members={members}
-        highlightId={highlightId}
-        onHighlightChange={onHighlightChange}
-        renderActions={(member) => (
+    <Table className="relative">
+      {membersWithGames.map(({ latest_game, name, id }, i) => (
+        <TableRow
+          className={cn("group relative")}
+          key={id}
+          layoutId={"member-" + id}
+          onMouseEnter={() => onHighlightChange(id!)}
+        >
+          <LeadingCell> {i + 1}</LeadingCell>
+          <MiddleCell className={cn(highlightId === id && "text-accent dark:text-accent")}>
+            {name}
+            <span className="mx-1 tracking-widest">
+              {Array.from({ length: winningStreaksByMemberId[id!] }, (v, i) => (
+                <Star key={i} />
+              ))}
+            </span>
+          </MiddleCell>
+          <TrailingCell>
+            <NumbersShuffler spin={pendingMemberIds.includes(id!)} value={latest_game?.elo} />
+          </TrailingCell>
+
           <HasAccess>
-            {ownerMembers.includes(member.id) ? (
+            {ownerMembers.includes(id!) ? (
               <Tooltip>
                 <TooltipTrigger
                   tabIndex={-1}
@@ -104,58 +113,75 @@ export default function Members({
                 </TooltipTrigger>
                 <TooltipContent>Owner</TooltipContent>
               </Tooltip>
-            ) : member.isNew ? (
-              <NewMemberActions memberId={member.id} circleId={circleId} />
             ) : (
-              <MemberActions memberId={member.id} circleId={circleId} />
+              <Dialog>
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    tabIndex={-1}
+                    className={cn(
+                      "absolute -right-6 pl-2 text-neutral-300 outline-none",
+                      "opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100",
+                      "hover:text-neutral-600 data-[state=open]:text-neutral-600 dark:text-neutral-600 dark:hover:text-neutral-300 dark:data-[state=open]:text-neutral-300",
+                    )}
+                  >
+                    <EllipsisVertical size={16} />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side="bottom" align="end">
+                    <DialogTrigger>
+                      <DropdownMenuItem>Invite as owner</DropdownMenuItem>
+                    </DialogTrigger>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <InviteDialogContent circleId={circleId} memberId={id!} />
+              </Dialog>
             )}
           </HasAccess>
-        )}
-      />
+        </TableRow>
+      ))}
+      {newMembers.map((m) => (
+        <NewMemberRow member={m} key={m.id} circleId={circleId} />
+      ))}
 
       <HasAccess>
         <div className="absolute -bottom-8 left-0 w-full">
           <AddNewMember circleId={circleId} showTooltip={membersWithStats.length < 2} />
         </div>
       </HasAccess>
-    </div>
+    </Table>
   )
 }
 
-function MemberActions({ memberId, circleId }: { memberId: number; circleId: number }) {
-  return (
-    <Dialog>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          tabIndex={-1}
-          className={cn(
-            "absolute -right-6 pl-2 text-neutral-300 outline-none",
-            "opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100",
-            "hover:text-neutral-600 data-[state=open]:text-neutral-600 dark:text-neutral-600 dark:hover:text-neutral-300 dark:data-[state=open]:text-neutral-300",
-          )}
-        >
-          <EllipsisVertical size={16} />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side="bottom" align="end">
-          <DialogTrigger>
-            <DropdownMenuItem>Invite as owner</DropdownMenuItem>
-          </DialogTrigger>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <InviteDialogContent circleId={circleId} memberId={memberId} />
-    </Dialog>
-  )
-}
-
-function NewMemberActions({ memberId, circleId }: { memberId: number; circleId: number }) {
+const NewMemberRow = ({ member: m, circleId }: { member: Member; circleId: number }) => {
   const { isPending, execute } = useServerAction(kickMember)
+  const [hovered, setHovered] = useState(false)
 
   return (
-    <button
-      className="absolute -right-6 flex cursor-default items-center justify-center rounded-md pl-2 text-neutral-300 opacity-0 transition-colors hover:text-neutral-800 group-hover:opacity-100 dark:text-neutral-500 dark:hover:text-neutral-200"
-      onClick={() => execute({ id: memberId, circleId })}
+    <TableRow
+      className={cn("group", isPending && "animate-pulse")}
+      key={m.id}
+      layoutId={"member-" + m.id}
     >
-      <Trash2 size={16} strokeWidth={1.25} />
-    </button>
+      <LeadingCell className="text-sm text-neutral-200 dark:text-neutral-600">{"?"}</LeadingCell>
+      <MiddleCell
+        className={cn(
+          "text-neutral-300 transition-all dark:text-neutral-600",
+          (hovered || isPending) && "text-neutral-400 line-through dark:text-neutral-400",
+        )}
+      >
+        {m.name}
+      </MiddleCell>
+      <HasAccess>
+        <TrailingCell className="text-neutral-300 dark:text-neutral-500">
+          <button
+            className="flex cursor-default items-center justify-center rounded-md opacity-0 transition-colors hover:text-neutral-800 group-hover:opacity-100 dark:hover:text-neutral-200"
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            onClick={() => execute({ id: m.id, circleId })}
+          >
+            <Trash2 size={16} strokeWidth={1.25} />
+          </button>
+        </TrailingCell>
+      </HasAccess>
+    </TableRow>
   )
 }

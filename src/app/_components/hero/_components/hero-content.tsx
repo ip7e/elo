@@ -24,14 +24,14 @@ export default function HeroContent() {
       <motion.p
         {...fadeInUpAnimation}
         transition={{ ...textTransition, delay: BaseDelay.description }}
-        className="mt-8 max-w-md text-pretty text-xl/8 font-light text-primary/70"
+        className="mt-8 max-w-md text-pretty text-lg font-light text-primary/70 lg:text-xl/8"
       >
         A very good leaderboard app for competitive games.
       </motion.p>
       <motion.div
         {...fadeInUpAnimation}
         transition={{ ...textTransition, delay: BaseDelay.callToAction }}
-        className="mt-10 flex flex-row items-center gap-x-4 gap-y-3"
+        className="mt-10 flex flex-col items-center gap-x-4 gap-y-3 lg:flex-row"
       >
         <Button asChild>
           <Link href="/me">Get started</Link>
