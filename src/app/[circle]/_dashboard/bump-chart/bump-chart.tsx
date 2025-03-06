@@ -10,7 +10,7 @@ type Props = {
   data: GameRecord[][]
   selectedMemberId: number
   className?: string
-  selectedGameIndex: number | null
+  selectedGameIndex?: number | null
   onGameSelect?: (index: number | null) => void
 }
 
@@ -31,7 +31,7 @@ export function BumpChart({
   const width = data.length * itemWidth + padding * 2
   const height = data[0].length * itemHeight + padding * 2
 
-  const isGameSelected = selectedGameIndex !== null
+  const isGameSelected = selectedGameIndex !== null && selectedGameIndex !== undefined
 
   const enableGameSelect = onGameSelect !== undefined
 
