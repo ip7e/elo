@@ -271,6 +271,8 @@ function HoverCols({ onSelect }: HoverColsProps) {
               className="group cursor-pointer fill-transparent"
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
+              onTouchStart={() => setHoveredIndex(index)}
+              onTouchEnd={() => setHoveredIndex(null)}
               onClick={() => onSelect(index)}
             />
           </g>
