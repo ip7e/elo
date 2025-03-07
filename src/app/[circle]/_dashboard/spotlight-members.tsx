@@ -27,6 +27,13 @@ export function SpotlightMembers({ membersWithStats, recentGames, selectedGameIn
     <div className="relative">
       <Table className="relative">
         <>
+          {/* selected game date as a headline */}
+          <div className="border-1 absolute -top-8 left-1/2 -translate-x-1/2 select-none rounded-md border border-muted px-2 py-1 text-sm text-muted-foreground">
+            {new Date(selectedGame?.created_at).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+            })}
+          </div>
           {sortedMembers.map((member, i) => {
             const gameResult = selectedGameByMember[member.id]
             const participated = !!gameResult
