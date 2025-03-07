@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { AnimatePresence, motion, SVGMotionProps } from "framer-motion"
 import { useEffect, useReducer } from "react"
 import { useState } from "react"
+import { ScrollContainer } from "./scroll-container"
 
 type Props = {
   data: GameRecord[][]
@@ -36,10 +37,10 @@ export function BumpChart({
   const enableGameSelect = onGameSelect !== undefined
 
   return (
-    <div
+    <ScrollContainer
       className={cn(
         "rounded-lg border border-neutral-100 dark:border-neutral-800",
-        `relative flex min-h-16 w-full flex-1 items-start justify-end overflow-hidden`,
+        `relative flex min-h-16 w-full flex-1 flex-row-reverse items-start`,
         className,
       )}
     >
@@ -51,7 +52,7 @@ export function BumpChart({
         itemWidth={itemWidth}
         itemHeight={itemHeight}
       >
-        <div className="flex justify-end">
+        <div className="block">
           <svg width={width} height={height} className="">
             {isGameSelected && <SelectedGameColumn gameIndex={selectedGameIndex} />}
 
@@ -67,7 +68,7 @@ export function BumpChart({
           </svg>
         </div>
       </BumpChartProvider>
-    </div>
+    </ScrollContainer>
   )
 }
 
