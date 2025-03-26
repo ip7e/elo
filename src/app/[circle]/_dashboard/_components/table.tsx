@@ -6,14 +6,14 @@ type ChildrenWithClassName = PropsWithChildren<{ className?: string }>
 
 export function Table({ children, className }: ChildrenWithClassName) {
   return (
-    <div className={cn("flex w-full flex-col", className)}>
+    <div className={cn("relative flex w-full flex-col", className)}>
       <AnimatePresence initial={false}>{children}</AnimatePresence>
     </div>
   )
 }
 
-type TableRowProps = PropsWithChildren<HTMLMotionProps<"div">>
-export function TableRow({ children, className, ...props }: TableRowProps) {
+type AnimatedRowProps = PropsWithChildren<HTMLMotionProps<"div">>
+export function AnimatedRow({ children, className, ...props }: AnimatedRowProps) {
   return (
     <motion.div
       layout
@@ -22,7 +22,7 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
       exit={{ opacity: 0, y: 10, transition: { duration: 0.1 } }}
       transition={{ mass: 10, damping: 100, stiffness: 500, type: "spring" }}
       className={cn(
-        "flex h-8 w-full select-none items-center gap-4 font-mono text-base",
+        "relative flex h-8 w-full select-none items-center gap-4 font-mono text-base",
         className,
       )}
       {...props}
@@ -32,30 +32,19 @@ export function TableRow({ children, className, ...props }: TableRowProps) {
   )
 }
 
-export function LeadingCell({ children, className }: ChildrenWithClassName) {
-  return (
-    <div className={cn("w-2 text-right text-neutral-300 dark:text-neutral-500", className)}>
-      {children}
-    </div>
-  )
+export function TableCell({ children, className }: ChildrenWithClassName) {
+  return <div className={cn("text-secondary", className)}>{children}</div>
 }
 
-export function MiddleCell({ children, className }: ChildrenWithClassName) {
+export function FloatingCell({ children, className }: ChildrenWithClassName) {
   return (
     <div
       className={cn(
-        "flex-1 overflow-hidden text-ellipsis text-nowrap font-medium text-neutral-900 dark:text-white",
+        "flex cursor-default items-center justify-center rounded-md pl-2 text-muted transition-colors",
+        "w-6 sm:absolute sm:-right-6",
         className,
       )}
     >
-      {children}
-    </div>
-  )
-}
-
-export function TrailingCell({ children, className }: ChildrenWithClassName) {
-  return (
-    <div className={cn("text-right font-medium text-neutral-300 dark:text-neutral-400", className)}>
       {children}
     </div>
   )

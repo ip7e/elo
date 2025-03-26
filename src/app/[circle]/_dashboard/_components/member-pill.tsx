@@ -1,5 +1,4 @@
 import { cn } from "@/utils/tailwind/cn"
-import { motion } from "framer-motion"
 import { PropsWithChildren } from "react"
 
 type Props = PropsWithChildren<{

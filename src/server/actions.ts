@@ -280,6 +280,7 @@ export const deleteCircle = circleAdminProcedure
       .single()
 
     if (error) {
+      console.log(error)
       throw "failed to delete circle"
     }
 

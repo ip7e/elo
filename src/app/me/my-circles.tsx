@@ -26,7 +26,7 @@ export default function MyCircles({ circles }: Props) {
         <h2 className="font-sans text-lg font-semibold text-neutral-600">My Circles</h2>
         <DotGrid
           className={cn(
-            "grid grid-cols-2 items-center justify-center justify-items-center gap-4 rounded-lg border p-5 sm:grid-cols-4 md:grid-cols-4",
+            "grid grid-cols-2 items-center justify-center justify-items-center gap-4 rounded-lg border p-5 sm:grid-cols-3 md:grid-cols-4",
           )}
         >
           {circles.map((circle) => (
@@ -34,7 +34,7 @@ export default function MyCircles({ circles }: Props) {
           ))}
           <Dialog onOpenChange={setIsNewCircleDialogOpen}>
             <DialogTrigger className="outline-none">
-              <Card className={cn("group relative size-40 cursor-pointer p-[2px]")}>
+              <Card className={cn("group relative cursor-pointer p-[2px]")}>
                 <div
                   className={cn(
                     "relative flex size-full flex-col items-center justify-center rounded-md text-center",

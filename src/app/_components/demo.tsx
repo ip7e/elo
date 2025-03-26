@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { BumpChart } from "../[circle]/_dashboard/bump-chart/bump-chart"
-import { MemberRowData, MembersTable } from "./members-table/members-table"
+// import { MemberRowData, MembersTable } from "./members-table/members-table"
 import { motion } from "framer-motion"
 
 const dummyData = [
@@ -2124,12 +2124,12 @@ export default function Demo() {
               <BumpChart data={dummyData} selectedMemberId={highlightedId} />
             </div>
             <div className="w-38 mt-2 shrink-0 sm:w-56">
-              <MembersTable
+              {/* <MembersTable
                 members={DEMO_MEMBERS}
                 highlightId={highlightedId}
                 onHighlightChange={setHighlightedId}
                 hideRankingOnMobile
-              />
+              /> */}
             </div>
           </div>
         </div>

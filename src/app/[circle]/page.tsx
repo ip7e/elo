@@ -1,4 +1,4 @@
-import { getAllGames, getCircleBySlug, getMembersWithStats } from "@/server/queries"
+import { getAllGames, getCircleBySlug, getMembersWithStatsV2 } from "@/server/queries"
 import { notFound } from "next/navigation"
 import Dashboard from "./_dashboard/dashboard"
 
@@ -9,7 +9,7 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   const games = await getAllGames(circle.id)
 
-  const [membersWithStats, error] = await getMembersWithStats({ circleId: circle.id })
+  const [membersWithStats, error] = await getMembersWithStatsV2({ circleId: circle.id })
 
   if (!membersWithStats || !games) return null
 

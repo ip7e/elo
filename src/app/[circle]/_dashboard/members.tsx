@@ -11,14 +11,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { kickMember } from "@/server/actions"
 import { MembersWithStats } from "@/server/queries"
 import { cn } from "@/utils/tailwind/cn"
-import { EllipsisVertical, ShieldCheck, Trash2 } from "lucide-react"
+import { EllipsisVertical, Loader2, ShieldCheck, Trash2 } from "lucide-react"
 import { useMemo } from "react"
 import { useServerAction } from "zsa-react"
 import { GameWithResults } from "../../../server/types"
 import HasAccess from "../_components/has-access"
+import Star from "../_components/star"
 import InviteDialogContent from "./_components/invite-dialog-content"
+import { AnimatedRow, FloatingCell, Table, TableCell } from "./_components/table"
 import AddNewMember from "./add-new-member"
-import { MembersTable, MemberRowData } from "@/app/_components/members-table/members-table"
 
 type Props = {
   circleId: number
@@ -74,7 +75,7 @@ export default function Members({
     return streaksById
   }, [recentGames])
 
-  const members: MemberRowData[] = membersWithStats.map((m, i) => ({
+  const members = membersWithStats.map((m, i) => ({
     id: m.id!,
     name: m.name || "Unknown",
     rank: m.latest_game ? i + 1 : undefined,
@@ -84,46 +85,47 @@ export default function Members({
     isPending: pendingMemberIds.includes(m.id!),
   }))
 
+  const hasTwoDigitRank = members.some((m) => m.rank && m.rank > 9)
+
   return (
     <div className="relative">
-      <MembersTable
-        members={members}
-        highlightId={highlightId}
-        onHighlightChange={onHighlightChange}
-        renderActions={(member) => (
-          <HasAccess>
-            {ownerMembers.includes(member.id) ? (
-              <Tooltip>
-                <TooltipTrigger
-                  tabIndex={-1}
-                  className={cn(
-                    "absolute -right-6 pl-2 text-neutral-300 outline-none",
-                    "opacity-0 transition-opacity group-hover:opacity-100",
-                    "cursor-default dark:text-neutral-700",
-                  )}
-                >
-                  <ShieldCheck size={16} />
-                </TooltipTrigger>
-                <TooltipContent>Owner</TooltipContent>
-              </Tooltip>
-            ) : member.isNew ? (
-              <NewMemberActions memberId={member.id} circleId={circleId} />
-            ) : (
-              <MemberActions memberId={member.id} circleId={circleId} />
-            )}
-          </HasAccess>
-        )}
-      />
-
-      <HasAccess>
-        <div className={cn("absolute -bottom-8 w-full")}>
+      <Table>
+        {members.map((member) => (
+          <AnimatedRow
+            className="group relative"
+            key={member.id}
+            layoutId={`row-${member.id}`}
+            onMouseOver={() => !member.isNew && onHighlightChange(member.id)}
+          >
+            <RankCell rank={member.rank} wide={hasTwoDigitRank} />
+            <NameCell
+              name={member.name}
+              winStreak={member.winningStreak}
+              highlight={member.id === highlightId}
+              muted={!!member.isNew}
+            />
+            <EloCell elo={member.elo} />
+            <FloatingCell>
+              <HasAccess>
+                {ownerMembers.includes(member.id) ? (
+                  <CircleOwnerBadge />
+                ) : member.isNew ? (
+                  <NewMemberActions memberId={member.id} circleId={circleId} />
+                ) : (
+                  <MemberActions memberId={member.id} circleId={circleId} />
+                )}
+              </HasAccess>
+            </FloatingCell>
+          </AnimatedRow>
+        ))}
+        <HasAccess>
           <AddNewMember
             circleId={circleId}
             showTooltip={membersWithStats.length < 2}
-            leadingCellSize={membersWithStats.length > 9 ? "w-6" : "w-3"}
+            leadingCellSize={hasTwoDigitRank ? "w-6" : "w-3"}
           />
-        </div>
-      </HasAccess>
+        </HasAccess>
+      </Table>
     </div>
   )
 }
@@ -135,9 +137,8 @@ function MemberActions({ memberId, circleId }: { memberId: number; circleId: num
         <DropdownMenuTrigger
           tabIndex={-1}
           className={cn(
-            "absolute -right-6 pl-2 text-neutral-300 outline-none",
-            "opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100",
-            "hover:text-neutral-600 data-[state=open]:text-neutral-600 dark:text-neutral-600 dark:hover:text-neutral-300 dark:data-[state=open]:text-neutral-300",
+            "opacity-0 group-hover:opacity-100",
+            "hover:text-primary data-[state=open]:text-primary",
           )}
         >
           <EllipsisVertical size={16} />
@@ -158,10 +159,76 @@ function NewMemberActions({ memberId, circleId }: { memberId: number; circleId: 
 
   return (
     <button
-      className="absolute right-0 flex cursor-default items-center justify-center rounded-md pl-2 text-neutral-300 opacity-0 transition-colors hover:text-neutral-800 group-hover:opacity-100 dark:text-neutral-500 dark:hover:text-neutral-200"
+      className={cn(!isPending && "opacity-0 hover:text-primary group-hover:opacity-100")}
       onClick={() => execute({ id: memberId, circleId })}
     >
-      <Trash2 size={16} strokeWidth={1.25} />
+      {isPending ? (
+        <Loader2 className="animate-spin" size={16} />
+      ) : (
+        <Trash2 size={16} strokeWidth={1.25} />
+      )}
     </button>
   )
+}
+
+const CircleOwnerBadge = () => {
+  return (
+    <Tooltip>
+      <TooltipTrigger tabIndex={-1} className="cursor-default opacity-0 group-hover:opacity-100">
+        <ShieldCheck size={16} />
+      </TooltipTrigger>
+      <TooltipContent>Circle Owner</TooltipContent>
+    </Tooltip>
+  )
+}
+
+function RankCell({ rank, wide }: { rank: number | undefined; wide?: boolean }) {
+  const hasRank = rank !== undefined
+  return (
+    <TableCell className={cn("w-3 text-right", wide && "w-6", !hasRank && "text-muted")}>
+      {rank || "?"}
+    </TableCell>
+  )
+}
+
+function NameCell({
+  name,
+  winStreak,
+  highlight,
+  muted,
+}: {
+  name: string
+  winStreak?: number
+  highlight: boolean
+  muted: boolean
+}) {
+  return (
+    <TableCell
+      className={cn(
+        "flex-1 items-center overflow-hidden text-ellipsis text-nowrap font-medium text-primary",
+        highlight && "text-accent",
+        muted && "text-secondary",
+      )}
+    >
+      <span>{name}</span>
+      {winStreak ? (
+        <Tooltip delayDuration={500}>
+          <TooltipTrigger>
+            <span className="mx-1 tracking-widest">
+              {Array.from({ length: winStreak }, (_, i) => (
+                <Star key={i} />
+              ))}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>
+            {winStreak === 1 ? "won the last game" : `${winStreak} wins in a row`}
+          </TooltipContent>
+        </Tooltip>
+      ) : null}
+    </TableCell>
+  )
+}
+
+function EloCell({ elo }: { elo: number | undefined }) {
+  return <TableCell className="w-20 text-right">{elo}</TableCell>
 }

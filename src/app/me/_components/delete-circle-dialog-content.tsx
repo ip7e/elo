@@ -8,10 +8,9 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { deleteCircle } from "@/server/actions"
 import { Circle } from "@/server/types"
-import Link from "next/link"
+import { TriangleAlert } from "lucide-react"
 import { useState } from "react"
 import { useServerAction } from "zsa-react"
-import { FileWarning, MessageCircleWarning, TriangleAlert } from "lucide-react"
 
 type Props = {
   circle: Circle
