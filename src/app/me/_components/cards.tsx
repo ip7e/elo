@@ -38,7 +38,7 @@ export function Card({ forceHoverState, children, className }: Props) {
   return (
     <motion.div
       className={cn(
-        "size-40 sm:size-32 md:size-36",
+        "size-32 md:size-36",
         "border border-muted",
         "flex flex-col justify-between rounded-lg bg-background p-4",
         className,

@@ -6,7 +6,7 @@ import { cn } from "@/utils/tailwind/cn"
 import { CornerDownLeft, Plus } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useServerAction } from "zsa-react"
-import { MiddleCell, LeadingCell, TableRow } from "./_components/table"
+import { MiddleCell, LeadingCell, AnimatedRow, TableCell } from "./_components/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 const placeholderTexts = [
@@ -81,15 +81,20 @@ export default function AddNewMember({
   const nameIsValid = name.length > 1 && name.length < 20
 
   return (
-    <TableRow className={cn(isPending && "animate-pulse")} layout layoutId="add-member">
-      <LeadingCell className={cn("flex justify-end", leadingCellSize)}>
+    <AnimatedRow
+      className={cn(isPending && "animate-pulse")}
+      layout
+      layoutId="add-member"
+      key={circleId}
+    >
+      <TableCell className={cn("relative h-full items-end", leadingCellSize)}>
         <Tooltip open={showTooltip}>
           <TooltipTrigger asChild>
             <button
               className={cn(
-                "flex size-5 shrink-0 translate-x-[5px] items-center justify-center rounded-md transition-opacity",
-                "text-neutral-400 dark:text-neutral-400",
-                "hover:border hover:border-neutral-300 dark:hover:border-neutral-600",
+                "absolute right-0 top-1/2 flex size-5 shrink-0 -translate-y-1/2 translate-x-1.5",
+                "items-center justify-center rounded-md border-border text-secondary transition-opacity",
+                "hover:border",
                 isActive && "opacity-0",
               )}
               onClick={() => activate()}
@@ -106,9 +111,9 @@ export default function AddNewMember({
             add member
           </TooltipContent>
         </Tooltip>
-      </LeadingCell>
-      {isActive && (
-        <MiddleCell>
+      </TableCell>
+      <TableCell className="flex-1">
+        {isActive && (
           <form
             className="flex w-full gap-2"
             onSubmit={async (e) => {
@@ -122,9 +127,9 @@ export default function AddNewMember({
             <input
               className={cn(
                 "w-full appearance-none bg-transparent bg-none outline-none placeholder:italic",
-                "caret-neutral-800 dark:caret-neutral-200",
-                "text-neutral-400 dark:text-neutral-400",
-                "placeholder:text-neutral-300 dark:placeholder:text-neutral-700",
+                "caret-secondary",
+                "text-accent",
+                "placeholder:text-muted",
               )}
               placeholder={placeholder}
               autoFocus
@@ -144,8 +149,8 @@ export default function AddNewMember({
               <CornerDownLeft size={16} strokeWidth={1.25} />
             </button>
           </form>
-        </MiddleCell>
-      )}
-    </TableRow>
+        )}
+      </TableCell>
+    </AnimatedRow>
   )
 }
