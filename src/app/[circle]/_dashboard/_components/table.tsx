@@ -12,8 +12,11 @@ export function Table({ children, className }: ChildrenWithClassName) {
   )
 }
 
-type AnimatedRowProps = PropsWithChildren<HTMLMotionProps<"div">>
-export function AnimatedRow({ children, className, ...props }: AnimatedRowProps) {
+export function AnimatedRow({
+  children,
+  className,
+  ...props
+}: PropsWithChildren<HTMLMotionProps<"div">>) {
   return (
     <motion.div
       layout
@@ -42,6 +45,7 @@ export function FloatingCell({ children, className }: ChildrenWithClassName) {
       className={cn(
         "flex cursor-default items-center justify-center rounded-md pl-2 text-muted transition-colors",
         "w-6 sm:absolute sm:-right-6",
+        "-ml-4 sm:ml-0",
         className,
       )}
     >

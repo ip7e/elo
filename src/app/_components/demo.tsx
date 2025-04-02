@@ -9,13 +9,13 @@ export default async function Demo() {
 
   const games = await getAllGames(circle.id)
 
-  const [membersWithStats, error] = await getMembersStats({ circleId: circle.id })
+  const [memberStats, error] = await getMembersStats({ circleId: circle.id })
 
-  if (!membersWithStats || !games) return null
+  if (!memberStats || !games) return null
 
   return (
     <div className="mt-16 flex flex-col items-center justify-center">
-      <Dashboard recentGames={games} membersWithStats={membersWithStats} circleId={circle.id} />
+      <Dashboard recentGames={games} memberStats={memberStats} circleId={circle.id} />
     </div>
   )
 }

@@ -1,21 +1,23 @@
-import { MembersWithStats } from "@/server/queries"
-import { GameWithResults, Member } from "@/server/types"
+import { GameWithResults, Member, MemberStats } from "@/server/types"
 import { GameRecord } from "./bump-chart/types"
 
 export function getGameSeries(
-  membersWithStats: MembersWithStats,
+  memberStats: MemberStats[],
   games: GameWithResults[],
 ): GameRecord[][] {
   // Initialize the current state with latest member stats
   const currentMemberStats = new Map(
-    membersWithStats
+    memberStats
       .filter((m) => m.latest_game)
       .map((m) => [
         m.id,
         {
           elo: m.latest_game?.elo ?? 1100,
+          previous_elo: m.latest_game?.previous_elo ?? 1100,
           member_id: m.id,
           firstGameId: m.first_game?.game_id,
+          total_wins: m.total_wins,
+          name: m.name,
           won: m.latest_game?.winner ?? false,
         },
       ]),
@@ -37,13 +39,14 @@ export function getGameSeries(
       if (currentMemberStats.has(result.member_id)) {
         const stats = currentMemberStats.get(result.member_id)!
         stats.elo = result.elo
+        stats.previous_elo = result.previous_elo
         stats.won = result.winner ?? false
       }
     })
 
     // Create sorted list of all current members by ELO
     const sortedMembers = Array.from(currentMemberStats.entries()).sort(
-      (a, b) => b[1].elo - a[1].elo,
+      (a, b) => b[1].elo - a[1].elo || (a[1].name ?? "").localeCompare(b[1].name ?? ""),
     )
 
     // Create records for this game
@@ -51,7 +54,7 @@ export function getGameSeries(
       records.push({
         rank: index,
         elo: stats.elo,
-        member: membersWithStats.find((m) => m.id === memberId)!,
+        member: memberStats.find((m) => m.id === memberId)!,
         played: participants.has(memberId),
         isFirstGame: stats.firstGameId === game.id,
         won: stats.won,
@@ -62,6 +65,12 @@ export function getGameSeries(
       if (stats.firstGameId === game.id) {
         currentMemberStats.delete(memberId)
       }
+
+      // Update the member stats with the previous ELO to not to mess up rankings
+      currentMemberStats.set(memberId, {
+        ...stats,
+        elo: stats.previous_elo,
+      })
     })
 
     gameRecords.push(records)

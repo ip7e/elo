@@ -1,4 +1,4 @@
-import { GameResult, GameWithResults } from "@/server/types"
+import { GameResult, GameWithResults, MemberStats } from "@/server/types"
 import { createServerClient, createServerClientWithCookies } from "@/utils/supabase/server"
 import "server-only"
 import z from "zod"
@@ -11,69 +11,16 @@ export const getCircleBySlug = async (slug: string) => {
   return circle
 }
 
-export const getMembers = createServerAction()
-  .input(z.object({ circleId: z.number() }))
-  .handler(async ({ input }) => {
-    const supabase = createServerClient()
-
-    const { data: members } = await supabase
-      .from("circle_members")
-      .select("*")
-      .eq("circle_id", input.circleId)
-      .order("created_at", { ascending: true })
-
-    return members
-  })
-
-export const getMembersStatsV2 = createServerAction()
-  .input(z.object({ circleId: z.number() }))
-  .handler(async ({ input }) => {
-    const supabase = createServerClient()
-
-    const { data: response, error } = await supabase
-      .from("circle_members")
-      .select(
-        `*, 
-          wins:game_results(count), 
-          latest_game:game_results(*), 
-          first_game:game_results(*)
-        `,
-      )
-      .order("created_at", { referencedTable: "latest_game", ascending: false })
-      .order("created_at", { referencedTable: "first_game", ascending: true })
-
-      .limit(1, { referencedTable: "latest_game" })
-      .limit(1, { referencedTable: "first_game" })
-
-      .order("created_at", { ascending: true })
-      .eq("wins.winner", true)
-      .eq("circle_id", input.circleId)
-
-    return (response ?? [])
-      .map((v) => ({
-        createdAt: v.created_at!,
-        id: v.id!,
-        circleId: v.circle_id!,
-        name: v.name!,
-        userId: v.user_id!,
-        firstGameId: v.first_game?.[0]?.game_id,
-        latestGameId: v.latest_game?.[0]?.id,
-        elo: v.latest_game?.[0]?.elo ?? 0,
-        wins: v.wins?.[0]?.count ?? 0,
-        isNew: !!v.latest_game?.[0],
-      }))
-      .sort((a, b) => b.elo - a.elo || b.wins - a.wins || a.name.localeCompare(b.name))
-  })
-
 export const getMembersStats = createServerAction()
   .input(z.object({ circleId: z.number() }))
-  .handler(async ({ input }) => {
+  .handler<Promise<MemberStats[]>>(async ({ input }) => {
     const supabase = createServerClient()
 
     const { data: response, error } = await supabase
       .from("circle_members")
       .select(
         `*, 
+          games:game_results(count), 
           wins:game_results(count), 
           latest_game:game_results(*), 
           first_game:game_results(*)
@@ -92,14 +39,17 @@ export const getMembersStats = createServerAction()
     const resp = (response ?? [])
       .map((v) => ({
         ...v,
+        name: v.name ?? "",
+        total_wins: v.wins?.[0]?.count ?? 0,
+        total_games: v.games?.[0]?.count ?? 0,
+        elo: v.latest_game?.[0]?.elo ?? 0,
         latest_game: v.latest_game?.[0] as GameResult,
         first_game: v.first_game?.[0] as GameResult,
       }))
-      .sort((a, b) => (b.latest_game?.elo ?? 0) - (a.latest_game?.elo ?? 0))
+      .sort((a, b) => b.elo - a.elo || b.total_wins - a.total_wins || a.name.localeCompare(b.name))
 
     return resp
   })
-export type MembersWithStats = inferServerActionReturnData<typeof getMembersStats>
 
 export const getAllGames = async (circleId: number) => {
   const supabase = createServerClient()

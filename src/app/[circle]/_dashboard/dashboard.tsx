@@ -1,9 +1,8 @@
 "use client"
 
-import { MembersWithStats } from "@/server/queries"
 import { cn } from "@/utils/tailwind/cn"
 import { useEffect, useState } from "react"
-import { GameWithResults } from "../../../server/types"
+import { GameWithResults, MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import { AddNewGameDialog } from "./_components/add-new-game-dialog"
 import { BumpChart } from "./bump-chart/bump-chart"
@@ -12,16 +11,17 @@ import { getGameSeries } from "./prepare-data"
 
 type Props = {
   recentGames: GameWithResults[]
-  membersWithStats: MembersWithStats
+  memberStats: MemberStats[]
   circleId: number
 }
 
-export default function Dashboard({ recentGames, membersWithStats, circleId }: Props) {
-  const [selectedMemberId, setSelectedMemberId] = useState(membersWithStats[0]?.id || 0)
+export default function Dashboard({ recentGames, memberStats, circleId }: Props) {
+  const [selectedMemberId, setSelectedMemberId] = useState(memberStats[0]?.id || 0)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
   const [selectedGameIndex, setSelectedGameIndex] = useState<number | null>(null)
 
-  const chartData = getGameSeries(membersWithStats, recentGames)
+  // TODO: Move this to query
+  const chartData = getGameSeries(memberStats, recentGames)
 
   const handleGameSelect = (index: number | null) => {
     if (selectedGameIndex === index) setSelectedGameIndex(null)
@@ -32,7 +32,7 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
 
   useEffect(() => {
     setPendingMemberIds([])
-  }, [membersWithStats])
+  }, [memberStats])
 
   return (
     <>
@@ -64,7 +64,7 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
           <div className="flex flex-col py-2 sm:w-60">
             <Members
               circleId={circleId}
-              membersWithStats={membersWithStats}
+              memberStats={memberStats}
               recentGames={recentGames}
               highlightId={selectedMemberId}
               onHighlightChange={(id) => setSelectedMemberId(id)}
@@ -82,7 +82,7 @@ export default function Dashboard({ recentGames, membersWithStats, circleId }: P
             )}
           >
             <AddNewGameDialog
-              members={membersWithStats}
+              members={memberStats}
               circleId={circleId}
               onSubmitted={(ids) => {
                 setPendingMemberIds(ids)

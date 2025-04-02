@@ -13,15 +13,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { createGameSession } from "@/server/actions"
-import { MembersWithStats } from "@/server/queries"
 import { Member } from "@/server/types"
 import { motion } from "framer-motion"
 import { Swords } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useServerAction } from "zsa-react"
 
 type Props = {
-  members: MembersWithStats
+  members: Member[]
   circleId: number
   onSubmitted: (memberIds: number[]) => void
 }
@@ -38,6 +37,10 @@ const nextMemberPillVariant = (prev: MemberPillVariant) => {
 export function AddNewGameDialog({ members, circleId, onSubmitted }: Props) {
   let [open, setOpen] = useState(false)
   let [statusMap, setStatusMap] = useState<Record<number, MemberPillVariant>>({})
+
+  const membersSorted = useMemo(() => {
+    return members.toSorted((a, b) => a.name!.localeCompare(b.name!))
+  }, [members])
 
   const handleClick = (member: any) => {
     const prev = statusMap[member.id] || "default"
@@ -86,7 +89,7 @@ export function AddNewGameDialog({ members, circleId, onSubmitted }: Props) {
           </DialogHeader>
 
           <div className="mx-auto my-8 flex max-w-md flex-wrap justify-center gap-2">
-            {members.map((m, i) => (
+            {membersSorted.map((m, i) => (
               <motion.div
                 key={m.id}
                 layout

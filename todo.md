@@ -1,0 +1,2 @@
+- [ ] - Add winning streak as part of the game session table - it'll make queries faster and easier
+- [ ] - Animate elo with number shuffling

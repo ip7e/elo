@@ -9,9 +9,9 @@ export default async function CirclePage({ params }: { params: { circle: string 
 
   const games = await getAllGames(circle.id)
 
-  const [membersWithStats, error] = await getMembersStats({ circleId: circle.id })
+  const [memberStats, error] = await getMembersStats({ circleId: circle.id })
 
-  if (!membersWithStats || !games) return null
+  if (!memberStats || !games) return null
 
-  return <Dashboard recentGames={games} membersWithStats={membersWithStats} circleId={circle.id} />
+  return <Dashboard recentGames={games} memberStats={memberStats} circleId={circle.id} />
 }
