@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { createGameSession } from "@/server/actions"
+import { MembersWithStats } from "@/server/queries"
 import { Member } from "@/server/types"
 import { motion } from "framer-motion"
 import { Swords } from "lucide-react"
@@ -20,7 +21,7 @@ import { useEffect, useState } from "react"
 import { useServerAction } from "zsa-react"
 
 type Props = {
-  members: Member[]
+  members: MembersWithStats
   circleId: number
   onSubmitted: (memberIds: number[]) => void
 }
@@ -38,7 +39,7 @@ export function AddNewGameDialog({ members, circleId, onSubmitted }: Props) {
   let [open, setOpen] = useState(false)
   let [statusMap, setStatusMap] = useState<Record<number, MemberPillVariant>>({})
 
-  const handleClick = (member: Member) => {
+  const handleClick = (member: any) => {
     const prev = statusMap[member.id] || "default"
     const next = nextMemberPillVariant(prev)
     setStatusMap({ ...statusMap, [member.id]: next })

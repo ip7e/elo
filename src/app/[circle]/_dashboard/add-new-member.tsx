@@ -1,13 +1,13 @@
 "use client"
 
 import useClickedOutside from "@/app/hooks/useClickedOutside"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { addMember } from "@/server/actions"
 import { cn } from "@/utils/tailwind/cn"
 import { CornerDownLeft, Plus } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useServerAction } from "zsa-react"
-import { MiddleCell, LeadingCell, AnimatedRow, TableCell } from "./_components/table"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { TableCell } from "./_components/table"
 
 const placeholderTexts = [
   "add member",
@@ -81,12 +81,7 @@ export default function AddNewMember({
   const nameIsValid = name.length > 1 && name.length < 20
 
   return (
-    <AnimatedRow
-      className={cn(isPending && "animate-pulse")}
-      layout
-      layoutId="add-member"
-      key={circleId}
-    >
+    <>
       <TableCell className={cn("relative h-full items-end", leadingCellSize)}>
         <Tooltip open={showTooltip}>
           <TooltipTrigger asChild>
@@ -151,6 +146,6 @@ export default function AddNewMember({
           </form>
         )}
       </TableCell>
-    </AnimatedRow>
+    </>
   )
 }
