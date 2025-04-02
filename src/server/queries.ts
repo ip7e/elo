@@ -25,7 +25,7 @@ export const getMembers = createServerAction()
     return members
   })
 
-export const getMembersWithStats = createServerAction()
+export const getMembersStatsV2 = createServerAction()
   .input(z.object({ circleId: z.number() }))
   .handler(async ({ input }) => {
     const supabase = createServerClient()
@@ -65,9 +65,7 @@ export const getMembersWithStats = createServerAction()
       .sort((a, b) => b.elo - a.elo || b.wins - a.wins || a.name.localeCompare(b.name))
   })
 
-export type MembersWithStats = inferServerActionReturnData<typeof getMembersWithStats>
-
-export const getMembersWithStatsV2 = createServerAction()
+export const getMembersStats = createServerAction()
   .input(z.object({ circleId: z.number() }))
   .handler(async ({ input }) => {
     const supabase = createServerClient()
@@ -99,9 +97,9 @@ export const getMembersWithStatsV2 = createServerAction()
       }))
       .sort((a, b) => (b.latest_game?.elo ?? 0) - (a.latest_game?.elo ?? 0))
 
-    console.log(resp)
     return resp
   })
+export type MembersWithStats = inferServerActionReturnData<typeof getMembersStats>
 
 export const getAllGames = async (circleId: number) => {
   const supabase = createServerClient()

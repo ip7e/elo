@@ -1,3 +1,5 @@
+"use client"
+
 import HeroCharacters from "./_components/hero-characters"
 import HeroContent from "./_components/hero-content"
 

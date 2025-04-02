@@ -40,7 +40,7 @@ export default function Members({
   pendingMemberIds,
   selectedGameIndex,
 }: Props) {
-  const ownerMembers = membersWithStats.filter((m) => !!m.user_id).map((m) => m.id)
+  const ownerMembers = membersWithStats.filter((m) => !!m.id).map((m) => m.id)
 
   const winningStreaksByMemberId = useMemo(() => {
     if (!recentGames.length) return {}
@@ -75,13 +75,15 @@ export default function Members({
     return streaksById
   }, [recentGames])
 
+  // TODO: Maybe there's no need for having a separate array
+  // It should directly arrive with all these fields
   const members = membersWithStats.map((m, i) => ({
     id: m.id!,
     name: m.name || "Unknown",
     rank: m.latest_game ? i + 1 : undefined,
     elo: m.latest_game?.elo,
     winningStreak: winningStreaksByMemberId[m.id!],
-    isNew: !m.latest_game,
+    isNew: !m.latest_game?.id,
     isPending: pendingMemberIds.includes(m.id!),
   }))
 
@@ -119,11 +121,13 @@ export default function Members({
           </AnimatedRow>
         ))}
         <HasAccess>
-          <AddNewMember
-            circleId={circleId}
-            showTooltip={membersWithStats.length < 2}
-            leadingCellSize={hasTwoDigitRank ? "w-6" : "w-3"}
-          />
+          <AnimatedRow layoutId="add-member">
+            <AddNewMember
+              circleId={circleId}
+              showTooltip={membersWithStats.length < 2}
+              leadingCellSize={hasTwoDigitRank ? "w-6" : "w-3"}
+            />
+          </AnimatedRow>
         </HasAccess>
       </Table>
     </div>

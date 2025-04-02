@@ -41,6 +41,6 @@ export const AccessProvider = ({
 
 export const useHasAccess = () => {
   const context = useContext(AccessContext)
-  if (!context) throw new Error("useHasAccess must be used within a AccessProvider")
+  if (!context) return { hasAccess: false, circle: null }
   return context
 }
