@@ -9,12 +9,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { kickMember } from "@/server/actions"
-import { MembersWithStats } from "@/server/queries"
 import { cn } from "@/utils/tailwind/cn"
 import { EllipsisVertical, Loader2, ShieldCheck, Trash2 } from "lucide-react"
 import { useMemo } from "react"
 import { useServerAction } from "zsa-react"
-import { GameWithResults } from "../../../server/types"
+import { GameWithResults, MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import Star from "../_components/star"
 import InviteDialogContent from "./_components/invite-dialog-content"
@@ -23,7 +22,7 @@ import AddNewMember from "./add-new-member"
 
 type Props = {
   circleId: number
-  membersWithStats: MembersWithStats
+  memberStats: MemberStats[]
   recentGames: GameWithResults[]
   onHighlightChange: (id: number) => void
   highlightId: number
@@ -36,11 +35,11 @@ export default function Members({
   highlightId,
   onHighlightChange,
   recentGames,
-  membersWithStats,
+  memberStats,
   pendingMemberIds,
   selectedGameIndex,
 }: Props) {
-  const ownerMembers = membersWithStats.filter((m) => !!m.id).map((m) => m.id)
+  const ownerMembers = memberStats.filter((m) => !!m.user_id).map((m) => m.id)
 
   const winningStreaksByMemberId = useMemo(() => {
     if (!recentGames.length) return {}
@@ -77,11 +76,11 @@ export default function Members({
 
   // TODO: Maybe there's no need for having a separate array
   // It should directly arrive with all these fields
-  const members = membersWithStats.map((m, i) => ({
-    id: m.id!,
+  const members = memberStats.map((m, i) => ({
+    ...m,
     name: m.name || "Unknown",
     rank: m.latest_game ? i + 1 : undefined,
-    elo: m.latest_game?.elo,
+    // TODO: Make this part of the response
     winningStreak: winningStreaksByMemberId[m.id!],
     isNew: !m.latest_game?.id,
     isPending: pendingMemberIds.includes(m.id!),
@@ -107,6 +106,7 @@ export default function Members({
               muted={!!member.isNew}
             />
             <EloCell elo={member.elo} />
+
             <FloatingCell>
               <HasAccess>
                 {ownerMembers.includes(member.id) ? (
@@ -124,7 +124,7 @@ export default function Members({
           <AnimatedRow layoutId="add-member">
             <AddNewMember
               circleId={circleId}
-              showTooltip={membersWithStats.length < 2}
+              showTooltip={memberStats.length < 2}
               leadingCellSize={hasTwoDigitRank ? "w-6" : "w-3"}
             />
           </AnimatedRow>
@@ -141,8 +141,8 @@ function MemberActions({ memberId, circleId }: { memberId: number; circleId: num
         <DropdownMenuTrigger
           tabIndex={-1}
           className={cn(
-            "opacity-0 group-hover:opacity-100",
-            "hover:text-primary data-[state=open]:text-primary",
+            "group-hover:opacity-100 sm:opacity-0",
+            "hover:text-primary data-[state=open]:text-primary data-[state=open]:opacity-100",
           )}
         >
           <EllipsisVertical size={16} />
@@ -163,7 +163,7 @@ function NewMemberActions({ memberId, circleId }: { memberId: number; circleId: 
 
   return (
     <button
-      className={cn(!isPending && "opacity-0 hover:text-primary group-hover:opacity-100")}
+      className={cn(!isPending && "hover:text-primary group-hover:opacity-100 sm:opacity-0")}
       onClick={() => execute({ id: memberId, circleId })}
     >
       {isPending ? (
@@ -178,7 +178,7 @@ function NewMemberActions({ memberId, circleId }: { memberId: number; circleId: 
 const CircleOwnerBadge = () => {
   return (
     <Tooltip>
-      <TooltipTrigger tabIndex={-1} className="cursor-default opacity-0 group-hover:opacity-100">
+      <TooltipTrigger tabIndex={-1} className="cursor-default group-hover:opacity-100 sm:opacity-0">
         <ShieldCheck size={16} />
       </TooltipTrigger>
       <TooltipContent>Circle Owner</TooltipContent>
@@ -233,6 +233,7 @@ function NameCell({
   )
 }
 
+// TODO: Animate with number shuffling
 function EloCell({ elo }: { elo: number | undefined }) {
-  return <TableCell className="w-20 text-right">{elo}</TableCell>
+  return <TableCell className="w-10 text-right">{elo || ""}</TableCell>
 }
