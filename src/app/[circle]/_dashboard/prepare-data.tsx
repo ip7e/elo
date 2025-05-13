@@ -61,16 +61,16 @@ export function getGameSeries(
         id: game.id,
       })
 
-      // Remove member if this was their first game
-      if (stats.firstGameId === game.id) {
-        currentMemberStats.delete(memberId)
-      }
-
       // Update the member stats with the previous ELO to not to mess up rankings
       currentMemberStats.set(memberId, {
         ...stats,
         elo: stats.previous_elo,
       })
+
+      // Remove member if this was their first game
+      if (stats.firstGameId === game.id) {
+        currentMemberStats.delete(memberId)
+      }
     })
 
     gameRecords.push(records)

@@ -6,6 +6,7 @@ import { AnimatePresence, motion, SVGMotionProps } from "framer-motion"
 import { useEffect, useReducer } from "react"
 import { useState } from "react"
 import { ScrollContainer } from "./scroll-container"
+import { format } from "date-fns"
 
 type Props = {
   data: GameRecord[][]
@@ -60,7 +61,8 @@ export function BumpChart({
             <MemberLines dim={isGameSelected} />
 
             {isGameSelected && <GameSessionSpotlight gameIndex={selectedGameIndex} />}
-            <FirstGameDots />
+
+            {!isGameSelected && <FirstGameDots />}
 
             {!isGameSelected && (
               <WinningLineWithDots memberId={selectedMemberId} animate={firstRender} />
@@ -133,7 +135,7 @@ function MemberLines({ dim }: MemberLinesProps) {
 }
 
 function GameSessionSpotlight({ gameIndex }: { gameIndex: number }) {
-  const { gamesByMember, data } = useChart()
+  const { data } = useChart()
 
   const selectedGameRecords = gameIndex !== null ? data[gameIndex] : null
   const participants = selectedGameRecords?.filter((record) => record.played)
@@ -146,8 +148,7 @@ function GameSessionSpotlight({ gameIndex }: { gameIndex: number }) {
             <MemberLine
               key={`member-line-spotlight-${record.member.id}`}
               initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 1] }}
-              transition={{ duration: 0.1 * data.length }}
+              animate={{ opacity: 1 }}
               memberId={record.member.id}
               className="stroke-primary stroke-1"
             />
@@ -183,6 +184,7 @@ function FirstGameDots() {
       {Array.from(gamesByMember.entries()).map(([memberId, games]) => {
         const firstGameIndex = games.findIndex((game) => game.isFirstGame)
         const firstGame = games[firstGameIndex]
+
         return (
           <Dot
             initial={{ opacity: 0 }}
