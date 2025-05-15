@@ -1,13 +1,13 @@
 "use client"
 
 import { cn } from "@/utils/tailwind/cn"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { GameWithResults, MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import { AddNewGameDialog } from "./_components/add-new-game-dialog"
 import { BumpChart } from "./bump-chart/bump-chart"
-import Members from "./members"
 import { getGameSeries } from "./prepare-data"
+import Members from "./members"
 
 type Props = {
   recentGames: GameWithResults[]
@@ -21,7 +21,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   const [selectedGameIndex, setSelectedGameIndex] = useState<number | null>(null)
 
   // TODO: Move this to query
-  const chartData = getGameSeries(memberStats, recentGames)
+  const gameSeries = getGameSeries(memberStats, recentGames)
 
   const handleGameSelect = (index: number | null) => {
     if (selectedGameIndex === index) setSelectedGameIndex(null)
@@ -34,6 +34,19 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
     setPendingMemberIds([])
   }, [memberStats])
 
+  const memberStatsForSelectedGame = useMemo(() => {
+    if (!selectedGameIndex) return memberStats
+
+    const gameSession = gameSeries[selectedGameIndex]
+
+    return memberStats
+      .map((member) => ({
+        ...member,
+        elo: gameSession.find((p) => p.member.id === member.id)?.elo ?? 0,
+      }))
+      .sort((a, b) => (b.elo ?? 0) - (a.elo ?? 0))
+  }, [selectedGameIndex, memberStats, gameSeries])
+
   return (
     <>
       <div className="flex flex-col">
@@ -45,7 +58,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
           >
             {showChart && (
               <BumpChart
-                data={chartData}
+                data={gameSeries}
                 selectedMemberId={selectedMemberId}
                 className={cn(!showChart && "hidden sm:flex")}
                 selectedGameIndex={selectedGameIndex}
@@ -64,7 +77,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
           <div className="flex flex-col py-2 sm:w-60">
             <Members
               circleId={circleId}
-              memberStats={memberStats}
+              memberStats={memberStatsForSelectedGame}
               recentGames={recentGames}
               highlightId={selectedMemberId}
               onHighlightChange={(id) => setSelectedMemberId(id)}
