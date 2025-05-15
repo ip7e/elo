@@ -362,21 +362,19 @@ function SelectedGameOverlayLines({
 
       {members.map((record) => {
         return (
-          <>
-            <line
-              key={`member-spotlight-dot-${record.member.id}-${gameIndex}`}
-              x1={xScale(totalGames - gameIndex)}
-              x2={xScale(totalGames)}
-              y1={yScale(record.rank)}
-              y2={yScale(record.rank)}
-              strokeDasharray={4}
-              className={cn(
-                "stroke-muted stroke-1",
-                record.played && "stroke-muted",
-                highlightedMemberId === record.member.id && "stroke-accent stroke-2",
-              )}
-            />
-          </>
+          <line
+            key={`member-spotlight-dot-${record.member.id}-${gameIndex}`}
+            x1={xScale(totalGames - gameIndex)}
+            x2={xScale(totalGames)}
+            y1={yScale(record.rank)}
+            y2={yScale(record.rank)}
+            strokeDasharray={4}
+            className={cn(
+              "stroke-muted stroke-1",
+              record.played && "stroke-muted",
+              highlightedMemberId === record.member.id && "stroke-accent stroke-2",
+            )}
+          />
         )
       })}
     </motion.g>

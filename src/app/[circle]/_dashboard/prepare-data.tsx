@@ -62,10 +62,12 @@ export function getGameSeries(
       })
 
       // Update the member stats with the previous ELO to not to mess up rankings
-      currentMemberStats.set(memberId, {
-        ...stats,
-        elo: stats.previous_elo,
-      })
+      if (participants.has(memberId)) {
+        currentMemberStats.set(memberId, {
+          ...stats,
+          elo: stats.previous_elo,
+        })
+      }
 
       // Remove member if this was their first game
       if (stats.firstGameId === game.id) {

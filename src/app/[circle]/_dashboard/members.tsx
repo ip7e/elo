@@ -81,7 +81,7 @@ export default function Members({
   const members = memberStats.map((m, i) => ({
     ...m,
     name: m.name || "Unknown",
-    rank: m.latest_game ? i + 1 : undefined,
+    rank: m.elo && m.latest_game ? i + 1 : undefined,
     // TODO: Make this part of the response
     winningStreak: winningStreaksByMemberId[m.id!],
     isNew: !m.latest_game?.id,
@@ -107,7 +107,7 @@ export default function Members({
               name={member.name}
               winStreak={member.winningStreak}
               highlight={member.id === highlightId}
-              muted={!!member.isNew}
+              muted={!!member.isNew || !member.elo}
             />
             <EloCell elo={member.elo} />
 
