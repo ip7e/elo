@@ -1,18 +1,16 @@
-import { curveMonotoneX, line } from "d3-shape"
-import { BumpChartProvider, useChart } from "./bump-chart-context"
-import { GameRecord } from "./types"
 import { cn } from "@/lib/utils"
+import { curveMonotoneX, line } from "d3-shape"
 import { AnimatePresence, motion, SVGMotionProps } from "framer-motion"
-import { useEffect, useReducer } from "react"
-import { useState } from "react"
+import { useEffect, useReducer, useState } from "react"
+import { BumpChartProvider, useChart } from "./bump-chart-context"
 import { ScrollContainer } from "./scroll-container"
-import { format } from "date-fns"
+import { GameRecord } from "./types"
 
 type Props = {
   data: GameRecord[][]
   selectedMemberId: number
   className?: string
-  selectedGameIndex?: number | null
+  selectedGameIndex: number | null
   onGameSelect?: (index: number | null) => void
 }
 
@@ -33,7 +31,7 @@ export function BumpChart({
   const width = data.length * itemWidth + padding * 2
   const height = data[0].length * itemHeight + padding * 2
 
-  const isGameSelected = selectedGameIndex !== null && selectedGameIndex !== undefined
+  const isGameSelected = selectedGameIndex
 
   const enableGameSelect = onGameSelect !== undefined
 
@@ -55,18 +53,30 @@ export function BumpChart({
       >
         <div className="block">
           <svg width={width} height={height} className="">
-            {isGameSelected && <SelectedGameColumn gameIndex={selectedGameIndex} />}
-
-            {enableGameSelect && <HoverCols onSelect={onGameSelect} />}
-            <MemberLines dim={isGameSelected} />
-
-            {isGameSelected && <GameSessionSpotlight gameIndex={selectedGameIndex} />}
+            <MemberLines selectedGameIndex={selectedGameIndex} />
 
             {!isGameSelected && <FirstGameDots />}
 
-            {!isGameSelected && (
-              <WinningLineWithDots memberId={selectedMemberId} animate={firstRender} />
+            <WinningLineWithDots
+              memberId={selectedMemberId}
+              animate={firstRender}
+              selectedGameIndex={selectedGameIndex}
+            />
+
+            {isGameSelected && (
+              <SelectedGameOverlayLines
+                gameIndex={selectedGameIndex}
+                highlightedMemberId={selectedMemberId}
+              />
             )}
+            {isGameSelected && (
+              <GameSessionSpotlight
+                gameIndex={selectedGameIndex}
+                highlightedMemberId={selectedMemberId}
+              />
+            )}
+
+            {enableGameSelect && <HoverCols onSelect={onGameSelect} />}
           </svg>
         </div>
       </BumpChartProvider>
@@ -74,10 +84,17 @@ export function BumpChart({
   )
 }
 
-function WinningLineWithDots({ memberId, animate }: { memberId: number; animate: boolean }) {
+function WinningLineWithDots({
+  memberId,
+  animate,
+  selectedGameIndex,
+}: {
+  memberId: number
+  animate: boolean
+  selectedGameIndex: number | null
+}) {
   const { gamesByMember } = useChart()
   const myGames = gamesByMember.get(memberId) || []
-
   const duration = animate ? myGames.length * 0.1 : 0
 
   return (
@@ -85,6 +102,7 @@ function WinningLineWithDots({ memberId, animate }: { memberId: number; animate:
       <MemberLine
         key={`wining-line-${memberId}`}
         memberId={memberId}
+        selectedGameIndex={selectedGameIndex}
         className="stroke-accent stroke-2"
         initial={{ opacity: 0, pathLength: animate ? 0 : 1 }}
         animate={{ opacity: [0, 1, 1], pathLength: 1 }}
@@ -112,10 +130,10 @@ function WinningLineWithDots({ memberId, animate }: { memberId: number; animate:
 }
 
 type MemberLinesProps = {
-  dim: boolean
+  selectedGameIndex: number | null
 }
 
-function MemberLines({ dim }: MemberLinesProps) {
+function MemberLines({ selectedGameIndex }: MemberLinesProps) {
   const { gamesByMember } = useChart()
 
   return (
@@ -123,18 +141,25 @@ function MemberLines({ dim }: MemberLinesProps) {
       {Array.from(gamesByMember.entries()).map(([memberId, games]) => (
         <MemberLine
           key={memberId}
+          selectedGameIndex={selectedGameIndex}
           memberId={memberId}
           initial={{ opacity: 0, pathLength: 0 }}
           animate={{ opacity: [0, 1, 1], pathLength: 1 }}
           transition={{ duration: 0.1 * games.length }}
-          className={cn("pointer-events-none", dim && "stroke-neutral-200 dark:stroke-neutral-700")}
+          className={cn("pointer-events-none stroke-secondary stroke-1")}
         />
       ))}
     </>
   )
 }
 
-function GameSessionSpotlight({ gameIndex }: { gameIndex: number }) {
+function GameSessionSpotlight({
+  gameIndex,
+  highlightedMemberId,
+}: {
+  gameIndex: number
+  highlightedMemberId: number
+}) {
   const { data } = useChart()
 
   const selectedGameRecords = gameIndex !== null ? data[gameIndex] : null
@@ -142,18 +167,6 @@ function GameSessionSpotlight({ gameIndex }: { gameIndex: number }) {
 
   return (
     <>
-      {participants &&
-        participants.map((record) => {
-          return (
-            <MemberLine
-              key={`member-line-spotlight-${record.member.id}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              memberId={record.member.id}
-              className="stroke-primary stroke-1"
-            />
-          )
-        })}
       {participants &&
         participants.map((record) => {
           return (
@@ -166,8 +179,9 @@ function GameSessionSpotlight({ gameIndex }: { gameIndex: number }) {
               rank={record.rank}
               r={3}
               className={cn(
-                "fill-background stroke-primary stroke-1",
-                record.won ? "fill-primary" : "",
+                "fill-secondary stroke-secondary",
+                highlightedMemberId === record.member.id && "fill-accent stroke-accent stroke-2",
+                !record.won && "fill-background",
               )}
             />
           )
@@ -204,17 +218,25 @@ function FirstGameDots() {
 
 type MemberLineProps = {
   memberId: number
+  selectedGameIndex: number | null
   className?: string
 } & SVGMotionProps<SVGPathElement>
 
-function MemberLine({ memberId, className, ...props }: MemberLineProps) {
+function MemberLine({ memberId, selectedGameIndex, className, ...props }: MemberLineProps) {
   const { gamesByMember, xScale, yScale, data } = useChart()
   const myGames = gamesByMember.get(memberId) || []
   const totalGames = data.length
 
   const lineGenerator = line<GameRecord>()
     .x((_, i) => xScale(totalGames - i))
-    .y((d) => yScale(d.rank))
+    .y((d, i) => {
+      if (selectedGameIndex && i <= selectedGameIndex && myGames[selectedGameIndex]) {
+        const selectedGame = myGames[selectedGameIndex]
+        return yScale(selectedGame.rank)
+      } else {
+        return yScale(d.rank)
+      }
+    })
     .curve(curveMonotoneX)
 
   return (
@@ -259,8 +281,6 @@ function HoverCols({ onSelect }: HoverColsProps) {
   const totalGames = data.length
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
-  const hoverGameRecords = hoveredIndex !== null ? data[hoveredIndex] : null
-
   return (
     <>
       <AnimatePresence>
@@ -284,7 +304,11 @@ function HoverCols({ onSelect }: HoverColsProps) {
         {hoveredIndex !== null && (
           <motion.line
             key={`hover-line`}
-            initial={{ opacity: 0 }}
+            initial={{
+              opacity: 0,
+              x1: xScale(totalGames - hoveredIndex),
+              x2: xScale(totalGames - hoveredIndex),
+            }}
             animate={{
               opacity: 1,
               x1: xScale(totalGames - hoveredIndex),
@@ -298,41 +322,63 @@ function HoverCols({ onSelect }: HoverColsProps) {
           />
         )}
       </AnimatePresence>
-
-      {hoveredIndex !== null &&
-        hoverGameRecords &&
-        hoverGameRecords.map(
-          (record) =>
-            record.played && (
-              <Dot
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.1, delay: hoveredIndex * 0.05 + 0.1 }}
-                key={`hover-dot-${record.member.id}-${hoveredIndex}`}
-                gameIndex={hoveredIndex}
-                rank={record.rank}
-                r={2}
-                className="fill-muted stroke-muted"
-              />
-            ),
-        )}
     </>
   )
 }
 
-function SelectedGameColumn({ gameIndex }: { gameIndex: number }) {
+function SelectedGameOverlayLines({
+  gameIndex,
+  highlightedMemberId,
+}: {
+  gameIndex: number
+  highlightedMemberId: number
+}) {
   const { data, xScale, yScale } = useChart()
   const totalGames = data.length
+  const selectedGameRecords = data[gameIndex]
+  const members = selectedGameRecords
 
   return (
-    <motion.rect
+    <motion.g
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      x={xScale(totalGames - gameIndex) - 15}
-      width={30}
-      height="100%"
-      className="pointer-events-none fill-accent/5 stroke-accent/20"
-    />
+      transition={{ duration: 0.3 }}
+    >
+      <rect
+        x={xScale(totalGames - gameIndex)}
+        width={xScale(totalGames - 1) - xScale(totalGames - gameIndex - 1) + 20}
+        height="100%"
+        className="pointer-events-none fill-background"
+      ></rect>
+
+      <line
+        x1={xScale(totalGames - gameIndex)}
+        x2={xScale(totalGames - gameIndex)}
+        y1={yScale(-0.5)}
+        y2={yScale(data[gameIndex].length - 0.5)}
+        className="pointer-events-none stroke-secondary stroke-1"
+      ></line>
+
+      {members.map((record) => {
+        return (
+          <>
+            <line
+              key={`member-spotlight-dot-${record.member.id}-${gameIndex}`}
+              x1={xScale(totalGames - gameIndex)}
+              x2={xScale(totalGames)}
+              y1={yScale(record.rank)}
+              y2={yScale(record.rank)}
+              strokeDasharray={4}
+              className={cn(
+                "stroke-muted stroke-1",
+                record.played && "stroke-muted",
+                highlightedMemberId === record.member.id && "stroke-accent stroke-2",
+              )}
+            />
+          </>
+        )
+      })}
+    </motion.g>
   )
 }

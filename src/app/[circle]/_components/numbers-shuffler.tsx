@@ -17,6 +17,10 @@ type Props = {
 export default function NumberShuffler({ spin, value }: Props) {
   const [displayValue, setDisplayValue] = useState(value)
 
+  useEffect(() => {
+    setDisplayValue(value)
+  }, [value])
+
   const valueRef = useRef(value)
   valueRef.current = value
 

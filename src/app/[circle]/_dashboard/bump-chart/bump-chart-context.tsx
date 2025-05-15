@@ -50,7 +50,7 @@ export function BumpChartProvider({
       scaleLinear()
         .domain([0, data.length])
         .range([16, width - 16]),
-    [data.length, width, padding],
+    [data.length, width],
   )
 
   const yScale = useMemo(

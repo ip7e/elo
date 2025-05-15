@@ -19,6 +19,7 @@ import Star from "../_components/star"
 import InviteDialogContent from "./_components/invite-dialog-content"
 import { AnimatedRow, FloatingCell, Table, TableCell } from "./_components/table"
 import AddNewMember from "./add-new-member"
+import NumberShuffler from "../_components/numbers-shuffler"
 
 type Props = {
   circleId: number
@@ -41,6 +42,7 @@ export default function Members({
 }: Props) {
   const ownerMembers = memberStats.filter((m) => !!m.user_id).map((m) => m.id)
 
+  // TODO: this logic should change completely... we need new badges and winning streaks should be calculated on the server
   const winningStreaksByMemberId = useMemo(() => {
     if (!recentGames.length) return {}
     const latestWinners = recentGames.at(0)!.game_results.filter((r) => r.winner)
@@ -87,6 +89,8 @@ export default function Members({
   }))
 
   const hasTwoDigitRank = members.some((m) => m.rank && m.rank > 9)
+
+  const selectedGame = selectedGameIndex !== null ? recentGames[selectedGameIndex] : null
 
   return (
     <div className="relative">
@@ -235,5 +239,9 @@ function NameCell({
 
 // TODO: Animate with number shuffling
 function EloCell({ elo }: { elo: number | undefined }) {
-  return <TableCell className="w-10 text-right">{elo || ""}</TableCell>
+  return (
+    <TableCell className="w-10 text-right">
+      {elo ? <NumberShuffler value={elo} spin={false} /> : ""}
+    </TableCell>
+  )
 }
