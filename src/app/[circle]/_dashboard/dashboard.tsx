@@ -21,7 +21,10 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   const [selectedGameIndex, setSelectedGameIndex] = useState<number | null>(null)
 
   // TODO: Move this to query
-  const gameSeries = getGameSeries(memberStats, recentGames)
+  const gameSeries = useMemo(
+    () => getGameSeries(memberStats, recentGames),
+    [memberStats, recentGames],
+  )
 
   const handleGameSelect = (index: number | null) => {
     if (selectedGameIndex === index) setSelectedGameIndex(null)
