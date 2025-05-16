@@ -63,12 +63,11 @@ export function BumpChart({
               selectedGameIndex={selectedGameIndex}
             />
 
-            {isGameSelected && (
-              <SelectedGameOverlayLines
-                gameIndex={selectedGameIndex}
-                highlightedMemberId={selectedMemberId}
-              />
-            )}
+            <SelectedGameOverlayLines
+              gameIndex={selectedGameIndex || 0}
+              highlightedMemberId={selectedMemberId}
+            />
+
             {isGameSelected && (
               <GameSessionSpotlight
                 gameIndex={selectedGameIndex}
@@ -338,27 +337,34 @@ function SelectedGameOverlayLines({
   const selectedGameRecords = data[gameIndex]
   const members = selectedGameRecords
 
-  return (
-    <motion.g
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <rect
-        x={xScale(totalGames - gameIndex)}
-        width={xScale(totalGames - 1) - xScale(totalGames - gameIndex - 1) + 20}
-        height="100%"
-        className="pointer-events-none fill-background"
-      ></rect>
+  const width = gameIndex ? xScale(totalGames - 1) - xScale(totalGames - gameIndex - 1) + 20 : 0
 
-      <line
-        x1={xScale(totalGames - gameIndex)}
-        x2={xScale(totalGames - gameIndex)}
-        y1={yScale(-0.5)}
-        y2={yScale(data[gameIndex].length - 0.5)}
-        className="pointer-events-none stroke-secondary stroke-1"
-      ></line>
+  return (
+    <g>
+      <motion.rect
+        initial={{
+          x: xScale(totalGames),
+          width,
+          height: "100%",
+        }}
+        animate={{
+          x: xScale(totalGames - gameIndex),
+          width,
+          height: "100%",
+        }}
+        transition={{ duration: 0.2 }}
+        className="pointer-events-none fill-background"
+      ></motion.rect>
+
+      {gameIndex && (
+        <line
+          x1={xScale(totalGames - gameIndex)}
+          x2={xScale(totalGames - gameIndex)}
+          y1={yScale(-0.5)}
+          y2={yScale(data[gameIndex].length - 0.5)}
+          className="pointer-events-none stroke-secondary stroke-1"
+        ></line>
+      )}
 
       {members.map((record) => {
         return (
@@ -377,6 +383,6 @@ function SelectedGameOverlayLines({
           />
         )
       })}
-    </motion.g>
+    </g>
   )
 }
