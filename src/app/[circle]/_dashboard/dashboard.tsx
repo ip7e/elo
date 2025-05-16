@@ -86,6 +86,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
               onHighlightChange={(id) => setSelectedMemberId(id)}
               pendingMemberIds={pendingMemberIds}
               selectedGameIndex={selectedGameIndex}
+              onGameSelect={handleGameSelect}
             />
           </div>
         </div>

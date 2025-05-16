@@ -10,7 +10,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { kickMember } from "@/server/actions"
 import { cn } from "@/utils/tailwind/cn"
-import { EllipsisVertical, Loader2, ShieldCheck, Trash2 } from "lucide-react"
+import { EllipsisVertical, Loader2, ShieldCheck, Trash2, X } from "lucide-react"
 import { useMemo } from "react"
 import { useServerAction } from "zsa-react"
 import { GameWithResults, MemberStats } from "../../../server/types"
@@ -20,6 +20,7 @@ import InviteDialogContent from "./_components/invite-dialog-content"
 import { AnimatedRow, FloatingCell, Table, TableCell } from "./_components/table"
 import AddNewMember from "./add-new-member"
 import NumberShuffler from "../_components/numbers-shuffler"
+import { Button } from "@/components/ui/button"
 
 type Props = {
   circleId: number
@@ -29,6 +30,7 @@ type Props = {
   highlightId: number
   pendingMemberIds: number[]
   selectedGameIndex: number | null
+  onGameSelect?: (index: number | null) => void
 }
 
 export default function Members({
@@ -39,6 +41,7 @@ export default function Members({
   memberStats,
   pendingMemberIds,
   selectedGameIndex,
+  onGameSelect,
 }: Props) {
   const ownerMembers = memberStats.filter((m) => !!m.user_id).map((m) => m.id)
 
@@ -90,10 +93,28 @@ export default function Members({
 
   const hasTwoDigitRank = members.some((m) => m.rank && m.rank > 9)
 
-  const selectedGame = selectedGameIndex !== null ? recentGames[selectedGameIndex] : null
+  const selectedGame = selectedGameIndex ? recentGames[selectedGameIndex] : null
+
+  const formattedDate = useMemo(() => {
+    const selectedGameDate = selectedGame && new Date(selectedGame.created_at)
+    if (!selectedGameDate) return null
+
+    const date = selectedGameDate.getDate()
+    const month = selectedGameDate.toLocaleString("default", { month: "long" })
+    return `${date} ${month}`
+  }, [selectedGame])
 
   return (
     <div className="relative">
+      {selectedGame && onGameSelect && (
+        <div
+          className="group absolute -top-12 left-1/2 flex w-fit -translate-x-1/2 cursor-pointer items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5 shadow-sm"
+          onClick={() => onGameSelect(null)}
+        >
+          <span className="text-sm font-medium text-muted-foreground">{formattedDate}</span>
+          <X className="h-3 w-3 text-muted group-hover:text-primary" />
+        </div>
+      )}
       <Table>
         {members.map((member) => (
           <AnimatedRow
