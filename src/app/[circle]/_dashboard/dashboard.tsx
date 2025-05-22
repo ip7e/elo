@@ -59,7 +59,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   }
 
   const leaderboardTitle = useMemo(() => {
-    if (!selectedGameIndex) return undefined
+    if (selectedGameIndex === null) return undefined
 
     return format(new Date(recentGames[selectedGameIndex].created_at), "MMMM d")
   }, [selectedGameIndex, recentGames])
@@ -69,6 +69,8 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   useEffect(() => {
     setPendingMemberIds([])
   }, [memberStats])
+
+  const hasSpotlightGame = selectedGameIndex !== null
 
   const leaderboard = useMemo<LeaderboardRow[]>(() => {
     const gameSession = gameSeries[selectedGameIndex ?? 0]
@@ -90,9 +92,9 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
         winStreak: winStreaksByMemberId.get(member.id) ?? undefined,
         elo,
         member,
-        delta: selectedGameIndex ? delta : undefined,
+        delta: hasSpotlightGame ? delta : undefined,
       }))
-  }, [selectedGameIndex, memberStats, gameSeries, winStreaksByMemberId])
+  }, [gameSeries, selectedGameIndex, memberStats, winStreaksByMemberId, hasSpotlightGame])
 
   return (
     <>
