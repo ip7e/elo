@@ -31,7 +31,7 @@ export function getGameSeries(
 
   // Process each game
   sortedGames.forEach((game) => {
-    const participants = new Set(game.game_results.map((r) => r.member_id))
+    const memberGameRecords = new Map(game.game_results.map((r) => [r.member_id, r]))
     const records: GameRecord[] = []
 
     // Update ELOs for participants to their previous values
@@ -51,19 +51,25 @@ export function getGameSeries(
 
     // Create records for this game
     sortedMembers.forEach(([memberId, stats], index) => {
+      const memberGameRecord = memberGameRecords.get(memberId)
+
+      const delta = memberGameRecord
+        ? memberGameRecord.elo - memberGameRecord.previous_elo
+        : undefined
+
       records.push({
         rank: index,
         elo: stats.elo,
         member: memberStats.find((m) => m.id === memberId)!,
-        played: participants.has(memberId),
+        played: !!memberGameRecord,
         isFirstGame: stats.firstGameId === game.id,
         won: stats.won,
-        delta: stats.previous_elo ? stats.elo - stats.previous_elo : undefined,
+        delta,
         id: game.id,
       })
 
       // Update the member stats with the previous ELO to not to mess up rankings
-      if (participants.has(memberId)) {
+      if (memberGameRecords.has(memberId)) {
         currentMemberStats.set(memberId, {
           ...stats,
           elo: stats.previous_elo,
