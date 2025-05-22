@@ -58,6 +58,7 @@ export function getGameSeries(
         played: participants.has(memberId),
         isFirstGame: stats.firstGameId === game.id,
         won: stats.won,
+        delta: stats.previous_elo ? stats.elo - stats.previous_elo : undefined,
         id: game.id,
       })
 
