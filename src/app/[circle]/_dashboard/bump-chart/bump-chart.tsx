@@ -144,8 +144,8 @@ function MemberLines({ selectedGameIndex }: MemberLinesProps) {
           key={memberId}
           selectedGameIndex={selectedGameIndex}
           memberId={memberId}
-          initial={{ opacity: 0, pathLength: 0 }}
-          animate={{ opacity: [0, 1, 1], pathLength: 1 }}
+          initial={{ opacity: 1, pathLength: 0 }}
+          animate={{ opacity: 1, pathLength: 1 }}
           transition={{ duration: 0.1 * games.length }}
           className={cn("pointer-events-none stroke-secondary stroke-1")}
         />
