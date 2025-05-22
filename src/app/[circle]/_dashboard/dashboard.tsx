@@ -73,7 +73,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   const leaderboard = useMemo<LeaderboardRow[]>(() => {
     const gameSession = gameSeries[selectedGameIndex ?? 0]
 
-    return memberStats
+    return [...memberStats]
       .map((member) => {
         const gameRecord = gameSession.find((p) => p.member.id === member.id)
 
@@ -83,7 +83,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
           delta: gameRecord?.delta || undefined,
         }
       })
-      .toSorted((a, b) => (b.elo ?? 0) - (a.elo ?? 0))
+      .sort((a, b) => (b.elo ?? 0) - (a.elo ?? 0))
       .map(({ member, elo, delta }, index) => ({
         name: member.name!,
         rank: elo ? index + 1 : undefined,
