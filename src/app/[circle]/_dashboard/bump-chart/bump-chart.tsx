@@ -31,7 +31,7 @@ export function BumpChart({
   const width = data.length * itemWidth + padding * 2
   const height = data[0].length * itemHeight + padding * 2
 
-  const isGameSelected = selectedGameIndex
+  const isGameSelected = selectedGameIndex !== null
 
   const enableGameSelect = onGameSelect !== undefined
 
@@ -63,10 +63,12 @@ export function BumpChart({
               selectedGameIndex={selectedGameIndex}
             />
 
-            <SelectedGameOverlayLines
-              gameIndex={selectedGameIndex || 0}
-              highlightedMemberId={selectedMemberId}
-            />
+            {isGameSelected && (
+              <SelectedGameOverlayLines
+                gameIndex={selectedGameIndex}
+                highlightedMemberId={selectedMemberId}
+              />
+            )}
 
             {isGameSelected && (
               <GameSessionSpotlight
@@ -356,7 +358,7 @@ function SelectedGameOverlayLines({
         className="pointer-events-none fill-background"
       ></motion.rect>
 
-      {gameIndex && (
+      {gameIndex !== null && (
         <line
           x1={xScale(totalGames - gameIndex)}
           x2={xScale(totalGames - gameIndex)}
