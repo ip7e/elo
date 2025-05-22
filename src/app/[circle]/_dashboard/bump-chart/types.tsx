@@ -7,5 +7,6 @@ export type GameRecord = {
   played: boolean
   member: Member
   won: boolean
+  delta: number | undefined
   id: number
 }

@@ -6,9 +6,9 @@ import { GameWithResults, MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import { AddNewGameDialog } from "./_components/add-new-game-dialog"
 import { BumpChart } from "./bump-chart/bump-chart"
+import Leaderboard, { LeaderboardRow } from "./leaderboard"
 import { getGameSeries } from "./prepare-data"
-import Members from "./members"
-
+import { format } from "date-fns"
 type Props = {
   recentGames: GameWithResults[]
   memberStats: MemberStats[]
@@ -26,10 +26,43 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
     [memberStats, recentGames],
   )
 
+  const winStreaksByMemberId = useMemo(() => {
+    const streaks = new Map<number, number>()
+
+    // For each member in the latest game
+    gameSeries[0]?.forEach((record) => {
+      const memberId = record.member.id
+      let streak = 0
+
+      // Look through games from latest to oldest
+      for (let i = 0; i < gameSeries.length; i++) {
+        const gameRecord = gameSeries[i].find((r) => r.member.id === memberId)
+
+        if (!gameRecord?.played) continue
+
+        if (gameRecord.won)
+          streak++ // If member played and won, increment streak
+        else break // Stop counting once we hit a loss or non-played game
+      }
+
+      if (streak > 0) {
+        streaks.set(memberId, streak)
+      }
+    })
+
+    return streaks
+  }, [gameSeries])
+
   const handleGameSelect = (index: number | null) => {
     if (selectedGameIndex === index) setSelectedGameIndex(null)
     else setSelectedGameIndex(index)
   }
+
+  const leaderboardTitle = useMemo(() => {
+    if (!selectedGameIndex) return undefined
+
+    return format(new Date(recentGames[selectedGameIndex].created_at), "MMMM d")
+  }, [selectedGameIndex, recentGames])
 
   const showChart = recentGames.length
 
@@ -37,18 +70,29 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
     setPendingMemberIds([])
   }, [memberStats])
 
-  const memberStatsForSelectedGame = useMemo(() => {
-    if (!selectedGameIndex) return memberStats
-
-    const gameSession = gameSeries[selectedGameIndex]
+  const leaderboard = useMemo<LeaderboardRow[]>(() => {
+    const gameSession = gameSeries[selectedGameIndex ?? 0]
 
     return memberStats
-      .map((member) => ({
-        ...member,
-        elo: gameSession.find((p) => p.member.id === member.id)?.elo ?? 0,
+      .map((member) => {
+        const gameRecord = gameSession.find((p) => p.member.id === member.id)
+
+        return {
+          member,
+          elo: gameRecord?.elo ?? 0,
+          delta: gameRecord?.delta || undefined,
+        }
+      })
+      .toSorted((a, b) => (b.elo ?? 0) - (a.elo ?? 0))
+      .map(({ member, elo, delta }, index) => ({
+        name: member.name!,
+        rank: elo ? index + 1 : undefined,
+        winStreak: winStreaksByMemberId.get(member.id) ?? undefined,
+        elo,
+        member,
+        delta: selectedGameIndex ? delta : undefined,
       }))
-      .sort((a, b) => (b.elo ?? 0) - (a.elo ?? 0))
-  }, [selectedGameIndex, memberStats, gameSeries])
+  }, [selectedGameIndex, memberStats, gameSeries, winStreaksByMemberId])
 
   return (
     <>
@@ -77,16 +121,14 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
             )}
           </div>
 
-          <div className="flex flex-col py-2 sm:w-60">
-            <Members
-              circleId={circleId}
-              memberStats={memberStatsForSelectedGame}
-              recentGames={recentGames}
+          <div className="flex flex-col py-2 sm:w-64">
+            <Leaderboard
+              floatingTitle={leaderboardTitle}
+              rows={leaderboard}
+              pendingMemberIds={pendingMemberIds}
               highlightId={selectedMemberId}
               onHighlightChange={(id) => setSelectedMemberId(id)}
-              pendingMemberIds={pendingMemberIds}
-              selectedGameIndex={selectedGameIndex}
-              onGameSelect={handleGameSelect}
+              onResetSelectedGame={() => handleGameSelect(null)}
             />
           </div>
         </div>
