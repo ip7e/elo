@@ -12,13 +12,15 @@ import { kickMember } from "@/server/actions"
 import { cn } from "@/utils/tailwind/cn"
 import { EllipsisVertical, Loader2, ShieldCheck, Trash2, X } from "lucide-react"
 import { useServerAction } from "zsa-react"
-import { MemberStats } from "../../../server/types"
+import { Member, MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import NumberShuffler from "../_components/numbers-shuffler"
 import Star from "../_components/star"
 import InviteDialogContent from "./_components/invite-dialog-content"
 import { AnimatedRow, FloatingCell, Table, TableCell } from "./_components/table"
 import AddNewMember from "./add-new-member"
+import { useState } from "react"
+import RenameMemberDialogContent from "./_components/rename-member-dialog-content"
 
 export type LeaderboardRow = {
   name: string
@@ -97,13 +99,7 @@ export default function Leaderboard({
 
             <FloatingCell>
               <HasAccess>
-                {row.member.user_id ? (
-                  <CircleOwnerBadge />
-                ) : row.member.latest_game ? (
-                  <MemberActions memberId={row.member.id} circleId={row.member.circle_id} />
-                ) : (
-                  <NewMemberActions memberId={row.member.id} circleId={row.member.circle_id} />
-                )}
+                <MemberActions member={row.member} />
               </HasAccess>
             </FloatingCell>
           </AnimatedRow>
@@ -124,7 +120,13 @@ export default function Leaderboard({
   )
 }
 
-function MemberActions({ memberId, circleId }: { memberId: number; circleId: number }) {
+function MemberActions({ member }: { member: MemberStats }) {
+  const [dialogContentType, setDialogContentType] = useState<"invite" | "rename" | null>(null)
+  const { isPending, execute } = useServerAction(kickMember)
+
+  const isAdmin = !!member.user_id
+  const isNew = !member.latest_game
+
   return (
     <Dialog>
       <DropdownMenu>
@@ -138,41 +140,54 @@ function MemberActions({ memberId, circleId }: { memberId: number; circleId: num
           <EllipsisVertical size={16} />
         </DropdownMenuTrigger>
         <DropdownMenuContent side="bottom" align="end">
-          <DialogTrigger>
-            <DropdownMenuItem>Invite as owner</DropdownMenuItem>
+          {isAdmin && (
+            <DropdownMenuItem className="flex items-center gap-2 text-muted-foreground" disabled>
+              <ShieldCheck size={14} />
+              Circle Owner
+            </DropdownMenuItem>
+          )}
+
+          <DialogTrigger asChild>
+            <DropdownMenuItem onClick={() => setDialogContentType("rename")}>
+              Rename
+            </DropdownMenuItem>
           </DialogTrigger>
+
+          {!isAdmin && !isNew && (
+            <DialogTrigger asChild>
+              <DropdownMenuItem onClick={() => setDialogContentType("invite")}>
+                Invite as owner
+              </DropdownMenuItem>
+            </DialogTrigger>
+          )}
+
+          {isNew && !isAdmin && (
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => execute({ id: member.id, circleId: member.circle_id })}
+              disabled={isPending}
+            >
+              {isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="mr-2 h-4 w-4" />
+              )}
+              Delete
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <InviteDialogContent circleId={circleId} memberId={memberId} />
-    </Dialog>
-  )
-}
-
-function NewMemberActions({ memberId, circleId }: { memberId: number; circleId: number }) {
-  const { isPending, execute } = useServerAction(kickMember)
-
-  return (
-    <button
-      className={cn(!isPending && "hover:text-primary group-hover:opacity-100 sm:opacity-0")}
-      onClick={() => execute({ id: memberId, circleId })}
-    >
-      {isPending ? (
-        <Loader2 className="animate-spin" size={16} />
-      ) : (
-        <Trash2 size={16} strokeWidth={1.25} />
+      {dialogContentType === "invite" && (
+        <InviteDialogContent circleId={member.circle_id} memberId={member.id} />
       )}
-    </button>
-  )
-}
-
-const CircleOwnerBadge = () => {
-  return (
-    <Tooltip>
-      <TooltipTrigger tabIndex={-1} className="cursor-default group-hover:opacity-100 sm:opacity-0">
-        <ShieldCheck size={16} />
-      </TooltipTrigger>
-      <TooltipContent>Circle Owner</TooltipContent>
-    </Tooltip>
+      {dialogContentType === "rename" && member && (
+        <RenameMemberDialogContent
+          memberId={member.id}
+          circleId={member.circle_id}
+          currentName={member.name}
+        />
+      )}
+    </Dialog>
   )
 }
 

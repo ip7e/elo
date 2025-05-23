@@ -315,3 +315,30 @@ export const deleteLastGame = circleAdminProcedure
 
     return { error }
   })
+
+export const renameMember = circleAdminProcedure
+  .createServerAction()
+  .input(
+    z.object({
+      id: z.number(),
+      name: z.string().min(1).max(20),
+    }),
+  )
+  .handler(async ({ input, ctx }) => {
+    const supabase = createSuperClient()
+
+    const { data, error } = await supabase
+      .from("circle_members")
+      .update({ name: input.name })
+      .eq("id", input.id)
+      .eq("circle_id", ctx.member.circle_id)
+      .select()
+      .single()
+
+    if (!error) {
+      revalidatePath("/[circle]", "layout")
+      return { data, success: true }
+    }
+
+    return { error }
+  })
