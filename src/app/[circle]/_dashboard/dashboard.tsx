@@ -29,6 +29,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   const winStreaksByMemberId = useMemo(() => {
     const streaks = new Map<number, number>()
 
+    if (gameSeries.length === 0) return streaks
     // For each member in the latest game
     gameSeries[0]?.forEach((record) => {
       const memberId = record.member.id
@@ -36,7 +37,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
 
       // Look through games from latest to oldest
       for (let i = 0; i < gameSeries.length; i++) {
-        const gameRecord = gameSeries[i].find((r) => r.member.id === memberId)
+        const gameRecord = gameSeries[i]?.find((r) => r.member.id === memberId)
 
         if (!gameRecord?.played) continue
 
@@ -73,7 +74,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   const hasSpotlightGame = selectedGameIndex !== null
 
   const leaderboard = useMemo<LeaderboardRow[]>(() => {
-    const gameSession = gameSeries[selectedGameIndex ?? 0]
+    const gameSession = gameSeries[selectedGameIndex ?? 0] ?? []
 
     return [...memberStats]
       .map((member) => {
@@ -105,7 +106,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
               `relative flex min-h-16 w-full flex-1 items-start justify-end overflow-hidden`,
             )}
           >
-            {showChart && (
+            {showChart ? (
               <BumpChart
                 data={gameSeries}
                 selectedMemberId={selectedMemberId}
@@ -113,8 +114,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
                 selectedGameIndex={selectedGameIndex}
                 onGameSelect={handleGameSelect}
               />
-            )}
-            {!showChart && (
+            ) : (
               <div className="flex h-full min-h-16 w-full items-center justify-center">
                 <span className="rounded-md border border-border bg-background px-2 py-1 font-mono text-sm text-muted">
                   no games yet
