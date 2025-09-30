@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react"
 
-export default function useClickedOutside(ref: React.RefObject<HTMLElement>, callback: () => void) {
+export default function useClickedOutside(
+  ref: React.RefObject<HTMLElement | null>,
+  callback: () => void,
+) {
   const callbackRef = useRef(callback)
   callbackRef.current = callback
 

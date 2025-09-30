@@ -5,7 +5,7 @@ import createSuperClient from "./supabase"
 import { z } from "zod"
 
 export const authedProcedure = createServerActionProcedure().handler(async () => {
-  const supabase = createServerClientWithCookies()
+  const supabase = await createServerClientWithCookies()
   const { data } = await supabase.auth.getUser()
 
   if (!data.user) throw new Error("User not authenticated")
