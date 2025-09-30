@@ -63,7 +63,7 @@ export const getAllGames = async (circleId: number) => {
 }
 
 export const getCurrentUser = async () => {
-  const supabase = createServerClientWithCookies()
+  const supabase = await createServerClientWithCookies()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -73,7 +73,7 @@ export const getCurrentUser = async () => {
 
 export const hasCurrentUserAccessToCircle = async (circleId: number) => {
   const user = await getCurrentUser()
-  const supabase = createServerClientWithCookies()
+  const supabase = await createServerClientWithCookies()
 
   if (!user) return false
 

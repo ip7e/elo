@@ -71,7 +71,7 @@ export const createGameSession = circleAdminProcedure
       winnerIds: z.array(z.number()),
     }),
   )
-  .onError((error) => console.log(error))
+  .onError(async (error) => console.log(error))
   .handler(async ({ input, ctx }) => {
     const supabase = createSuperClient()
     const { loserIds, winnerIds } = input

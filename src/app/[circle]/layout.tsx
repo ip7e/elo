@@ -9,9 +9,10 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode
-  params: { circle: string }
+  params: Promise<{ circle: string }>
 }) {
-  const circle = await getCircleBySlug(params.circle)
+  const { circle: circleSlug } = await params
+  const circle = await getCircleBySlug(circleSlug)
   if (!circle) notFound()
 
   const user = await getCurrentUser()
