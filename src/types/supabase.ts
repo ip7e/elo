@@ -9,42 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      circle_admins: {
-        Row: {
-          circle_id: number
-          created_at: string
-          id: number
-          user_id: string
-        }
-        Insert: {
-          circle_id: number
-          created_at?: string
-          id?: number
-          user_id?: string
-        }
-        Update: {
-          circle_id?: number
-          created_at?: string
-          id?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_circle_admins_circle_id_fkey"
-            columns: ["circle_id"]
-            isOneToOne: false
-            referencedRelation: "circles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_circle_admins_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       circle_members: {
         Row: {
           circle_id: number
@@ -52,6 +16,7 @@ export type Database = {
           id: number
           name: string | null
           user_id: string | null
+          visibility: Database["public"]["Enums"]["visibility_state"]
         }
         Insert: {
           circle_id: number
@@ -59,6 +24,7 @@ export type Database = {
           id?: number
           name?: string | null
           user_id?: string | null
+          visibility?: Database["public"]["Enums"]["visibility_state"]
         }
         Update: {
           circle_id?: number
@@ -66,38 +32,35 @@ export type Database = {
           id?: number
           name?: string | null
           user_id?: string | null
+          visibility?: Database["public"]["Enums"]["visibility_state"]
         }
         Relationships: [
           {
-            foreignKeyName: "public_circle_members_new_circle_id_fkey"
+            foreignKeyName: "public_circle_members_circle_id_fkey"
             columns: ["circle_id"]
             isOneToOne: false
             referencedRelation: "circles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_circle_members_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
       }
       circles: {
         Row: {
+          auto_hide_after_games: number
           created_at: string
           id: number
           name: string
           slug: string
         }
         Insert: {
+          auto_hide_after_games?: number
           created_at?: string
           id?: number
           name: string
           slug: string
         }
         Update: {
+          auto_hide_after_games?: number
           created_at?: string
           id?: number
           name?: string
@@ -142,32 +105,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "game_results_game_id_fkey"
-            columns: ["game_id"]
-            isOneToOne: false
-            referencedRelation: "members_stats"
-            referencedColumns: ["first_game"]
-          },
-          {
-            foreignKeyName: "game_results_game_id_fkey"
-            columns: ["game_id"]
-            isOneToOne: false
-            referencedRelation: "members_stats"
-            referencedColumns: ["latest_game"]
-          },
-          {
             foreignKeyName: "public_game_results_member_id_fkey"
             columns: ["member_id"]
             isOneToOne: false
             referencedRelation: "circle_members"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_game_results_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "members_stats"
-            referencedColumns: ["member_id"]
           },
         ]
       }
@@ -192,7 +134,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "games_circle_id_fkey"
+            foreignKeyName: "public_games_circle_id_fkey"
             columns: ["circle_id"]
             isOneToOne: false
             referencedRelation: "circles"
@@ -231,53 +173,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "public_member_invitations_invited_by_fkey"
-            columns: ["invited_by"]
-            isOneToOne: false
-            referencedRelation: "members_stats"
-            referencedColumns: ["member_id"]
-          },
-          {
             foreignKeyName: "public_member_invitations_member_id_fkey"
             columns: ["member_id"]
             isOneToOne: false
             referencedRelation: "circle_members"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_member_invitations_member_id_fkey"
-            columns: ["member_id"]
-            isOneToOne: false
-            referencedRelation: "members_stats"
-            referencedColumns: ["member_id"]
-          },
-        ]
-      }
-      old_members: {
-        Row: {
-          created_at: string
-          id: number
-          name: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "members_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -298,45 +197,17 @@ export type Database = {
           email?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "public_profiles_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
-      members_stats: {
-        Row: {
-          circle_id: number | null
-          elo: number | null
-          first_game: number | null
-          latest_game: number | null
-          member_id: number | null
-          name: string | null
-          total_games: number | null
-          total_wins: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_circle_members_new_circle_id_fkey"
-            columns: ["circle_id"]
-            isOneToOne: false
-            referencedRelation: "circles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      visibility_state: "auto" | "always_visible" | "always_hidden"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -424,5 +295,20 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
