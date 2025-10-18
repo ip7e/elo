@@ -127,6 +127,13 @@ export const createGameSession = circleAdminProcedure
       )
       .select()
 
+    // Reset visibility to 'auto' for all participants
+    const participantIds = [...loserIds, ...winnerIds]
+    await supabase
+      .from("circle_members")
+      .update({ visibility: "auto" })
+      .in("id", participantIds)
+
     revalidatePath(`/[circle]`, "layout")
 
     return { success: true, message: "Game session created successfully" }
@@ -330,6 +337,33 @@ export const renameMember = circleAdminProcedure
     const { data, error } = await supabase
       .from("circle_members")
       .update({ name: input.name })
+      .eq("id", input.id)
+      .eq("circle_id", ctx.member.circle_id)
+      .select()
+      .single()
+
+    if (!error) {
+      revalidatePath("/[circle]", "layout")
+      return { data, success: true }
+    }
+
+    return { error }
+  })
+
+export const setMemberVisibility = circleAdminProcedure
+  .createServerAction()
+  .input(
+    z.object({
+      id: z.number(),
+      visibility: z.enum(["auto", "always_visible", "always_hidden"]),
+    }),
+  )
+  .handler(async ({ input, ctx }) => {
+    const supabase = createSuperClient()
+
+    const { data, error } = await supabase
+      .from("circle_members")
+      .update({ visibility: input.visibility })
       .eq("id", input.id)
       .eq("circle_id", ctx.member.circle_id)
       .select()
