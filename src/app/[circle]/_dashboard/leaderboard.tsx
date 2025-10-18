@@ -11,7 +11,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { kickMember, setMemberVisibility } from "@/server/actions"
 import { cn } from "@/utils/tailwind/cn"
-import { EllipsisVertical, Loader2, ShieldCheck, Trash2, X } from "lucide-react"
+import { EllipsisVertical, Eye, EyeOff, Loader2, ShieldCheck, Trash2, X } from "lucide-react"
 import { useState } from "react"
 import { useServerAction } from "zsa-react"
 import { MemberStats } from "../../../server/types"
@@ -44,6 +44,7 @@ type Props = {
   showHidden?: boolean
   onToggleShowHidden?: () => void
   hasHiddenMembers?: boolean
+  onMemberAdded?: (id: number) => void
 }
 
 export default function Leaderboard({
@@ -57,6 +58,7 @@ export default function Leaderboard({
   showHidden = false,
   onToggleShowHidden,
   hasHiddenMembers = false,
+  onMemberAdded,
 }: Props) {
   const hasTwoDigitRank = rows.some((m) => m.rank && m.rank > 9)
 
@@ -70,6 +72,19 @@ export default function Leaderboard({
           <span className="text-sm font-medium text-muted-foreground">{floatingTitle}</span>
           <X className="h-3 w-3 text-muted group-hover:text-primary" />
         </div>
+      )}
+      {hasHiddenMembers && onToggleShowHidden && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={onToggleShowHidden}
+              className="absolute -top-5 right-0 text-muted-foreground hover:text-primary"
+            >
+              {showHidden ? <Eye size={12} /> : <EyeOff size={12} />}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="left">Show/hide inactive members</TooltipContent>
+        </Tooltip>
       )}
       <Table>
         {rows.map((row) => (
@@ -119,19 +134,12 @@ export default function Leaderboard({
                 circleId={rows[0]?.member.circle_id}
                 showTooltip={rows.length < 2}
                 leadingCellSize={hasTwoDigitRank ? "w-6" : "w-3"}
+                onMemberAdded={onMemberAdded}
               />
             </AnimatedRow>
           </HasAccess>
         )}
       </Table>
-      {hasHiddenMembers && onToggleShowHidden && (
-        <button
-          onClick={onToggleShowHidden}
-          className="mt-2 w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-primary"
-        >
-          {showHidden ? "Hide inactive" : "View all"}
-        </button>
-      )}
     </div>
   )
 }

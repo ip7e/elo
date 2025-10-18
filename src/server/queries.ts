@@ -17,7 +17,7 @@ export const getMembersStats = createServerAction()
     const supabase = createServerClient()
 
     // Fetch recent games, members, and circle in parallel
-    const [recentGamesResult, membersResult, circleResult] = await Promise.all([
+    const [recentCircleGamesResult, membersResult, circleResult] = await Promise.all([
       supabase
         .from("games")
         .select("id, game_results(member_id)")
@@ -44,20 +44,21 @@ export const getMembersStats = createServerAction()
       supabase.from("circles").select("auto_hide_after_games").eq("id", input.circleId).single(),
     ])
 
-    const recentGames = recentGamesResult.data ?? []
+    const recentCircleGames = recentCircleGamesResult.data ?? []
     const autoHideAfterGames = circleResult.data?.auto_hide_after_games ?? 20
 
     return (membersResult.data ?? [])
       .map((v) => {
         const latestGame = v.latest_game?.[0]
         const recentMissedGamesCount = latestGame
-          ? recentGames.filter((game) => game.id > latestGame.game_id).length
-          : recentGames.length
+          ? recentCircleGames.filter((game) => game.id > latestGame.game_id).length
+          : recentCircleGames.length
 
         const calculateVisibility = () => {
-          if (recentGames.length === 0) return true
+          if (recentCircleGames.length === 0) return true // show all members if no games have been played yet
           if (v.visibility === "always_visible") return true
           if (v.visibility === "always_hidden") return false
+          if (!latestGame) return false // hide members who have never played
           return recentMissedGamesCount < autoHideAfterGames
         }
 

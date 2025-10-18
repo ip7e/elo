@@ -23,8 +23,11 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   const [newlyAddedMemberIds, setNewlyAddedMemberIds] = useState<Set<number>>(new Set())
 
   const visibleMemberStats = useMemo(
-    () => (showHidden ? memberStats : memberStats.filter((m) => m.isVisible)),
-    [memberStats, showHidden],
+    () =>
+      showHidden
+        ? memberStats
+        : memberStats.filter((m) => m.isVisible || newlyAddedMemberIds.has(m.id)),
+    [memberStats, showHidden, newlyAddedMemberIds],
   )
 
   // TODO: Move this to query
@@ -79,7 +82,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   }, [memberStats])
 
   const hasSpotlightGame = selectedGameIndex !== null
-  const hasHiddenMembers = memberStats.some((m) => !m.isVisible)
+  const hasHiddenMembers = memberStats.some((m) => !m.isVisible && !newlyAddedMemberIds.has(m.id))
 
   const leaderboard = useMemo<LeaderboardRow[]>(() => {
     const gameSession = gameSeries[selectedGameIndex ?? 0] ?? []
@@ -93,7 +96,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
           member,
           elo: gameRecord?.elo ?? 0,
           delta: gameRecord?.delta || undefined,
-          isActive: member.isVisible,
+          isActive: member.isVisible || newlyAddedMemberIds.has(member.id),
         }
       })
       .sort((a, b) => (b.elo ?? 0) - (a.elo ?? 0))
@@ -106,7 +109,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
         delta: hasSpotlightGame ? delta : undefined,
         isActive,
       }))
-  }, [gameSeries, selectedGameIndex, memberStats, visibleMemberStats, winStreaksByMemberId, hasSpotlightGame, showHidden])
+  }, [gameSeries, selectedGameIndex, memberStats, visibleMemberStats, winStreaksByMemberId, hasSpotlightGame, showHidden, newlyAddedMemberIds])
 
   return (
     <>
@@ -145,6 +148,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
               showHidden={showHidden}
               onToggleShowHidden={() => setShowHidden(!showHidden)}
               hasHiddenMembers={hasHiddenMembers}
+              onMemberAdded={(id) => setNewlyAddedMemberIds((prev) => new Set(prev).add(id))}
             />
           </div>
         </div>
