@@ -7,10 +7,17 @@ import { usePathname } from "next/navigation"
 import { Circle } from "../../../server/types"
 import LoggedIn from "@/app/_components/logged-in"
 import LoggedOut from "@/app/_components/logged-out"
+import HasAccess from "./has-access"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { Settings } from "lucide-react"
+import EditCircleDialogContent from "@/app/me/_components/edit-circle-dialog-content"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 
 type Props = { circle: Circle }
 export default function Navigation({ circle }: Props) {
   const currentPathname = usePathname()
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   const routes = [
     {
@@ -56,8 +63,22 @@ export default function Navigation({ circle }: Props) {
           </nav>
         </div>
       </div>
-      <div className="hidden items-center gap-2 sm:flex">
-        <Link href="/me">my circles</Link>
+      <div className="flex items-center gap-2">
+        <Link href="/me">
+          <Button variant="ghost" size="sm">
+            My Circles
+          </Button>
+        </Link>
+        <HasAccess>
+          <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <Settings size={16} />
+              </Button>
+            </DialogTrigger>
+            <EditCircleDialogContent circle={circle} />
+          </Dialog>
+        </HasAccess>
       </div>
     </div>
   )

@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { createCircle } from "@/server/actions"
 import { Circle } from "@/server/types"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useServerAction } from "zsa-react"
@@ -27,6 +28,8 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
   const [defaultSlug, setDefaultSlug] = useState("")
   const [nickname, setNickname] = useState("")
   const [members, setMembers] = useState("")
+  const [autoHideAfterGames, setAutoHideAfterGames] = useState(20)
+  const [showMore, setShowMore] = useState(false)
 
   const sanitizeSlug = (value: string) => {
     return value
@@ -73,6 +76,7 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
               slug: slug,
               nickname,
               members,
+              autoHideAfterGames,
             })
           }}
         >
@@ -139,6 +143,39 @@ export default function NewCircleDialogContent({ onCreated }: Props) {
                 Separate names with a comma. You can also add them later.
               </p>
             </div>
+
+            <div className="grid gap-2">
+              <button
+                type="button"
+                onClick={() => setShowMore(!showMore)}
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
+              >
+                {showMore ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                More
+              </button>
+
+              {showMore && (
+                <div className="grid gap-2 pt-2">
+                  <Label htmlFor="autoHide">Auto-hide inactive members after</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="autoHide"
+                      type="number"
+                      min="1"
+                      max="100"
+                      className="w-20"
+                      value={autoHideAfterGames}
+                      onChange={(e) => setAutoHideAfterGames(Number(e.target.value))}
+                    />
+                    <span className="text-sm text-muted-foreground">missed games</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Inactive members are hidden from the leaderboard but can be shown with the eye icon.
+                  </p>
+                </div>
+              )}
+            </div>
+
             {isError && (
               <div className="rounded bg-destructive p-2 text-destructive-foreground">
                 <p className="">{error?.message}</p>
