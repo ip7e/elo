@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <PlausibleProvider domain="shmelo.io">
-      <html lang="en" className="h-full">
+      <html lang="en" className="h-full" suppressHydrationWarning>
         <body
           className={cn(
             `h-full w-full bg-background font-sans`,
