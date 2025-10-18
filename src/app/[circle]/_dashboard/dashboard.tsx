@@ -19,11 +19,18 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   const [selectedMemberId, setSelectedMemberId] = useState(memberStats[0]?.id || 0)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
   const [selectedGameIndex, setSelectedGameIndex] = useState<number | null>(null)
+  const [showHidden, setShowHidden] = useState(false)
+  const [newlyAddedMemberIds, setNewlyAddedMemberIds] = useState<Set<number>>(new Set())
+
+  const visibleMemberStats = useMemo(
+    () => (showHidden ? memberStats : memberStats.filter((m) => m.isVisible)),
+    [memberStats, showHidden],
+  )
 
   // TODO: Move this to query
   const gameSeries = useMemo(
-    () => getGameSeries(memberStats, recentGames),
-    [memberStats, recentGames],
+    () => getGameSeries(visibleMemberStats, recentGames),
+    [visibleMemberStats, recentGames],
   )
 
   const winStreaksByMemberId = useMemo(() => {
@@ -72,11 +79,13 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   }, [memberStats])
 
   const hasSpotlightGame = selectedGameIndex !== null
+  const hasHiddenMembers = memberStats.some((m) => !m.isVisible)
 
   const leaderboard = useMemo<LeaderboardRow[]>(() => {
     const gameSession = gameSeries[selectedGameIndex ?? 0] ?? []
+    const membersToShow = showHidden ? memberStats : visibleMemberStats
 
-    return [...memberStats]
+    return [...membersToShow]
       .map((member) => {
         const gameRecord = gameSession.find((p) => p.member.id === member.id)
 
@@ -84,18 +93,20 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
           member,
           elo: gameRecord?.elo ?? 0,
           delta: gameRecord?.delta || undefined,
+          isActive: member.isVisible,
         }
       })
       .sort((a, b) => (b.elo ?? 0) - (a.elo ?? 0))
-      .map(({ member, elo, delta }, index) => ({
+      .map(({ member, elo, delta, isActive }, index) => ({
         name: member.name!,
         rank: elo ? index + 1 : undefined,
         winStreak: winStreaksByMemberId.get(member.id) ?? undefined,
         elo,
         member,
         delta: hasSpotlightGame ? delta : undefined,
+        isActive,
       }))
-  }, [gameSeries, selectedGameIndex, memberStats, winStreaksByMemberId, hasSpotlightGame])
+  }, [gameSeries, selectedGameIndex, memberStats, visibleMemberStats, winStreaksByMemberId, hasSpotlightGame, showHidden])
 
   return (
     <>
@@ -131,6 +142,9 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
               highlightId={selectedMemberId}
               onHighlightChange={(id) => setSelectedMemberId(id)}
               onResetSelectedGame={() => handleGameSelect(null)}
+              showHidden={showHidden}
+              onToggleShowHidden={() => setShowHidden(!showHidden)}
+              hasHiddenMembers={hasHiddenMembers}
             />
           </div>
         </div>

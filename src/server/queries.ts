@@ -16,39 +16,68 @@ export const getMembersStats = createServerAction()
   .handler<Promise<MemberStats[]>>(async ({ input }) => {
     const supabase = createServerClient()
 
-    const { data: response, error } = await supabase
-      .from("circle_members")
-      .select(
-        `*, 
-          games:game_results(count), 
-          wins:game_results(count), 
-          latest_game:game_results(*), 
+    // Fetch recent games, members, and circle in parallel
+    const [recentGamesResult, membersResult, circleResult] = await Promise.all([
+      supabase
+        .from("games")
+        .select("id, game_results(member_id)")
+        .eq("circle_id", input.circleId)
+        .order("created_at", { ascending: false })
+        .limit(20),
+      supabase
+        .from("circle_members")
+        .select(
+          `*,
+          games:game_results(count),
+          wins:game_results(count),
+          latest_game:game_results(*),
           first_game:game_results(*)
         `,
-      )
-      .order("created_at", { referencedTable: "latest_game", ascending: false })
-      .order("created_at", { referencedTable: "first_game", ascending: true })
+        )
+        .order("created_at", { referencedTable: "latest_game", ascending: false })
+        .order("created_at", { referencedTable: "first_game", ascending: true })
+        .limit(1, { referencedTable: "latest_game" })
+        .limit(1, { referencedTable: "first_game" })
+        .order("created_at", { ascending: true })
+        .eq("wins.winner", true)
+        .eq("circle_id", input.circleId),
+      supabase.from("circles").select("auto_hide_after_games").eq("id", input.circleId).single(),
+    ])
 
-      .limit(1, { referencedTable: "latest_game" })
-      .limit(1, { referencedTable: "first_game" })
+    const recentGames = recentGamesResult.data ?? []
+    const autoHideAfterGames = circleResult.data?.auto_hide_after_games ?? 20
 
-      .order("created_at", { ascending: true })
-      .eq("wins.winner", true)
-      .eq("circle_id", input.circleId)
+    return (membersResult.data ?? [])
+      .map((v) => {
+        const latestGame = v.latest_game?.[0]
+        const recentMissedGamesCount = latestGame
+          ? recentGames.filter((game) => game.id > latestGame.game_id).length
+          : recentGames.length
 
-    const resp = (response ?? [])
-      .map((v) => ({
-        ...v,
-        name: v.name ?? "",
-        total_wins: v.wins?.[0]?.count ?? 0,
-        total_games: v.games?.[0]?.count ?? 0,
-        elo: v.latest_game?.[0]?.elo ?? 0,
-        latest_game: v.latest_game?.[0] as GameResult,
-        first_game: v.first_game?.[0] as GameResult,
-      }))
-      .sort((a, b) => b.elo - a.elo || b.total_wins - a.total_wins || a.name.localeCompare(b.name))
+        const calculateVisibility = () => {
+          if (recentGames.length === 0) return true
+          if (v.visibility === "always_visible") return true
+          if (v.visibility === "always_hidden") return false
+          return recentMissedGamesCount < autoHideAfterGames
+        }
 
-    return resp
+        return {
+          ...v,
+          name: v.name ?? "",
+          total_wins: v.wins?.[0]?.count ?? 0,
+          total_games: v.games?.[0]?.count ?? 0,
+          elo: latestGame?.elo ?? 0,
+          latest_game: latestGame as GameResult,
+          first_game: v.first_game?.[0] as GameResult,
+          recent_missed_games: recentMissedGamesCount,
+          isVisible: calculateVisibility(),
+        }
+      })
+      .sort((a, b) => {
+        if (b.elo !== a.elo) return b.elo - a.elo
+        if (b.total_wins !== a.total_wins) return b.total_wins - a.total_wins
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      })
   })
 
 export const getAllGames = async (circleId: number) => {

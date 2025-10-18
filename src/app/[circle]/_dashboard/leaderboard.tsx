@@ -5,22 +5,23 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { kickMember } from "@/server/actions"
+import { kickMember, setMemberVisibility } from "@/server/actions"
 import { cn } from "@/utils/tailwind/cn"
 import { EllipsisVertical, Loader2, ShieldCheck, Trash2, X } from "lucide-react"
+import { useState } from "react"
 import { useServerAction } from "zsa-react"
-import { Member, MemberStats } from "../../../server/types"
+import { MemberStats } from "../../../server/types"
 import HasAccess from "../_components/has-access"
 import NumberShuffler from "../_components/numbers-shuffler"
 import Star from "../_components/star"
 import InviteDialogContent from "./_components/invite-dialog-content"
+import RenameMemberDialogContent from "./_components/rename-member-dialog-content"
 import { AnimatedRow, FloatingCell, Table, TableCell } from "./_components/table"
 import AddNewMember from "./add-new-member"
-import { useState } from "react"
-import RenameMemberDialogContent from "./_components/rename-member-dialog-content"
 
 export type LeaderboardRow = {
   name: string
@@ -29,6 +30,7 @@ export type LeaderboardRow = {
   winStreak: number | undefined
   delta: number | undefined
   member: MemberStats
+  isActive: boolean
 }
 
 type Props = {
@@ -39,6 +41,9 @@ type Props = {
   floatingTitle?: string
   showAddMember?: boolean
   onResetSelectedGame?: () => void
+  showHidden?: boolean
+  onToggleShowHidden?: () => void
+  hasHiddenMembers?: boolean
 }
 
 export default function Leaderboard({
@@ -49,6 +54,9 @@ export default function Leaderboard({
   showAddMember = true,
   onResetSelectedGame,
   pendingMemberIds,
+  showHidden = false,
+  onToggleShowHidden,
+  hasHiddenMembers = false,
 }: Props) {
   const hasTwoDigitRank = rows.some((m) => m.rank && m.rank > 9)
 
@@ -77,7 +85,7 @@ export default function Leaderboard({
               name={row.name}
               winStreak={row.winStreak}
               highlight={row.member.id === highlightId}
-              muted={(floatingTitle && !row.delta) || !row.elo}
+              muted={(floatingTitle && !row.delta) || !row.elo || !row.isActive}
             />
 
             {row.delta && (
@@ -116,6 +124,14 @@ export default function Leaderboard({
           </HasAccess>
         )}
       </Table>
+      {hasHiddenMembers && onToggleShowHidden && (
+        <button
+          onClick={onToggleShowHidden}
+          className="mt-2 w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-primary"
+        >
+          {showHidden ? "Hide inactive" : "View all"}
+        </button>
+      )}
     </div>
   )
 }
@@ -123,9 +139,20 @@ export default function Leaderboard({
 function MemberActions({ member }: { member: MemberStats }) {
   const [dialogContentType, setDialogContentType] = useState<"invite" | "rename" | null>(null)
   const { isPending, execute } = useServerAction(kickMember)
+  const { isPending: isVisibilityPending, execute: executeVisibility } =
+    useServerAction(setMemberVisibility)
 
   const isAdmin = !!member.user_id
   const isNew = !member.latest_game
+  const isHidden = member.visibility === "always_hidden"
+
+  const handleToggleVisibility = async () => {
+    await executeVisibility({
+      id: member.id,
+      circleId: member.circle_id,
+      visibility: isHidden ? "auto" : "always_hidden",
+    })
+  }
 
   return (
     <Dialog>
@@ -161,19 +188,26 @@ function MemberActions({ member }: { member: MemberStats }) {
             </DialogTrigger>
           )}
 
+          <DropdownMenuItem onClick={handleToggleVisibility} disabled={isVisibilityPending}>
+            {isHidden ? "Unhide" : "Hide"}
+          </DropdownMenuItem>
+
           {isNew && !isAdmin && (
-            <DropdownMenuItem
-              className="text-destructive"
-              onClick={() => execute({ id: member.id, circleId: member.circle_id })}
-              disabled={isPending}
-            >
-              {isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Trash2 className="mr-2 h-4 w-4" />
-              )}
-              Delete
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() => execute({ id: member.id, circleId: member.circle_id })}
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="mr-2 h-4 w-4" />
+                )}
+                Delete
+              </DropdownMenuItem>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

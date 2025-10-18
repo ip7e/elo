@@ -14,4 +14,6 @@ export type MemberStats = Member & {
   total_wins: number
   total_games: number
   elo: number
+  recent_missed_games: number
+  isVisible: boolean
 }
