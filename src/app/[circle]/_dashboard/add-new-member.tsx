@@ -31,11 +31,13 @@ type Props = {
   circleId: number
   showTooltip: boolean
   leadingCellSize?: string
+  onMemberAdded?: (id: number) => void
 }
 export default function AddNewMember({
   circleId,
   showTooltip: showInitialTooltip,
   leadingCellSize,
+  onMemberAdded,
 }: Props) {
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -113,7 +115,10 @@ export default function AddNewMember({
             className="flex w-full gap-2"
             onSubmit={async (e) => {
               e.preventDefault()
-              await execute({ name, circleId })
+              const [result, err] = await execute({ name, circleId })
+              if (result?.data?.id) {
+                onMemberAdded?.(result.data.id)
+              }
               setPlaceholderIndex((i) => Math.min(i + 1, placeholderTexts.length - 1))
               setName("")
             }}
