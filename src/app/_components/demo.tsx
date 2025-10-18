@@ -14,7 +14,7 @@ export default async function Demo() {
   if (!memberStats || !games) return null
 
   return (
-    <div className="mt-16 flex flex-col items-center justify-center">
+    <div className="mx-auto mt-16 flex max-w-4xl flex-col items-center justify-center overflow-hidden">
       <Dashboard recentGames={games} memberStats={memberStats} circleId={circle.id} />
     </div>
   )
