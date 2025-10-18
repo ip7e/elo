@@ -183,12 +183,13 @@ export const createCircle = authedProcedure
       slug: z.string().min(1).max(20),
       nickname: z.string().min(1).max(20),
       members: z.string().optional().default(""),
+      autoHideAfterGames: z.number().min(1).max(100).optional().default(20),
     }),
   )
   .handler(async ({ input, ctx }) => {
     const supabase = createSuperClient()
 
-    const { name, slug, members, nickname } = input
+    const { name, slug, members, nickname, autoHideAfterGames } = input
 
     // reserved slugs
     if (reservedSlugs.includes(slug)) throw `shmelo.io/${slug} is already taken`
@@ -199,7 +200,7 @@ export const createCircle = authedProcedure
 
     const { data: circle, error } = await supabase
       .from("circles")
-      .insert({ name, slug })
+      .insert({ name, slug, auto_hide_after_games: autoHideAfterGames })
       .select()
       .single()
 
@@ -237,12 +238,13 @@ export const editCircle = circleAdminProcedure
     z.object({
       name: z.string().min(1).max(20),
       slug: z.string().min(1).max(20),
+      autoHideAfterGames: z.number().min(1).max(100),
     }),
   )
   .handler(async ({ input, ctx }) => {
     const supabase = createSuperClient()
 
-    const { name, slug } = input
+    const { name, slug, autoHideAfterGames } = input
 
     if (slug !== ctx.circle?.slug) {
       const { data } = await supabase.from("circles").select("*").eq("slug", slug).single()
@@ -254,6 +256,7 @@ export const editCircle = circleAdminProcedure
       .update({
         name: name,
         slug: slug,
+        auto_hide_after_games: autoHideAfterGames,
       })
       .eq("id", ctx.member.circle_id)
       .select()

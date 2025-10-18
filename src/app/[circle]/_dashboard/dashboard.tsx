@@ -9,6 +9,8 @@ import { BumpChart } from "./bump-chart/bump-chart"
 import Leaderboard, { LeaderboardRow } from "./leaderboard"
 import { getGameSeries } from "./prepare-data"
 import { format } from "date-fns"
+import { Eye, EyeOff } from "lucide-react"
+import { Button } from "@/components/ui/button"
 type Props = {
   recentGames: GameWithResults[]
   memberStats: MemberStats[]
@@ -109,7 +111,16 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
         delta: hasSpotlightGame ? delta : undefined,
         isActive,
       }))
-  }, [gameSeries, selectedGameIndex, memberStats, visibleMemberStats, winStreaksByMemberId, hasSpotlightGame, showHidden, newlyAddedMemberIds])
+  }, [
+    gameSeries,
+    selectedGameIndex,
+    memberStats,
+    visibleMemberStats,
+    winStreaksByMemberId,
+    hasSpotlightGame,
+    showHidden,
+    newlyAddedMemberIds,
+  ])
 
   return (
     <>
@@ -156,10 +167,20 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
         <HasAccess>
           <div
             className={cn(
-              "flex w-full items-center justify-end py-8 sm:order-1 sm:justify-center sm:py-16",
+              "flex w-full items-center justify-end gap-2 py-8 sm:order-1 sm:justify-center sm:py-16",
               "-order-1",
             )}
           >
+            {hasHiddenMembers && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowHidden(!showHidden)}
+                className="sm:hidden"
+              >
+                {showHidden ? <Eye size={16} /> : <EyeOff size={16} />}
+              </Button>
+            )}
             <AddNewGameDialog
               members={memberStats}
               circleId={circleId}

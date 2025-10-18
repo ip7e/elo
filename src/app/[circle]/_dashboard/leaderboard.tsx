@@ -78,7 +78,7 @@ export default function Leaderboard({
           <TooltipTrigger asChild>
             <button
               onClick={onToggleShowHidden}
-              className="absolute -top-5 right-0 text-muted-foreground hover:text-primary"
+              className="absolute -top-5 right-0 hidden text-muted-foreground hover:text-primary sm:block"
             >
               {showHidden ? <Eye size={12} /> : <EyeOff size={12} />}
             </button>
