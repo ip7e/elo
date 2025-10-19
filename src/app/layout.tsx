@@ -9,7 +9,7 @@ import { ThemeProvider } from "next-themes"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 export const metadata: Metadata = {
-  title: "Shmelo - Stay Competitive",
+  title: "Shmelo - Never let your friends forget who is the winner",
   description:
     "Leaderboard for games like board games, chess, tennis, padel, or any game worth a competition. Track wins, follow rankings, and stay competitive.",
   icons: [
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Shmelo - Stay Competitive",
+        alt: "Shmelo | Never let your friends forget who is the winner",
       },
     ],
   },
