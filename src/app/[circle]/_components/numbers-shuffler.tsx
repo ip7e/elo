@@ -1,12 +1,4 @@
 import NumberFlow from "@number-flow/react"
-import {
-  animate,
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useMotionValueEvent,
-  useTransform,
-} from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 
 type Props = {

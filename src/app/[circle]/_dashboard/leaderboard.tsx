@@ -25,6 +25,7 @@ export type LeaderboardRow = {
 type Props = {
   rows: LeaderboardRow[]
   onHighlightChange: (id: number) => void
+  onMemberClick?: (id: number) => void
   pendingMemberIds: number[]
   highlightId: number
   floatingTitle?: string
@@ -40,6 +41,7 @@ export default function Leaderboard({
   rows,
   highlightId,
   onHighlightChange,
+  onMemberClick,
   floatingTitle,
   showAddMember = true,
   onResetSelectedGame,
@@ -63,10 +65,11 @@ export default function Leaderboard({
       <Table>
         {rows.map((row) => (
           <AnimatedRow
-            className="group relative"
+            className="group relative cursor-pointer"
             key={row.member.id}
             layoutId={`row-${row.member.id}`}
             onMouseOver={() => onHighlightChange(row.member.id)}
+            onClick={() => onMemberClick?.(row.member.id)}
           >
             <RankCell rank={row.rank} wide={hasTwoDigitRank} />
 

@@ -13,6 +13,8 @@ import { useLeaderboardData } from "./_hooks/useLeaderboardData"
 import { EmptyChart } from "./_components/empty-chart"
 import { GameControls } from "./_components/game-controls"
 import { DashboardLayout } from "./_components/dashboard-layout"
+import { MemberStats as MemberStatsComponent } from "./stats/member-stats"
+import { calculateMemberStats } from "./stats/calculate-member-stats"
 type Props = {
   recentGames: GameWithResults[]
   memberStats: MemberStats[]
@@ -21,6 +23,7 @@ type Props = {
 
 export default function Dashboard({ recentGames, memberStats, circleId }: Props) {
   const [selectedMemberId, setSelectedMemberId] = useState(memberStats[0]?.id || 0)
+  const [showStatsForMemberId, setShowStatsForMemberId] = useState<number | null>(null)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
 
   // Use custom hooks for business logic
@@ -62,6 +65,11 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
 
   const showChart = recentGames.length
 
+  const memberStatsData = useMemo(() => {
+    if (!showStatsForMemberId) return null
+    return calculateMemberStats(showStatsForMemberId, memberStats, recentGames)
+  }, [showStatsForMemberId, memberStats, recentGames])
+
   useEffect(() => {
     setPendingMemberIds([])
   }, [memberStats])
@@ -70,7 +78,9 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
     <div className="flex flex-col">
       <DashboardLayout
         chartSection={
-          showChart ? (
+          memberStatsData ? (
+            <MemberStatsComponent stats={memberStatsData} />
+          ) : showChart ? (
             <BumpChart
               data={gameSeries}
               selectedMemberId={selectedMemberId}
@@ -89,6 +99,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
             pendingMemberIds={pendingMemberIds}
             highlightId={selectedMemberId}
             onHighlightChange={(id) => setSelectedMemberId(id)}
+            onMemberClick={(id) => setShowStatsForMemberId(showStatsForMemberId === id ? null : id)}
             onResetSelectedGame={resetSelectedGame}
             showHidden={showHidden}
             onToggleShowHidden={toggleShowHidden}
