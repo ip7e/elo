@@ -45,7 +45,7 @@ export function MemberStats({ stats, className }: Props) {
                       game.participated && (game.won ? "text-green-500" : "text-red-500"),
                     )}
                   >
-                    {!game.participated ? "x" : game.won ? "w" : "l"}
+                    {!game.participated ? "X" : game.won ? "W" : "L"}
                   </span>
                 ))}
               </div>
@@ -82,6 +82,10 @@ export function MemberStats({ stats, className }: Props) {
 
           <div className="flex-1 space-y-2">
             <div className="flex justify-between">
+              <span className="text-secondary">participation</span>
+              <span className="font-mono text-primary">{stats.participationRate.toFixed(0)}%</span>
+            </div>
+            <div className="flex justify-between">
               <span className="text-secondary">peak</span>
               <span className="font-mono text-primary">
                 <NumberShuffler value={Math.round(stats.peakElo)} spin={false} />
@@ -96,12 +100,8 @@ export function MemberStats({ stats, className }: Props) {
                 )}
               >
                 {stats.streaks.current.count}
-                {stats.streaks.current.type === "win" ? "w" : "l"}
+                {stats.streaks.current.type === "win" ? "W" : "L"}
               </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-secondary">participation</span>
-              <span className="font-mono text-primary">{stats.participationRate.toFixed(0)}%</span>
             </div>
           </div>
         </div>

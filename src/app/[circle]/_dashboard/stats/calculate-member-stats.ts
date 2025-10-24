@@ -42,11 +42,12 @@ export function calculateMemberStats(
 
   memberResults.forEach((r) => {
     r.opponents.forEach((opp) => {
-      if (!opponentMap.has(opp.member_id)) {
+      const oppId = String(opp.member_id)
+      if (!opponentMap.has(oppId)) {
         const oppMember = memberStats.find((m) => m.id === opp.member_id)
         if (!oppMember) return
 
-        opponentMap.set(opp.member_id, {
+        opponentMap.set(oppId, {
           opponent: oppMember,
           wins: 0,
           losses: 0,
@@ -55,7 +56,7 @@ export function calculateMemberStats(
         })
       }
 
-      const record = opponentMap.get(opp.member_id)!
+      const record = opponentMap.get(oppId)!
       record.totalGames++
       if (r.result.winner) {
         record.wins++
@@ -89,17 +90,16 @@ export function calculateMemberStats(
       ? opponentRecords.reduce((max, opp) => (opp.totalGames > max.totalGames ? opp : max))
       : null
 
-  const streaks = calculateStreaks(memberResults.map((r) => r.result.winner))
+  const streaks = calculateStreaks(memberResults.map((r) => r.result.winner ?? false))
 
-  const recentGames = games.slice(-10).reverse()
-  const recentForm = recentGames.map((game) => {
-    const participated = game.game_results.some((r) => r.member_id === memberId)
-    if (!participated) {
-      return { participated: false, won: false, gameId: game.id }
-    }
-    const result = game.game_results.find((r) => r.member_id === memberId)!
-    return { participated: true, won: result.winner, gameId: game.id }
-  })
+  const recentForm = memberResults
+    .slice(-5)
+    .reverse()
+    .map((r) => ({
+      participated: true,
+      won: r.result.winner ?? false,
+      gameId: r.game.id,
+    }))
 
   const participationRate = totalCircleGames > 0 ? (totalGames / totalCircleGames) * 100 : 0
 
@@ -125,7 +125,7 @@ export function calculateMemberStats(
 }
 
 function calculateStreaks(winHistory: boolean[]): StreakInfo {
-  let currentStreak = { type: 'win' as 'win' | 'loss', count: 0 }
+  let currentStreak = { type: "win" as "win" | "loss", count: 0 }
   let longestWin = 0
   let longestLoss = 0
   let currentWinStreak = 0
@@ -146,9 +146,9 @@ function calculateStreaks(winHistory: boolean[]): StreakInfo {
   }
 
   if (currentWinStreak > 0) {
-    currentStreak = { type: 'win', count: currentWinStreak }
+    currentStreak = { type: "win", count: currentWinStreak }
   } else if (currentLossStreak > 0) {
-    currentStreak = { type: 'loss', count: currentLossStreak }
+    currentStreak = { type: "loss", count: currentLossStreak }
   }
 
   return {
