@@ -22,13 +22,13 @@ export function MemberStats({ stats, className }: Props) {
   return (
     <div
       className={cn(
-        "flex w-full items-center justify-center rounded-lg border border-neutral-100 px-8 py-4 text-sm dark:border-neutral-800",
+        "flex w-full items-center justify-center rounded-lg border border-neutral-100 px-4 py-4 text-sm dark:border-neutral-800",
         className,
       )}
     >
       <div className="w-full max-w-full space-y-6">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="truncate text-lg font-medium text-primary">{stats.member.name}</div>
             {stats.recentForm.length > 0 && (
               <div className="flex shrink-0 gap-1 font-mono text-xs">
@@ -103,17 +103,17 @@ export function MemberStats({ stats, className }: Props) {
 
         {stats.easiestOpponent && stats.toughestOpponent && (
           <div className="pt-3">
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex flex-1 items-center justify-between gap-2">
-                <span className="truncate font-mono text-primary">
+            <div className="flex items-center gap-1 text-xs">
+              <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
+                <span className="truncate font-mono text-sm text-primary">
                   {stats.easiestOpponent.opponent.name}
                 </span>
                 <span className="shrink-0 text-secondary">easy</span>
               </div>
-              <div className="h-4 w-px shrink-0 bg-neutral-200 dark:bg-neutral-700" />
-              <div className="flex flex-1 items-center justify-between gap-2">
+              <div className="h-3 w-px shrink-0 bg-neutral-200 dark:bg-neutral-700" />
+              <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
                 <span className="shrink-0 text-secondary">tough</span>
-                <span className="truncate font-mono text-primary">
+                <span className="truncate font-mono text-sm text-primary">
                   {stats.toughestOpponent.opponent.name}
                 </span>
               </div>
