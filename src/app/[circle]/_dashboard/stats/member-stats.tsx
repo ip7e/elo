@@ -14,8 +14,13 @@ function formatJoinDate(dateString: string): string {
   const date = new Date(dateString)
   const day = date.getDate()
   const month = date.toLocaleDateString("en-US", { month: "short" }).toLowerCase()
-  const year = date.getFullYear().toString().slice(-2)
-  return `${day} ${month} ${year}`
+  const currentYear = new Date().getFullYear()
+  const year = date.getFullYear()
+
+  if (year === currentYear) {
+    return `${day} ${month}`
+  }
+  return `${day} ${month} ${year.toString().slice(-2)}`
 }
 
 export function MemberStats({ stats, className }: Props) {
@@ -46,7 +51,7 @@ export function MemberStats({ stats, className }: Props) {
               </div>
             )}
           </div>
-          <div className="shrink-0 text-xs text-muted">
+          <div className="shrink-0 text-xs text-secondary">
             joined {formatJoinDate(stats.member.created_at)}
           </div>
         </div>
@@ -110,7 +115,7 @@ export function MemberStats({ stats, className }: Props) {
                 </span>
                 <span className="shrink-0 text-secondary">easy</span>
               </div>
-              <div className="h-3 w-px shrink-0 bg-neutral-200 dark:bg-neutral-700" />
+              <div className="mx-2 h-3 w-px shrink-0 bg-neutral-200 dark:bg-neutral-700" />
               <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
                 <span className="shrink-0 text-secondary">tough</span>
                 <span className="truncate font-mono text-sm text-primary">

@@ -132,9 +132,11 @@ function NameCell({
     <TableCell
       className={cn(
         "flex-1 items-center overflow-hidden text-ellipsis text-nowrap font-medium text-primary",
+        "group-hover:text-accent",
         highlight && "text-accent",
         muted && "text-secondary",
         highlight && muted && "text-accent/50",
+        muted && "group-hover:text-accent/50",
       )}
     >
       <span>{name}</span>

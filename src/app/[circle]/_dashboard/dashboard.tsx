@@ -22,9 +22,11 @@ type Props = {
 }
 
 export default function Dashboard({ recentGames, memberStats, circleId }: Props) {
-  const [selectedMemberId, setSelectedMemberId] = useState(memberStats[0]?.id || 0)
+  const [hoveredMemberId, setHoveredMemberId] = useState(memberStats[0]?.id || 0)
   const [showStatsForMemberId, setShowStatsForMemberId] = useState<number | null>(null)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
+
+  const selectedMemberId = showStatsForMemberId ?? hoveredMemberId
 
   // Use custom hooks for business logic
   const {
@@ -98,7 +100,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
             rows={leaderboard}
             pendingMemberIds={pendingMemberIds}
             highlightId={selectedMemberId}
-            onHighlightChange={(id) => setSelectedMemberId(id)}
+            onHighlightChange={(id) => setHoveredMemberId(id)}
             onMemberClick={(id) => setShowStatsForMemberId(showStatsForMemberId === id ? null : id)}
             onResetSelectedGame={resetSelectedGame}
             showHidden={showHidden}
