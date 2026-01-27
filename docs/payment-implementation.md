@@ -138,8 +138,8 @@ Reference: [`payment-flow.md`](./payment-flow.md)
 
 > After payment, user returns to the unlocked circle.
 
-- [ ] Webhook sets `is_unlocked` in DB, page re-fetches naturally on load
-- [ ] Optionally show a brief success toast/banner via `?unlocked=true` search param
+- [x] Webhook sets `is_unlocked` in DB, page re-fetches naturally on load
+- [ ] Optionally show something fun in game-controls after unlock (future)
 
 **Files:**
 - `src/app/[circle]/page.tsx` — minor edit

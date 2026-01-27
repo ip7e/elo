@@ -1,5 +1,6 @@
-import { getAllGames, getCircleBySlug, getMembersStats } from "@/server/queries"
+import { getAllGames, getCircleBySlug, getCirclePlan, getMembersStats } from "@/server/queries"
 import Dashboard from "../[circle]/_dashboard/dashboard"
+import { CirclePlanProvider } from "../[circle]/_context/circle-plan-context"
 import notFound from "../not-found"
 
 export default async function Demo() {
@@ -7,15 +8,19 @@ export default async function Demo() {
 
   if (!circle) return notFound()
 
-  const games = await getAllGames(circle.id)
-
-  const [memberStats, error] = await getMembersStats({ circleId: circle.id })
+  const [games, [memberStats], plan] = await Promise.all([
+    getAllGames(circle.id),
+    getMembersStats({ circleId: circle.id }),
+    getCirclePlan(circle.id),
+  ])
 
   if (!memberStats || !games) return null
 
   return (
     <div className="container mx-auto mt-4 flex h-full max-w-3xl flex-col px-8">
-      <Dashboard recentGames={games} memberStats={memberStats} circleId={circle.id} />
+      <CirclePlanProvider plan={plan}>
+        <Dashboard recentGames={games} memberStats={memberStats} circleId={circle.id} />
+      </CirclePlanProvider>
     </div>
   )
 }
