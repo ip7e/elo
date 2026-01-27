@@ -40,9 +40,9 @@ Reference: [`payment-flow.md`](./payment-flow.md)
 
 > Make plan status available on the client with a clean component API.
 
-- [ ] Create `CirclePlanProvider` context + `useCirclePlan()` hook
-- [ ] Create `<Plan>` compound component: `<Plan.Trial>`, `<Plan.Locked>`, `<Plan.Pro>`, `<Plan.Active>`
-- [ ] Fetch `getCirclePlan` in `page.tsx`, wrap dashboard in `CirclePlanProvider`
+- [x] Create `CirclePlanProvider` context + `useCirclePlan()` hook
+- [x] Create `<Plan>` compound component: `<Plan.Trial>`, `<Plan.Locked>`, `<Plan.Pro>`, `<Plan.Active>`
+- [x] Fetch `getCirclePlan` in `layout.tsx`, wrap dashboard in `CirclePlanProvider`
 
 **Files:**
 - `src/app/[circle]/_context/circle-plan-context.tsx` — create
@@ -58,10 +58,10 @@ Reference: [`payment-flow.md`](./payment-flow.md)
 
 > Show remaining games counter. When locked, replace "New Game" with unlock prompt.
 
-- [ ] `<Plan.Trial>`: show `"X of 10 free games remaining"` near game controls
-- [ ] `<Plan.Locked>`: hide "New Game", show unlock prompt
-- [ ] `<Plan.Active>`: show "New Game" button (visible for trial + pro)
-- [ ] Unlock button visible to **everyone** (not wrapped in `HasAccess`)
+- [x] `<Plan.Trial>`: show `"X of 10 free games remaining"` near game controls
+- [x] `<Plan.Locked>`: hide "New Game", show unlock prompt
+- [x] `<Plan.Active>`: show "New Game" button (visible for trial + pro)
+- [ ] Unlock button links to checkout (wired in Step 6)
 
 **Files:**
 - `src/app/[circle]/_dashboard/_components/game-controls.tsx` — edit
@@ -77,8 +77,8 @@ Reference: [`payment-flow.md`](./payment-flow.md)
 
 > Enforce the paywall server-side. This is the hard gate.
 
-- [ ] Call `getCirclePlan` at the top of `createGameSession` handler
-- [ ] If `status === 'locked'`, throw error
+- [x] Call `getCirclePlan` at the top of `createGameSession` handler
+- [x] If `status === 'locked'`, throw error
 
 **Files:**
 - `src/server/actions.ts` — edit (`createGameSession`)
