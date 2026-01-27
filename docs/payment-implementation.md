@@ -61,7 +61,7 @@ Reference: [`payment-flow.md`](./payment-flow.md)
 - [x] `<Plan.Trial>`: show `"X of 10 free games remaining"` near game controls
 - [x] `<Plan.Locked>`: hide "New Game", show unlock prompt
 - [x] `<Plan.Active>`: show "New Game" button (visible for trial + pro)
-- [ ] Unlock button links to checkout (wired in Step 6)
+- [x] Unlock button links to checkout (wired in Step 6)
 
 **Files:**
 - `src/app/[circle]/_dashboard/_components/game-controls.tsx` — edit
@@ -99,18 +99,20 @@ Reference: [`payment-flow.md`](./payment-flow.md)
 
 > API route that redirects to Polar's hosted checkout page.
 
-- [ ] Create checkout route using `Checkout` from `@polar-sh/nextjs`
-- [ ] Pass `circleId` via metadata so webhook can identify the circle
-- [ ] Configure success URL to redirect back to circle page
+- [x] Create checkout route using Polar SDK directly (dynamic success URL per circle)
+- [x] Pass `circleId` via metadata so webhook can identify the circle
+- [x] Configure success URL to redirect back to circle page (`/{slug}?unlocked=true`)
+- [x] Wire "Unlock this circle" button to `/api/checkout?circleId=ID`
 
 **Files:**
-- `src/app/api/checkout/route.ts` — create
+- `src/app/api/checkout/route.ts` — created
+- `src/app/[circle]/_dashboard/_components/game-controls.tsx` — edit (wire unlock button)
 
 **Env vars:**
 - `POLAR_ACCESS_TOKEN` (already exists)
-- `POLAR_PRODUCT_ID` — set in Polar dashboard
+- `POLAR_PRODUCT_ID` — `608d6511-7c6a-4e68-965c-8c1672f273df`
 
-**How to verify:** Navigate to `/api/checkout?products=PRODUCT_ID` — should redirect to Polar checkout.
+**How to verify:** Navigate to `/api/checkout?circleId=ID` — should redirect to Polar checkout.
 
 ---
 
@@ -118,9 +120,9 @@ Reference: [`payment-flow.md`](./payment-flow.md)
 
 > Handle payment confirmation and unlock the circle.
 
-- [ ] Create webhook route using `Webhooks` from `@polar-sh/nextjs`
-- [ ] On `onOrderPaid`: extract `circleId` from metadata, set `is_unlocked = true`
-- [ ] Validate signature with `POLAR_WEBHOOK_SECRET`
+- [x] Create webhook route using `Webhooks` from `@polar-sh/nextjs`
+- [x] On `onOrderPaid`: extract `circleId` from metadata, set `is_unlocked = true`
+- [x] Validate signature with `POLAR_WEBHOOK_SECRET`
 
 **Files:**
 - `src/app/api/webhooks/polar/route.ts` — create
