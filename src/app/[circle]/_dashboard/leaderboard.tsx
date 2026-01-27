@@ -29,11 +29,7 @@ type Props = {
   pendingMemberIds: number[]
   highlightId: number
   floatingTitle?: string
-  showAddMember?: boolean
   onResetSelectedGame?: () => void
-  showHidden?: boolean
-  onToggleShowHidden?: () => void
-  hasHiddenMembers?: boolean
   onMemberAdded?: (id: number) => void
 }
 
@@ -43,12 +39,8 @@ export default function Leaderboard({
   onHighlightChange,
   onMemberClick,
   floatingTitle,
-  showAddMember = true,
   onResetSelectedGame,
   pendingMemberIds,
-  showHidden = false,
-  onToggleShowHidden,
-  hasHiddenMembers = false,
   onMemberAdded,
 }: Props) {
   const hasTwoDigitRank = rows.some((m) => m.rank && m.rank > 9)
@@ -58,9 +50,6 @@ export default function Leaderboard({
       <LeaderboardHeader
         floatingTitle={floatingTitle}
         onResetSelectedGame={onResetSelectedGame}
-        showHidden={showHidden}
-        onToggleShowHidden={onToggleShowHidden}
-        hasHiddenMembers={hasHiddenMembers}
       />
       <Table>
         {rows.map((row) => (
@@ -91,18 +80,16 @@ export default function Leaderboard({
             </FloatingCell>
           </AnimatedRow>
         ))}
-        {showAddMember && (
-          <HasAccess>
-            <AnimatedRow layoutId="add-member">
-              <AddNewMember
-                circleId={rows[0]?.member.circle_id}
-                showTooltip={rows.length < 2}
-                leadingCellSize={hasTwoDigitRank ? "w-6" : "w-3"}
-                onMemberAdded={onMemberAdded}
-              />
-            </AnimatedRow>
-          </HasAccess>
-        )}
+        <HasAccess>
+          <AnimatedRow layoutId="add-member">
+            <AddNewMember
+              circleId={rows[0]?.member.circle_id}
+              showTooltip={rows.length < 2}
+              leadingCellSize={hasTwoDigitRank ? "w-6" : "w-3"}
+              onMemberAdded={onMemberAdded}
+            />
+          </AnimatedRow>
+        </HasAccess>
       </Table>
     </div>
   )
