@@ -1,5 +1,9 @@
+import { FREE_GAME_LIMIT } from "@/server/constants"
 import { MemberStats } from "@/server/types"
+import { Lock } from "lucide-react"
 import HasAccess from "../../_components/has-access"
+import { Plan } from "../../_components/plan"
+import { useCirclePlan } from "../../_context/circle-plan-context"
 import { AddNewGameDialog } from "./add-new-game-dialog"
 import { VisibilityToggle } from "./visibility-toggle"
 
@@ -20,14 +24,34 @@ export function GameControls({
   onToggleShowHidden,
   onGameSubmitted,
 }: GameControlsProps) {
+  const { gamesLeft } = useCirclePlan()
+
   return (
-    <div className="flex w-full items-center justify-center gap-3 py-8">
-      {hasHiddenMembers && (
-        <VisibilityToggle showHidden={showHidden} onToggle={onToggleShowHidden} />
-      )}
-      <HasAccess>
-        <AddNewGameDialog members={memberStats} circleId={circleId} onSubmitted={onGameSubmitted} />
-      </HasAccess>
+    <div className="flex w-full flex-col items-center gap-2 py-8">
+      <div className="flex items-center gap-3">
+        {hasHiddenMembers && (
+          <VisibilityToggle showHidden={showHidden} onToggle={onToggleShowHidden} />
+        )}
+        <Plan.Active>
+          <HasAccess>
+            <AddNewGameDialog members={memberStats} circleId={circleId} onSubmitted={onGameSubmitted} />
+          </HasAccess>
+        </Plan.Active>
+        <Plan.Locked>
+          <div className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground">
+            <Lock size={14} />
+            <span>Free limit reached.</span>
+            <button className="font-medium text-accent hover:underline">
+              Unlock this circle
+            </button>
+          </div>
+        </Plan.Locked>
+      </div>
+      <Plan.Trial>
+        <span className="text-xs text-muted-foreground">
+          {gamesLeft} of {FREE_GAME_LIMIT} free games remaining
+        </span>
+      </Plan.Trial>
     </div>
   )
 }
