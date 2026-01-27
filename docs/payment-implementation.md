@@ -20,13 +20,13 @@ Reference: [`payment-flow.md`](./payment-flow.md)
 
 ---
 
-## Step 2: Query — Get circle payment status
+## Step 2: Query — Circle plan helper
 
-> Provide game count and unlock status to server actions and UI.
+> Provide plan status to server actions and UI.
 
-- [ ] Add `FREE_GAME_LIMIT = 10` constant to `src/server/constants.ts`
-- [ ] Add `getCirclePaymentStatus(circleId)` to `src/server/queries.ts`
-  - Returns `{ isUnlocked, gameCount, gamesRemaining }`
+- [x] Add `FREE_GAME_LIMIT = 10` constant to `src/server/constants.ts`
+- [x] Add `CirclePlan` type (`status: 'trial' | 'locked' | 'pro'`, `gamesPlayed`, `gamesLeft`)
+- [x] Add `getCirclePlan(circleId)` to `src/server/queries.ts`
 
 **Files:**
 - `src/server/constants.ts` — edit
@@ -36,49 +36,60 @@ Reference: [`payment-flow.md`](./payment-flow.md)
 
 ---
 
-## Step 3: Server gate — Block game creation when locked
+## Step 3: UI — `CirclePlanProvider` + `useCirclePlan` hook + `<Plan>` compound component
 
-> Enforce the paywall server-side. This is the hard gate.
+> Make plan status available on the client with a clean component API.
 
-- [ ] Add payment check at the top of `createGameSession` handler
-- [ ] If `!isUnlocked && gameCount >= 10`, throw error
-
-**Files:**
-- `src/server/actions.ts` — edit (`createGameSession`)
-
-**How to verify:** Try creating a game in a circle with 10+ games that isn't unlocked — should fail.
-
----
-
-## Step 4: UI — Pass payment status to dashboard
-
-> Make game count and lock status available on the client.
-
-- [ ] Fetch `getCirclePaymentStatus` in `page.tsx`
-- [ ] Thread `paymentStatus` prop through `Dashboard` → `GameControls`
+- [ ] Create `CirclePlanProvider` context + `useCirclePlan()` hook
+- [ ] Create `<Plan>` compound component: `<Plan.Trial>`, `<Plan.Locked>`, `<Plan.Pro>`, `<Plan.Active>`
+- [ ] Fetch `getCirclePlan` in `page.tsx`, wrap dashboard in `CirclePlanProvider`
 
 **Files:**
+- `src/app/[circle]/_context/circle-plan-context.tsx` — create
+- `src/app/[circle]/_components/plan.tsx` — create
 - `src/app/[circle]/page.tsx` — edit
-- `src/app/[circle]/_dashboard/dashboard.tsx` — edit
-- `src/app/[circle]/_dashboard/_components/game-controls.tsx` — edit
+- `src/app/[circle]/layout.tsx` — edit
 
-**How to verify:** Console.log the payment status in the dashboard component, confirm it arrives.
+**How to verify:** Use `<Plan.Trial>` and `<Plan.Active>` in dashboard, confirm correct rendering per state.
 
 ---
 
-## Step 5: UI — Trial counter + lock state
+## Step 4: UI — Trial counter + lock state
 
 > Show remaining games counter. When locked, replace "New Game" with unlock prompt.
 
-- [ ] When `!isUnlocked && gamesRemaining > 0`: show `"X of 10 free games remaining"`
-- [ ] When `!isUnlocked && gamesRemaining === 0`: hide "New Game", show unlock prompt
+- [ ] `<Plan.Trial>`: show `"X of 10 free games remaining"` near game controls
+- [ ] `<Plan.Locked>`: hide "New Game", show unlock prompt
+- [ ] `<Plan.Active>`: show "New Game" button (visible for trial + pro)
 - [ ] Unlock button visible to **everyone** (not wrapped in `HasAccess`)
 
 **Files:**
 - `src/app/[circle]/_dashboard/_components/game-controls.tsx` — edit
 
 **How to verify:**
-- Circle with <10 games → see counter
+- Circle with <10 games → see counter + "New Game"
+- Circle with 10+ games, not unlocked → see unlock prompt
+- Unlocked circle → normal "New Game", no counter
+
+---
+
+## Step 5: Server gate — Block game creation when locked
+
+> Enforce the paywall server-side. This is the hard gate.
+
+- [ ] Call `getCirclePlan` at the top of `createGameSession` handler
+- [ ] If `status === 'locked'`, throw error
+
+**Files:**
+- `src/server/actions.ts` — edit (`createGameSession`)
+
+**How to verify:** Try creating a game in a circle with 10+ games that isn't unlocked — should fail.
+
+**Files:**
+- `src/app/[circle]/_dashboard/_components/game-controls.tsx` — edit
+
+**How to verify:**
+- Circle with <10 games → see counter + "New Game"
 - Circle with 10+ games, not unlocked → see unlock prompt
 - Unlocked circle → normal "New Game", no counter
 

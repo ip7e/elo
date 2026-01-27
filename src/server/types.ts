@@ -8,6 +8,14 @@ export type Member = Tables<"circle_members">
 export type Circle = Tables<"circles">
 export type GameResult = Tables<"game_results">
 
+export type CirclePlanStatus = "trial" | "locked" | "pro"
+
+export type CirclePlan = {
+  status: CirclePlanStatus
+  gamesPlayed: number
+  gamesLeft: number
+}
+
 export type MemberStats = Member & {
   latest_game: GameResult
   first_game: GameResult
