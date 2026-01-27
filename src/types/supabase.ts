@@ -49,22 +49,31 @@ export type Database = {
           auto_hide_after_games: number
           created_at: string
           id: number
+          is_unlocked: boolean
           name: string
+          polar_order_id: string | null
           slug: string
+          unlocked_at: string | null
         }
         Insert: {
           auto_hide_after_games?: number
           created_at?: string
           id?: number
+          is_unlocked?: boolean
           name: string
+          polar_order_id?: string | null
           slug: string
+          unlocked_at?: string | null
         }
         Update: {
           auto_hide_after_games?: number
           created_at?: string
           id?: number
+          is_unlocked?: boolean
           name?: string
+          polar_order_id?: string | null
           slug?: string
+          unlocked_at?: string | null
         }
         Relationships: []
       }
