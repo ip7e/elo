@@ -1,24 +1,13 @@
 import { X } from "lucide-react"
-import { VisibilityToggle } from "./visibility-toggle"
 
 type LeaderboardHeaderProps = {
   floatingTitle?: string
   onResetSelectedGame?: () => void
-  showHidden: boolean
-  onToggleShowHidden?: () => void
-  hasHiddenMembers: boolean
 }
 
-/**
- * LeaderboardHeader component displays the floating title for selected games
- * and the visibility toggle for showing/hiding inactive members.
- */
 export function LeaderboardHeader({
   floatingTitle,
   onResetSelectedGame,
-  showHidden,
-  onToggleShowHidden,
-  hasHiddenMembers,
 }: LeaderboardHeaderProps) {
   return (
     <>
@@ -30,9 +19,6 @@ export function LeaderboardHeader({
           <span className="text-sm font-medium text-muted-foreground">{floatingTitle}</span>
           <X className="h-3 w-3 text-muted group-hover:text-primary" />
         </div>
-      )}
-      {hasHiddenMembers && onToggleShowHidden && (
-        <VisibilityToggle showHidden={showHidden} onToggle={onToggleShowHidden} variant="desktop" />
       )}
     </>
   )

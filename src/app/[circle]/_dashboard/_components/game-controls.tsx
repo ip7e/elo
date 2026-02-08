@@ -1,6 +1,9 @@
-import { cn } from "@/utils/tailwind/cn"
+import { FREE_GAME_LIMIT } from "@/server/constants"
 import { MemberStats } from "@/server/types"
+import { Lock } from "lucide-react"
 import HasAccess from "../../_components/has-access"
+import { Plan } from "../../_components/plan"
+import { useCirclePlan } from "../../_context/circle-plan-context"
 import { AddNewGameDialog } from "./add-new-game-dialog"
 import { VisibilityToggle } from "./visibility-toggle"
 
@@ -13,10 +16,6 @@ type GameControlsProps = {
   onGameSubmitted: (ids: number[]) => void
 }
 
-/**
- * GameControls component displays the controls for adding new games
- * and toggling visibility of inactive members (mobile view).
- */
 export function GameControls({
   memberStats,
   circleId,
@@ -25,23 +24,37 @@ export function GameControls({
   onToggleShowHidden,
   onGameSubmitted,
 }: GameControlsProps) {
+  const { gamesLeft } = useCirclePlan()
+
   return (
-    <HasAccess>
-      <div
-        className={cn(
-          "flex w-full items-center justify-end gap-2 py-8 sm:order-1 sm:justify-center sm:py-16",
-          "-order-1",
-        )}
-      >
+    <div className="flex w-full flex-col items-center gap-2 py-8">
+      <div className="flex items-center gap-3">
         {hasHiddenMembers && (
-          <VisibilityToggle
-            showHidden={showHidden}
-            onToggle={onToggleShowHidden}
-            variant="mobile"
-          />
+          <VisibilityToggle showHidden={showHidden} onToggle={onToggleShowHidden} />
         )}
-        <AddNewGameDialog members={memberStats} circleId={circleId} onSubmitted={onGameSubmitted} />
+        <Plan.Active>
+          <HasAccess>
+            <AddNewGameDialog members={memberStats} circleId={circleId} onSubmitted={onGameSubmitted} />
+          </HasAccess>
+        </Plan.Active>
+        <Plan.Locked>
+          <div className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground">
+            <Lock size={14} />
+            <span>Free limit reached.</span>
+            <a
+              href={`/api/checkout?circleId=${circleId}`}
+              className="font-medium text-accent hover:underline"
+            >
+              Unlock this circle
+            </a>
+          </div>
+        </Plan.Locked>
       </div>
-    </HasAccess>
+      <Plan.Trial>
+        <span className="text-xs text-muted-foreground">
+          {gamesLeft} of {FREE_GAME_LIMIT} free games remaining
+        </span>
+      </Plan.Trial>
+    </div>
   )
 }

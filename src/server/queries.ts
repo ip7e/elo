@@ -1,9 +1,11 @@
-import { GameResult, GameWithResults, MemberStats } from "@/server/types"
+import { CirclePlan, CirclePlanStatus, GameResult, GameWithResults, MemberStats } from "@/server/types"
 import { createServerClient, createServerClientWithCookies } from "@/utils/supabase/server"
 import "server-only"
 import z from "zod"
 import { createServerAction, inferServerActionReturnData } from "zsa"
+import { FREE_GAME_LIMIT } from "./constants"
 import { authedProcedure } from "./procedures"
+import createSuperClient from "./supabase"
 
 export const getCircleBySlug = async (slug: string) => {
   const supabase = createServerClient()
@@ -147,3 +149,22 @@ export const getMyCircles = authedProcedure.createServerAction().handler(async (
 })
 
 export type CircleWithMyRank = inferServerActionReturnData<typeof getMyCircles>
+
+export const getCirclePlan = async (circleId: number): Promise<CirclePlan> => {
+  const supabase = createSuperClient()
+
+  const [circleResult, gamesCountResult] = await Promise.all([
+    supabase.from("circles").select("is_unlocked").eq("id", circleId).single(),
+    supabase.from("games").select("id", { count: "exact", head: true }).eq("circle_id", circleId),
+  ])
+
+  const isUnlocked = circleResult.data?.is_unlocked ?? false
+  const gamesPlayed = gamesCountResult.count ?? 0
+  const status: CirclePlanStatus = isUnlocked ? "pro" : gamesPlayed >= FREE_GAME_LIMIT ? "locked" : "trial"
+
+  return {
+    status,
+    gamesPlayed,
+    gamesLeft: isUnlocked ? Infinity : Math.max(0, FREE_GAME_LIMIT - gamesPlayed),
+  }
+}

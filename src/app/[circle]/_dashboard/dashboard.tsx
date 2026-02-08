@@ -103,9 +103,6 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
             onHighlightChange={(id) => setHoveredMemberId(id)}
             onMemberClick={(id) => setShowStatsForMemberId(showStatsForMemberId === id ? null : id)}
             onResetSelectedGame={resetSelectedGame}
-            showHidden={showHidden}
-            onToggleShowHidden={toggleShowHidden}
-            hasHiddenMembers={hasHiddenMembers}
             onMemberAdded={addNewlyAddedMember}
           />
         }

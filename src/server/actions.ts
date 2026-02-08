@@ -7,6 +7,8 @@ import { authedProcedure, circleAdminProcedure } from "./procedures"
 import createSuperClient from "./supabase"
 import calculateElo, { DEFAULT_ELO } from "./utils/elo"
 import { createCircleForUser } from "./circle-service"
+import { reservedSlugs } from "./constants"
+import { getCirclePlan } from "./queries"
 
 export const TestAdminProcedure = circleAdminProcedure
   .createServerAction()
@@ -76,6 +78,9 @@ export const createGameSession = circleAdminProcedure
     const supabase = createSuperClient()
     const { loserIds, winnerIds } = input
     const { member } = ctx
+
+    const plan = await getCirclePlan(member.circle_id)
+    if (plan.status === "locked") throw "This circle has reached its free game limit."
 
     const { data: membersStats } = await supabase
       .from("circle_members")
