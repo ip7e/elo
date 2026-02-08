@@ -1,9 +1,10 @@
 import { Polar } from "@polar-sh/sdk"
 import { NextRequest, NextResponse } from "next/server"
+import { env } from "@/server/env"
 import createSuperClient from "@/server/supabase"
 
 const polar = new Polar({
-  accessToken: process.env.POLAR_ACCESS_TOKEN,
+  accessToken: env.POLAR_ACCESS_TOKEN,
 })
 
 export async function GET(req: NextRequest) {
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest) {
   const successUrl = `${origin}/${circle.slug}?unlocked=true`
 
   const checkout = await polar.checkouts.create({
-    products: [process.env.POLAR_PRODUCT_ID!],
+    products: [env.POLAR_PRODUCT_ID],
     metadata: { circleId: +circleId },
     successUrl,
   })

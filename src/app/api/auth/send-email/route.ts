@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { Webhook } from "standardwebhooks"
+import { env } from "@/server/env"
 import { resend } from "@/server/resend"
 import { magicLinkEmail } from "@/server/emails/magic-link"
 
@@ -18,7 +19,7 @@ interface SendEmailPayload {
   }
 }
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL
 
 function buildVerifyUrl(payload: SendEmailPayload): string {
   const { token_hash, email_action_type, redirect_to } = payload.email_data
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
     const rawBody = await request.text()
 
     // Verify webhook signature — strip Supabase's "v1," prefix
-    const secret = process.env.SEND_EMAIL_HOOK_SECRET!.replace(/^v1,/, "")
+    const secret = env.SEND_EMAIL_HOOK_SECRET.replace(/^v1,/, "")
     const wh = new Webhook(secret)
     const headers = Object.fromEntries(request.headers.entries())
     wh.verify(rawBody, headers)

@@ -8,6 +8,11 @@ const schema = z.object({
   // server-only
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   ANTHROPIC_API_KEY: z.string().min(1),
+  POLAR_ACCESS_TOKEN: z.string().min(1),
+  POLAR_PRODUCT_ID: z.string().min(1),
+  POLAR_WEBHOOK_SECRET: z.string().min(1),
+  RESEND_API_KEY: z.string().min(1),
+  SEND_EMAIL_HOOK_SECRET: z.string().min(1),
 })
 
 const parsed = schema.safeParse(process.env)

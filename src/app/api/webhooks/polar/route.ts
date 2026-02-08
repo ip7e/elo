@@ -1,8 +1,9 @@
 import { Webhooks } from "@polar-sh/nextjs"
+import { env } from "@/server/env"
 import createSuperClient from "@/server/supabase"
 
 export const POST = Webhooks({
-  webhookSecret: process.env.POLAR_WEBHOOK_SECRET!,
+  webhookSecret: env.POLAR_WEBHOOK_SECRET,
   onOrderPaid: async (payload) => {
     const circleId = payload.data.metadata?.circleId
     if (!circleId) return
