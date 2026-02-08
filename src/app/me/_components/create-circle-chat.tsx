@@ -46,7 +46,7 @@ export default function CreateCircleChat({ onCreated }: Props) {
   useEffect(() => {
     for (const message of messages) {
       for (const part of message.parts) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line
         const p = part as any
         if (p.type === "tool-createCircle" && p.state === "output-available" && p.output?.success) {
           setCreatedCircle(p.output.circle)
