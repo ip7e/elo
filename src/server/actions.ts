@@ -6,7 +6,7 @@ import { resolveInvitation } from "./admin"
 import { authedProcedure, circleAdminProcedure } from "./procedures"
 import createSuperClient from "./supabase"
 import calculateElo, { DEFAULT_ELO } from "./utils/elo"
-import { reservedSlugs } from "./constants"
+import { createCircleForUser } from "./circle-service"
 
 export const TestAdminProcedure = circleAdminProcedure
   .createServerAction()
@@ -187,47 +187,10 @@ export const createCircle = authedProcedure
     }),
   )
   .handler(async ({ input, ctx }) => {
-    const supabase = createSuperClient()
-
-    const { name, slug, members, nickname, autoHideAfterGames } = input
-
-    // reserved slugs
-    if (reservedSlugs.includes(slug)) throw `shmelo.io/${slug} is already taken`
-
-    const { data: circles } = await supabase.from("circles").select("*").eq("slug", slug).single()
-
-    if (circles) throw `shmelo.io/${slug} is already taken`
-
-    const { data: circle, error } = await supabase
-      .from("circles")
-      .insert({ name, slug, auto_hide_after_games: autoHideAfterGames })
-      .select()
-      .single()
-
-    if (error) throw "failed to create circle"
-
-    const { error: membersError } = await supabase
-      .from("circle_members")
-      .insert([
-        {
-          name: nickname,
-          circle_id: circle.id,
-          user_id: ctx.user.id,
-        },
-        ...members
-          .split(",")
-          .map((m) => m.trim())
-          .filter(Boolean)
-          .map((member) => ({
-            name: member,
-            circle_id: circle.id,
-          })),
-      ])
-      .select()
-
-    if (membersError) throw "failed to add circle members"
-
-    revalidatePath("/me")
+    const circle = await createCircleForUser({
+      ...input,
+      userId: ctx.user.id,
+    })
 
     return { success: true, circle }
   })
