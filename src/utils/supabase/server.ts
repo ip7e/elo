@@ -1,4 +1,5 @@
 import { Database } from "@/types/supabase"
+import { env } from "@/server/env"
 import {
   createServerClient as _createServerClient,
   type CookieOptions,
@@ -10,8 +11,8 @@ export const createServerClientWithCookies = async () => {
   const cookieStore = await cookies()
 
   return _createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         get(name: string) {
@@ -42,7 +43,7 @@ export const createServerClientWithCookies = async () => {
 
 export const createServerClient = () => {
   return createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   )
 }
