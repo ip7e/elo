@@ -5,6 +5,7 @@ import z from "zod"
 import { createServerAction, inferServerActionReturnData } from "zsa"
 import { FREE_GAME_LIMIT } from "./constants"
 import { authedProcedure } from "./procedures"
+import createSuperClient from "./supabase"
 
 export const getCircleBySlug = async (slug: string) => {
   const supabase = createServerClient()
@@ -150,7 +151,7 @@ export const getMyCircles = authedProcedure.createServerAction().handler(async (
 export type CircleWithMyRank = inferServerActionReturnData<typeof getMyCircles>
 
 export const getCirclePlan = async (circleId: number): Promise<CirclePlan> => {
-  const supabase = createServerClient()
+  const supabase = createSuperClient()
 
   const [circleResult, gamesCountResult] = await Promise.all([
     supabase.from("circles").select("is_unlocked").eq("id", circleId).single(),
