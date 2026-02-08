@@ -77,11 +77,20 @@ export default function Navigation({ circle }: Props) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Link href="/me">
-          <Button variant="ghost" size="sm">
-            My Circles
-          </Button>
-        </Link>
+        <LoggedIn>
+          <Link href="/me">
+            <Button variant="ghost" size="sm">
+              My Dashboard
+            </Button>
+          </Link>
+        </LoggedIn>
+        <LoggedOut>
+          <Link href="/me">
+            <Button variant="accent" size="sm">
+              Log in
+            </Button>
+          </Link>
+        </LoggedOut>
         <HasAccess>
           <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
             <DialogTrigger asChild>
