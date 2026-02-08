@@ -8,7 +8,7 @@ import { useState } from "react"
 import { DotGrid } from "../_components/dot-grid"
 import { Card } from "./_components/cards"
 import CircleCard from "./_components/circle-card"
-import NewCircleDialogContent from "./_components/new-circle-dialog-content"
+import CreateCircleChat from "./_components/create-circle-chat"
 import { AnimatePresence } from "framer-motion"
 
 type Props = {
@@ -49,7 +49,7 @@ export default function MyCircles({ circles }: Props) {
               </Card>
             </DialogTrigger>
             {isNewCircleDialogOpen && (
-              <NewCircleDialogContent onCreated={(circle) => {}}></NewCircleDialogContent>
+              <CreateCircleChat onCreated={(circle) => {}} />
             )}
           </Dialog>
         </DotGrid>
