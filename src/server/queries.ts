@@ -150,21 +150,7 @@ export const getMyCircles = authedProcedure.createServerAction().handler(async (
 
 export type CircleWithMyRank = inferServerActionReturnData<typeof getMyCircles>
 
-export const getCirclePlan = async (circleId: number): Promise<CirclePlan> => {
-  const supabase = createSuperClient()
-
-  const [circleResult, gamesCountResult] = await Promise.all([
-    supabase.from("circles").select("is_unlocked").eq("id", circleId).single(),
-    supabase.from("games").select("id", { count: "exact", head: true }).eq("circle_id", circleId),
-  ])
-
-  const isUnlocked = circleResult.data?.is_unlocked ?? false
-  const gamesPlayed = gamesCountResult.count ?? 0
-  const status: CirclePlanStatus = isUnlocked ? "pro" : gamesPlayed >= FREE_GAME_LIMIT ? "locked" : "trial"
-
-  return {
-    status,
-    gamesPlayed,
-    gamesLeft: isUnlocked ? Infinity : Math.max(0, FREE_GAME_LIMIT - gamesPlayed),
-  }
+// TODO: re-enable when payments are ready
+export const getCirclePlan = async (_circleId: number): Promise<CirclePlan> => {
+  return { status: "pro", gamesPlayed: 0, gamesLeft: Infinity }
 }
