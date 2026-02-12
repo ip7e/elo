@@ -6,10 +6,14 @@ export const POST = Webhooks({
   webhookSecret: env.POLAR_WEBHOOK_SECRET,
   onOrderPaid: async (payload) => {
     const circleId = payload.data.metadata?.circleId
+    console.log("[polar webhook] onOrderPaid", {
+      orderId: payload.data.id,
+      circleId,
+    })
     if (!circleId) return
 
     const supabase = createSuperClient()
-    await supabase
+    const { error } = await supabase
       .from("circles")
       .update({
         is_unlocked: true,
@@ -17,5 +21,11 @@ export const POST = Webhooks({
         polar_order_id: payload.data.id,
       })
       .eq("id", +circleId)
+
+    if (error) {
+      console.error("[polar webhook] failed to unlock circle", error)
+    } else {
+      console.log("[polar webhook] circle unlocked", { circleId })
+    }
   },
 })
