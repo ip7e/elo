@@ -80,6 +80,7 @@ export default function Leaderboard({
             </FloatingCell>
           </AnimatedRow>
         ))}
+        {/* TODO: re-enable add member
         <HasAccess>
           <AnimatedRow layoutId="add-member">
             <AddNewMember
@@ -90,6 +91,7 @@ export default function Leaderboard({
             />
           </AnimatedRow>
         </HasAccess>
+        */}
       </Table>
     </div>
   )

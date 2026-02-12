@@ -38,7 +38,7 @@ export function BumpChart({
   return (
     <ScrollContainer
       className={cn(
-        "rounded-lg border border-neutral-100 dark:border-neutral-800",
+        "",
         `relative flex min-h-16 w-full flex-1 flex-row-reverse items-start`,
         className,
       )}

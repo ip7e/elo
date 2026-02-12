@@ -27,7 +27,7 @@ export function MemberStats({ stats, className }: Props) {
   return (
     <div
       className={cn(
-        "flex w-full items-center justify-center rounded-lg border border-neutral-100 px-4 py-4 text-sm dark:border-neutral-800",
+        "flex w-full items-center justify-center px-4 py-4 text-sm",
         className,
       )}
     >
