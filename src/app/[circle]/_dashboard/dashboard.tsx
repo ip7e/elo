@@ -13,6 +13,7 @@ import { useLeaderboardData } from "./_hooks/useLeaderboardData"
 import { EmptyChart } from "./_components/empty-chart"
 import { GameControls } from "./_components/game-controls"
 import { DashboardLayout } from "./_components/dashboard-layout"
+import { DashboardToolbar } from "./_components/dashboard-toolbar"
 import { MemberStats as MemberStatsComponent } from "./stats/member-stats"
 import { calculateMemberStats } from "./stats/calculate-member-stats"
 type Props = {
@@ -78,6 +79,11 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
 
   return (
     <div className="flex flex-col">
+      <DashboardToolbar
+        hasHiddenMembers={hasHiddenMembers}
+        showHidden={showHidden}
+        onToggleShowHidden={toggleShowHidden}
+      />
       <DashboardLayout
         chartSection={
           memberStatsData ? (

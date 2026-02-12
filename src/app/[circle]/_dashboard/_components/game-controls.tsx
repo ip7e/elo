@@ -27,12 +27,9 @@ export function GameControls({
   const { gamesLeft } = useCirclePlan()
 
   return (
-    <div className="group -mt-4 flex w-full flex-col items-end pr-[25.5%] sm:pr-[15%]">
+    <div className="group -mt-4 flex w-full flex-col items-end pr-[22%] sm:pr-[12%]">
       <div className="translate-y-0 rotate-1 space-y-2 pt-2 transition-transform duration-100 ease-linear group-hover:translate-y-3">
         <div className="flex items-center gap-3">
-          {hasHiddenMembers && (
-            <VisibilityToggle showHidden={showHidden} onToggle={onToggleShowHidden} />
-          )}
           <Plan.Active>
             <HasAccess>
               <AddNewGameDialog members={memberStats} circleId={circleId} onSubmitted={onGameSubmitted} />

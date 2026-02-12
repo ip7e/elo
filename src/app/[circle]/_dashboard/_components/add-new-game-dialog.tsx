@@ -64,8 +64,8 @@ export function AddNewGameDialog({ members, circleId, onSubmitted }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="h-8 rounded-lg px-2 text-xs transition-all duration-100 group-hover:scale-105 hover:!bg-accent hover:!text-accent-foreground" variant="outline" disabled={isPending}>
-          <Swords size={12} className="mr-1" />
+        <Button size="sm" className="h-10 rounded-xl px-4 text-sm text-muted-foreground transition-all duration-100 group-hover:scale-105 hover:!border-accent hover:!bg-transparent hover:!text-accent" variant="outline" disabled={isPending}>
+          <Swords size={14} className="mr-1.5" />
           New Game
         </Button>
       </DialogTrigger>
