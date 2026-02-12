@@ -24,12 +24,12 @@ export function DashboardToolbar({
   const { circle } = useHasAccess()
 
   return (
-    <div className="-mb-3 flex w-full items-end justify-end gap-1 pr-4 sm:pr-6">
+    <div className="mb-2 flex w-full items-end justify-end gap-1.5 pr-4 sm:-mb-3 sm:gap-1 sm:pr-6">
       {hasHiddenMembers && (
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
-            <Button variant="outline" size="icon" className="h-7 w-7 -rotate-1 text-muted-foreground transition-transform duration-100 ease-linear hover:-translate-y-1 hover:bg-transparent hover:text-foreground" onClick={onToggleShowHidden}>
-              {showHidden ? <Eye size={14} /> : <EyeOff size={14} />}
+            <Button variant="outline" size="icon" className="h-8 w-8 text-muted-foreground transition-transform duration-100 ease-linear hover:bg-transparent hover:text-foreground sm:h-7 sm:w-7 sm:-rotate-1 sm:hover:-translate-y-1" onClick={onToggleShowHidden}>
+              {showHidden ? <Eye size={16} /> : <EyeOff size={16} />}
             </Button>
           </TooltipTrigger>
           <TooltipContent>{showHidden ? "Hide inactive" : "Show inactive"}</TooltipContent>
@@ -41,8 +41,8 @@ export function DashboardToolbar({
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="icon" className="h-7 w-7 rotate-1 text-muted-foreground transition-transform duration-100 ease-linear hover:-translate-y-1 hover:bg-transparent hover:text-foreground">
-                    <Settings size={14} />
+                  <Button variant="outline" size="icon" className="h-8 w-8 text-muted-foreground transition-transform duration-100 ease-linear hover:bg-transparent hover:text-foreground sm:h-7 sm:w-7 sm:rotate-1 sm:hover:-translate-y-1">
+                    <Settings size={16} />
                   </Button>
                 </DialogTrigger>
               </TooltipTrigger>

@@ -27,8 +27,8 @@ export function GameControls({
   const { gamesLeft } = useCirclePlan()
 
   return (
-    <div className="group -mt-4 flex w-full flex-col items-end pr-[22%] sm:pr-[12%]">
-      <div className="translate-y-0 rotate-1 space-y-2 pt-2 transition-transform duration-100 ease-linear group-hover:translate-y-3">
+    <div className="group mt-2 flex w-full flex-col items-center sm:-mt-4 sm:items-end sm:pr-[12%]">
+      <div className="translate-y-0 space-y-2 pt-2 transition-transform duration-100 ease-linear sm:rotate-1 group-hover:sm:translate-y-3">
         <div className="flex items-center gap-3">
           <Plan.Active>
             <HasAccess>
