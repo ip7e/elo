@@ -27,34 +27,36 @@ export function GameControls({
   const { gamesLeft } = useCirclePlan()
 
   return (
-    <div className="flex w-full flex-col items-center gap-2 py-8">
-      <div className="flex items-center gap-3">
-        {hasHiddenMembers && (
-          <VisibilityToggle showHidden={showHidden} onToggle={onToggleShowHidden} />
-        )}
-        <Plan.Active>
-          <HasAccess>
-            <AddNewGameDialog members={memberStats} circleId={circleId} onSubmitted={onGameSubmitted} />
-          </HasAccess>
-        </Plan.Active>
-        <Plan.Locked>
-          <div className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground">
-            <Lock size={14} />
-            <span>Free limit reached.</span>
-            <a
-              href={`/api/checkout?circleId=${circleId}`}
-              className="font-medium text-accent hover:underline"
-            >
-              Unlock this circle
-            </a>
-          </div>
-        </Plan.Locked>
+    <div className="group -mt-4 flex w-full flex-col items-end pr-[25.5%] sm:pr-[15%]">
+      <div className="translate-y-0 rotate-1 space-y-2 pt-2 transition-transform duration-100 ease-linear group-hover:translate-y-3">
+        <div className="flex items-center gap-3">
+          {hasHiddenMembers && (
+            <VisibilityToggle showHidden={showHidden} onToggle={onToggleShowHidden} />
+          )}
+          <Plan.Active>
+            <HasAccess>
+              <AddNewGameDialog members={memberStats} circleId={circleId} onSubmitted={onGameSubmitted} />
+            </HasAccess>
+          </Plan.Active>
+          <Plan.Locked>
+            <div className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground">
+              <Lock size={14} />
+              <span>Free limit reached.</span>
+              <a
+                href={`/api/checkout?circleId=${circleId}`}
+                className="font-medium text-accent hover:underline"
+              >
+                Unlock this circle
+              </a>
+            </div>
+          </Plan.Locked>
+        </div>
+        <Plan.Trial>
+          <span className="text-xs text-muted-foreground">
+            {gamesLeft} of {FREE_GAME_LIMIT} free games remaining
+          </span>
+        </Plan.Trial>
       </div>
-      <Plan.Trial>
-        <span className="text-xs text-muted-foreground">
-          {gamesLeft} of {FREE_GAME_LIMIT} free games remaining
-        </span>
-      </Plan.Trial>
     </div>
   )
 }
