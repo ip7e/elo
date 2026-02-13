@@ -31,6 +31,10 @@ type Props = {
   floatingTitle?: string
   onResetSelectedGame?: () => void
   onMemberAdded?: (id: number) => void
+  canDeleteSelectedGame?: boolean
+  circleId: number
+  isAddingMember?: boolean
+  onAddingMemberChange?: (adding: boolean) => void
 }
 
 export default function Leaderboard({
@@ -42,6 +46,10 @@ export default function Leaderboard({
   onResetSelectedGame,
   pendingMemberIds,
   onMemberAdded,
+  canDeleteSelectedGame,
+  circleId,
+  isAddingMember,
+  onAddingMemberChange,
 }: Props) {
   const hasTwoDigitRank = rows.some((m) => m.rank && m.rank > 9)
 
@@ -50,6 +58,8 @@ export default function Leaderboard({
       <LeaderboardHeader
         floatingTitle={floatingTitle}
         onResetSelectedGame={onResetSelectedGame}
+        canDelete={canDeleteSelectedGame}
+        circleId={circleId}
       />
       <Table>
         {rows.map((row) => (
@@ -80,16 +90,16 @@ export default function Leaderboard({
             </FloatingCell>
           </AnimatedRow>
         ))}
-        <HasAccess>
+        {isAddingMember && (
           <AnimatedRow layoutId="add-member">
             <AddNewMember
-              circleId={rows[0]?.member.circle_id}
-              showTooltip={rows.length < 2}
+              circleId={circleId}
               leadingCellSize={hasTwoDigitRank ? "w-6" : "w-3"}
               onMemberAdded={onMemberAdded}
+              onClose={() => onAddingMemberChange?.(false)}
             />
           </AnimatedRow>
-        </HasAccess>
+        )}
       </Table>
     </div>
   )

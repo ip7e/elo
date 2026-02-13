@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import { curveMonotoneX, line } from "d3-shape"
 import { AnimatePresence, motion, SVGMotionProps } from "framer-motion"
-import { useEffect, useReducer, useState } from "react"
+import { useEffect, useReducer, useRef, useState } from "react"
 import { BumpChartProvider, useChart } from "./bump-chart-context"
 import { ScrollContainer } from "./scroll-container"
 import { GameRecord } from "./types"
@@ -28,8 +28,23 @@ export function BumpChart({
   const [firstRender, renderedOnce] = useReducer(() => false, true)
   useEffect(renderedOnce, [renderedOnce])
 
-  const width = data.length * itemWidth + padding * 2
+  const dataWidth = data.length * itemWidth + padding * 2
   const height = data[0].length * itemHeight + padding * 2
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = useState<number | null>(null)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const observer = new ResizeObserver(([entry]) => {
+      setContainerWidth(entry.contentRect.width)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const svgWidth = Math.max(dataWidth, containerWidth ?? dataWidth)
 
   const isGameSelected = selectedGameIndex !== null
 
@@ -37,25 +52,29 @@ export function BumpChart({
 
   return (
     <ScrollContainer
+      ref={containerRef}
       className={cn(
-        "rounded-lg border border-neutral-100 dark:border-neutral-800",
+        "",
         `relative flex min-h-16 w-full flex-1 flex-row-reverse items-start`,
         className,
       )}
     >
-      <BumpChartProvider
+      {containerWidth === null ? null : <BumpChartProvider
         data={data}
-        width={width}
+        width={dataWidth}
+        svgWidth={svgWidth}
         height={height}
         padding={padding}
         itemWidth={itemWidth}
         itemHeight={itemHeight}
       >
         <div className="block">
-          <svg width={width} height={height} className="">
+          <svg width={svgWidth} height={height} className="">
+            <EmptyDots />
+
             <MemberLines selectedGameIndex={selectedGameIndex} />
 
-            {!isGameSelected && <FirstGameDots />}
+            <FirstGameDots />
 
             <WinningLineWithDots
               memberId={selectedMemberId}
@@ -80,7 +99,7 @@ export function BumpChart({
             {enableGameSelect && <HoverCols onSelect={onGameSelect} />}
           </svg>
         </div>
-      </BumpChartProvider>
+      </BumpChartProvider>}
     </ScrollContainer>
   )
 }
@@ -147,7 +166,7 @@ function MemberLines({ selectedGameIndex }: MemberLinesProps) {
           initial={{ opacity: 1, pathLength: 0 }}
           animate={{ opacity: 1, pathLength: 1 }}
           transition={{ duration: 0.1 * games.length }}
-          className={cn("pointer-events-none stroke-secondary stroke-1")}
+          className={cn("pointer-events-none stroke-chart-line stroke-[1.5]")}
         />
       ))}
     </>
@@ -180,7 +199,7 @@ function GameSessionSpotlight({
               rank={record.rank}
               r={3}
               className={cn(
-                "fill-secondary stroke-secondary",
+                "fill-chart-line stroke-chart-line",
                 highlightedMemberId === record.member.id && "fill-accent stroke-accent stroke-2",
                 !record.won && "fill-background",
               )}
@@ -208,7 +227,7 @@ function FirstGameDots() {
             key={memberId}
             gameIndex={firstGameIndex}
             rank={firstGame.rank}
-            className={cn("fill-background stroke-secondary")}
+            className={cn("fill-background stroke-chart-line")}
             r={2}
           />
         )
@@ -216,6 +235,104 @@ function FirstGameDots() {
     </>
   )
 }
+
+const PATTERN_COUNT = 1
+
+
+function EmptyDots() {
+  const { xScale, yScale, data } = useChart()
+  const totalGames = data.length
+  const numPlayers = data[0].length
+  const [pattern, setPattern] = useState(0)
+  const [mouse, setMouse] = useState<{ x: number; y: number } | null>(null)
+  const gRef = useRef<SVGGElement>(null)
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") setPattern((p) => (p + 1) % PATTERN_COUNT)
+      if (e.key === "ArrowLeft") setPattern((p) => (p - 1 + PATTERN_COUNT) % PATTERN_COUNT)
+    }
+    window.addEventListener("keydown", handler)
+    return () => window.removeEventListener("keydown", handler)
+  }, [])
+
+  useEffect(() => {
+    const svg = gRef.current?.closest("svg")
+    if (!svg) return
+    const onMove = (e: MouseEvent) => {
+      const rect = svg.getBoundingClientRect()
+      setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+    }
+    const onLeave = () => setMouse(null)
+    svg.addEventListener("mousemove", onMove)
+    svg.addEventListener("mouseleave", onLeave)
+    return () => {
+      svg.removeEventListener("mousemove", onMove)
+      svg.removeEventListener("mouseleave", onLeave)
+    }
+  }, [])
+
+  const dots: FillerDot[] = []
+
+  // Within data range: fill bottom rows where players haven't joined yet
+  for (let col = 0; col < totalGames; col++) {
+    const playersAtTime = data[col].length
+    if (playersAtTime >= numPlayers) continue
+
+    const x = xScale(totalGames - col)
+    for (let rank = playersAtTime; rank < numPlayers; rank++) {
+      dots.push({ x, y: yScale(rank), col, rank, key: `empty-${col}-${rank}` })
+    }
+  }
+
+  // Outside data range: dots at all rank positions
+  for (let col = totalGames; ; col++) {
+    const x = xScale(totalGames - col)
+    if (x < 0) break
+    for (let rank = 0; rank < numPlayers; rank++) {
+      dots.push({ x, y: yScale(rank), col, rank, key: `empty-${col}-${rank}` })
+    }
+  }
+
+  return (
+    <g ref={gRef}>
+      {fillerPatterns[pattern](dots, mouse)}
+    </g>
+  )
+}
+
+type FillerDot = { x: number; y: number; col: number; rank: number; key: string }
+type Mouse = { x: number; y: number } | null
+
+const fillerPatterns: ((dots: FillerDot[], mouse: Mouse) => React.ReactNode)[] = [
+  // Displacement crosses — pushed away from cursor, rotate based on distance
+  (dots, mouse) =>
+    dots.map((d) => {
+      const s = 3
+      if (!mouse) {
+        return (
+          <g key={d.key} opacity={0.5}>
+            <line x1={d.x - s} y1={d.y} x2={d.x + s} y2={d.y} className="stroke-chart-line" strokeWidth={1} />
+            <line x1={d.x} y1={d.y - s} x2={d.x} y2={d.y + s} className="stroke-chart-line" strokeWidth={1} />
+          </g>
+        )
+      }
+      const dx = d.x - mouse.x
+      const dy = d.y - mouse.y
+      const dist = Math.hypot(dx, dy) || 1
+      const push = Math.max(0, 60 - dist) * 0.3
+      const nx = d.x + (dx / dist) * push
+      const ny = d.y + (dy / dist) * push
+      const opacity = Math.min(0.6, dist / 250)
+      const angle = dist * 0.8
+      return (
+        <g key={d.key} opacity={opacity} transform={`rotate(${angle} ${nx} ${ny})`}>
+          <line x1={nx - s} y1={ny} x2={nx + s} y2={ny} className="stroke-chart-line" strokeWidth={1} />
+          <line x1={nx} y1={ny - s} x2={nx} y2={ny + s} className="stroke-chart-line" strokeWidth={1} />
+        </g>
+      )
+    }),
+]
 
 type MemberLineProps = {
   memberId: number
@@ -245,7 +362,7 @@ function MemberLine({ memberId, selectedGameIndex, className, ...props }: Member
       {...props}
       d={lineGenerator(myGames) || ""}
       fill="none"
-      className={cn("pointer-events-none stroke-secondary stroke-1", className)}
+      className={cn("pointer-events-none stroke-chart-line stroke-[1.5]", className)}
       data-m={memberId}
     />
   )
@@ -319,7 +436,7 @@ function HoverCols({ onSelect }: HoverColsProps) {
             transition={{ type: "spring", stiffness: 1000, damping: 100, mass: 1 }}
             y1={yScale(0) - 12}
             y2={yScale(data[hoveredIndex].length - 1) + 12}
-            className="pointer-events-none stroke-secondary/30"
+            className="pointer-events-none stroke-chart-line"
           />
         )}
       </AnimatePresence>
@@ -364,7 +481,7 @@ function SelectedGameOverlayLines({
           x2={xScale(totalGames - gameIndex)}
           y1={yScale(-0.5)}
           y2={yScale(data[gameIndex].length - 0.5)}
-          className="pointer-events-none stroke-secondary stroke-1"
+          className="pointer-events-none stroke-chart-line stroke-1"
         ></line>
       )}
 
@@ -378,8 +495,8 @@ function SelectedGameOverlayLines({
             y2={yScale(record.rank)}
             strokeDasharray={4}
             className={cn(
-              "stroke-muted stroke-1",
-              record.played && "stroke-muted",
+              "stroke-chart-line stroke-1",
+              record.played && "stroke-chart-line",
               highlightedMemberId === record.member.id && "stroke-accent stroke-2",
             )}
           />

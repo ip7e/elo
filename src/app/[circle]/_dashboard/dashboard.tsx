@@ -13,6 +13,7 @@ import { useLeaderboardData } from "./_hooks/useLeaderboardData"
 import { EmptyChart } from "./_components/empty-chart"
 import { GameControls } from "./_components/game-controls"
 import { DashboardLayout } from "./_components/dashboard-layout"
+import { DashboardToolbar } from "./_components/dashboard-toolbar"
 import { MemberStats as MemberStatsComponent } from "./stats/member-stats"
 import { calculateMemberStats } from "./stats/calculate-member-stats"
 type Props = {
@@ -25,6 +26,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   const [hoveredMemberId, setHoveredMemberId] = useState(memberStats[0]?.id || 0)
   const [showStatsForMemberId, setShowStatsForMemberId] = useState<number | null>(null)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
+  const [isAddingMember, setIsAddingMember] = useState(false)
 
   const selectedMemberId = showStatsForMemberId ?? hoveredMemberId
 
@@ -78,6 +80,13 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
 
   return (
     <div className="flex flex-col">
+      <DashboardToolbar
+        hasHiddenMembers={hasHiddenMembers}
+        showHidden={showHidden}
+        onToggleShowHidden={toggleShowHidden}
+        hidden={hasSpotlightGame}
+        onAddMember={() => setIsAddingMember(true)}
+      />
       <DashboardLayout
         chartSection={
           memberStatsData ? (
@@ -104,16 +113,16 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
             onMemberClick={(id) => setShowStatsForMemberId(showStatsForMemberId === id ? null : id)}
             onResetSelectedGame={resetSelectedGame}
             onMemberAdded={addNewlyAddedMember}
+            canDeleteSelectedGame={selectedGameIndex === 0}
+            circleId={circleId}
+            isAddingMember={isAddingMember}
+            onAddingMemberChange={setIsAddingMember}
           />
         }
       />
-
       <GameControls
         memberStats={memberStats}
         circleId={circleId}
-        hasHiddenMembers={hasHiddenMembers}
-        showHidden={showHidden}
-        onToggleShowHidden={toggleShowHidden}
         onGameSubmitted={(ids) => {
           setPendingMemberIds(ids)
           resetSelectedGame()

@@ -59,6 +59,7 @@ const config = {
         stroke: {
           DEFAULT: "hsl(var(--stroke))",
         },
+        "chart-line": "hsl(var(--chart-line))",
       },
       borderRadius: {
         lg: "var(--radius)",

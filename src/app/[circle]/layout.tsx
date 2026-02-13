@@ -1,5 +1,6 @@
 import { getCircleBySlug, getCirclePlan, getCurrentUser, hasCurrentUserAccessToCircle } from "@/server/queries"
 import { notFound } from "next/navigation"
+import { DotGrid } from "../_components/dot-grid"
 import Navigation from "./_components/navigation"
 import { AccessProvider } from "./_context/access-context"
 import { CirclePlanProvider } from "./_context/circle-plan-context"
@@ -27,11 +28,13 @@ export default async function RootLayout({
       <AccessProvider circle={circle} hasAccess={hasAccess}>
         <CirclePlanProvider plan={plan}>
           <Navigation circle={circle} />
-          <div className="container mx-auto flex h-full max-w-3xl flex-col px-4">
-            <div className="min-h-28 flex-1"></div>
+          <DotGrid className="flex h-full flex-col">
+            <div className="container mx-auto flex h-full max-w-3xl flex-col px-4">
+              <div className="min-h-28 flex-1"></div>
 
-            <div className="flex-[3]">{children}</div>
-          </div>
+              <div className="flex-[3]">{children}</div>
+            </div>
+          </DotGrid>
         </CirclePlanProvider>
       </AccessProvider>
     </AuthStateProvider>

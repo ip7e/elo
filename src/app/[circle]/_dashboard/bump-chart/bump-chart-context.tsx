@@ -18,6 +18,7 @@ export function BumpChartProvider({
   children,
   data,
   width,
+  svgWidth,
   height,
   padding,
   itemWidth,
@@ -26,6 +27,7 @@ export function BumpChartProvider({
   children: React.ReactNode
   data: GameRecord[][]
   width: number
+  svgWidth: number
   height: number
   padding: number
   itemWidth: number
@@ -45,12 +47,14 @@ export function BumpChartProvider({
     return map
   }, [data])
 
+  const offset = svgWidth - width
+
   const xScale = useMemo(
     () =>
       scaleLinear()
         .domain([0, data.length])
-        .range([16, width - 16]),
-    [data.length, width],
+        .range([16 + offset, svgWidth - 16]),
+    [data.length, svgWidth, offset],
   )
 
   const yScale = useMemo(

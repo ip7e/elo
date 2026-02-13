@@ -21,7 +21,9 @@ export function useGameSelection(recentGames: GameWithResults[]) {
 
   const leaderboardTitle = useMemo(() => {
     if (selectedGameIndex === null) return undefined
-    return format(new Date(recentGames[selectedGameIndex].created_at), "MMMM d")
+    const game = recentGames[selectedGameIndex]
+    if (!game) return undefined
+    return format(new Date(game.created_at), "MMMM d")
   }, [selectedGameIndex, recentGames])
 
   const hasSpotlightGame = selectedGameIndex !== null

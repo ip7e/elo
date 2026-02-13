@@ -48,7 +48,7 @@ export function MemberActionsMenu({ member }: MemberActionsMenuProps) {
         >
           <EllipsisVertical size={16} />
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="bottom" align="end">
+        <DropdownMenuContent side="bottom" align="end" onClick={(e) => e.stopPropagation()}>
           {isAdmin && (
             <DropdownMenuItem className="flex items-center gap-2 text-muted-foreground" disabled>
               <ShieldCheck size={14} />
