@@ -1,4 +1,4 @@
-export const FREE_GAME_LIMIT = 10
+export const FREE_GAME_LIMIT = 5
 
 export const reservedSlugs = [
   "me",

@@ -123,9 +123,6 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
       <GameControls
         memberStats={memberStats}
         circleId={circleId}
-        hasHiddenMembers={hasHiddenMembers}
-        showHidden={showHidden}
-        onToggleShowHidden={toggleShowHidden}
         onGameSubmitted={(ids) => {
           setPendingMemberIds(ids)
           resetSelectedGame()
