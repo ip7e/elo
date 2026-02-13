@@ -20,7 +20,7 @@ export function GameControls({
   const { gamesLeft } = useCirclePlan()
 
   return (
-    <div className="flex w-full flex-col items-center sm:items-end sm:pr-[8%]">
+    <div className="flex w-full flex-col items-center sm:items-end sm:pr-[75px]">
       <Plan.Active>
         <div className="group mt-2 sm:-mt-4">
           <div className="translate-y-0 space-y-2 pt-2 transition-transform duration-100 ease-linear sm:rotate-1 group-hover:sm:translate-y-3">
@@ -29,7 +29,7 @@ export function GameControls({
             </HasAccess>
             <Plan.Trial>
               <div className="flex flex-col items-center gap-1 text-center text-xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 sm:-translate-x-2">
-                <span>{gamesLeft} of {FREE_GAME_LIMIT} free games remaining</span>
+                <span>{gamesLeft} free games remaining</span>
                 <a
                   href={`/api/checkout?circleId=${circleId}`}
                   className="font-medium text-accent hover:underline"
