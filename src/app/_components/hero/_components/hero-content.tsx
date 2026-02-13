@@ -38,7 +38,6 @@ export default function HeroContent() {
         <Button asChild>
           <Link href="/me">Get started</Link>
         </Button>
-        <span className="text-sm text-muted-foreground">it&apos;s free</span>
       </motion.div>
     </div>
   )
