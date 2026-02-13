@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import { curveMonotoneX, line } from "d3-shape"
 import { AnimatePresence, motion, SVGMotionProps } from "framer-motion"
-import { useEffect, useReducer, useState } from "react"
+import { useEffect, useReducer, useRef, useState } from "react"
 import { BumpChartProvider, useChart } from "./bump-chart-context"
 import { ScrollContainer } from "./scroll-container"
 import { GameRecord } from "./types"
@@ -28,8 +28,23 @@ export function BumpChart({
   const [firstRender, renderedOnce] = useReducer(() => false, true)
   useEffect(renderedOnce, [renderedOnce])
 
-  const width = data.length * itemWidth + padding * 2
+  const dataWidth = data.length * itemWidth + padding * 2
   const height = data[0].length * itemHeight + padding * 2
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = useState<number | null>(null)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const observer = new ResizeObserver(([entry]) => {
+      setContainerWidth(entry.contentRect.width)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const svgWidth = Math.max(dataWidth, containerWidth ?? dataWidth)
 
   const isGameSelected = selectedGameIndex !== null
 
@@ -37,22 +52,26 @@ export function BumpChart({
 
   return (
     <ScrollContainer
+      ref={containerRef}
       className={cn(
         "",
         `relative flex min-h-16 w-full flex-1 flex-row-reverse items-start`,
         className,
       )}
     >
-      <BumpChartProvider
+      {containerWidth === null ? null : <BumpChartProvider
         data={data}
-        width={width}
+        width={dataWidth}
+        svgWidth={svgWidth}
         height={height}
         padding={padding}
         itemWidth={itemWidth}
         itemHeight={itemHeight}
       >
         <div className="block">
-          <svg width={width} height={height} className="">
+          <svg width={svgWidth} height={height} className="">
+            <EmptyDots />
+
             <MemberLines selectedGameIndex={selectedGameIndex} />
 
             {!isGameSelected && <FirstGameDots />}
@@ -80,7 +99,7 @@ export function BumpChart({
             {enableGameSelect && <HoverCols onSelect={onGameSelect} />}
           </svg>
         </div>
-      </BumpChartProvider>
+      </BumpChartProvider>}
     </ScrollContainer>
   )
 }
@@ -214,6 +233,48 @@ function FirstGameDots() {
         )
       })}
     </>
+  )
+}
+
+function EmptyDots() {
+  const { gamesByMember, xScale, yScale, data } = useChart()
+  const totalGames = data.length
+  const numPlayers = data[0].length
+
+  const dots: { x: number; y: number; key: string }[] = []
+
+  // Within data range: fill bottom rows where players haven't joined yet
+  for (let col = 0; col < totalGames; col++) {
+    const playersAtTime = data[col].length
+    if (playersAtTime >= numPlayers) continue
+
+    const x = xScale(totalGames - col)
+    for (let rank = playersAtTime; rank < numPlayers; rank++) {
+      dots.push({ x, y: yScale(rank), key: `empty-${col}-${rank}` })
+    }
+  }
+
+  // Outside data range: dots at all rank positions
+  for (let col = totalGames; ; col++) {
+    const x = xScale(totalGames - col)
+    if (x < 0) break
+    for (let rank = 0; rank < numPlayers; rank++) {
+      dots.push({ x, y: yScale(rank), key: `empty-${col}-${rank}` })
+    }
+  }
+
+  return (
+    <g>
+      {dots.map((dot) => (
+        <circle
+          key={dot.key}
+          cx={dot.x}
+          cy={dot.y}
+          r={2}
+          className="fill-secondary/50"
+        />
+      ))}
+    </g>
   )
 }
 
