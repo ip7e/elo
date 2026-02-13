@@ -34,6 +34,8 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
+    --chart-line: 0 0% 72%;
+
     --stroke: var(--primary);
 
     &.dark {
@@ -59,6 +61,8 @@
       --chart-3: 30 80% 55%;
       --chart-4: 280 65% 60%;
       --chart-5: 340 75% 55%;
+
+      --chart-line: 0 0% 31%;
 
       --stroke: 0 0% 80%;
     }

@@ -43,7 +43,7 @@ export function useLeaderboardData({
           isActive: member.isVisible || newlyAddedMemberIds.has(member.id),
         }
       })
-      .sort((a, b) => (b.elo ?? 0) - (a.elo ?? 0))
+      .sort((a, b) => (b.elo ?? 0) - (a.elo ?? 0) || (a.member.name ?? "").localeCompare(b.member.name ?? ""))
       .map(({ member, elo, delta, isActive }, index) => ({
         name: member.name!,
         rank: elo ? index + 1 : undefined,
