@@ -44,7 +44,7 @@ export function FloatingCell({ children, className }: ChildrenWithClassName) {
     <div
       className={cn(
         "flex cursor-default items-center justify-center rounded-md pl-2 text-muted transition-colors",
-        "w-6 sm:absolute sm:-right-6",
+        "w-6 sm:absolute sm:-right-4",
         "-ml-4 sm:ml-0",
         className,
       )}

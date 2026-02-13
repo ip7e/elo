@@ -26,6 +26,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
   const [hoveredMemberId, setHoveredMemberId] = useState(memberStats[0]?.id || 0)
   const [showStatsForMemberId, setShowStatsForMemberId] = useState<number | null>(null)
   const [pendingMemberIds, setPendingMemberIds] = useState<number[]>([])
+  const [isAddingMember, setIsAddingMember] = useState(false)
 
   const selectedMemberId = showStatsForMemberId ?? hoveredMemberId
 
@@ -83,6 +84,8 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
         hasHiddenMembers={hasHiddenMembers}
         showHidden={showHidden}
         onToggleShowHidden={toggleShowHidden}
+        hidden={hasSpotlightGame}
+        onAddMember={() => setIsAddingMember(true)}
       />
       <DashboardLayout
         chartSection={
@@ -110,6 +113,10 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
             onMemberClick={(id) => setShowStatsForMemberId(showStatsForMemberId === id ? null : id)}
             onResetSelectedGame={resetSelectedGame}
             onMemberAdded={addNewlyAddedMember}
+            canDeleteSelectedGame={selectedGameIndex === 0}
+            circleId={circleId}
+            isAddingMember={isAddingMember}
+            onAddingMemberChange={setIsAddingMember}
           />
         }
       />

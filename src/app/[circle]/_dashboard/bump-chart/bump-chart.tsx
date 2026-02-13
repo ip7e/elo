@@ -297,9 +297,6 @@ function EmptyDots() {
   return (
     <g ref={gRef}>
       {fillerPatterns[pattern](dots, mouse)}
-      <text x={8} y={14} className="fill-chart-line" fontSize={10} fontFamily="monospace">
-        {pattern + 1}/{PATTERN_COUNT}
-      </text>
     </g>
   )
 }
