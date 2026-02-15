@@ -8,7 +8,8 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:supabase.com)",
       "Bash(npm install:*)",
-      "WebFetch(domain:ai-sdk.dev)"
+      "WebFetch(domain:ai-sdk.dev)",
+      "Bash(git -C /Users/ika/Workspace/personal/elo config user.email:*)"
     ],
     "deny": [],
     "ask": []

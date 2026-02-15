@@ -2,6 +2,7 @@ import { getAllGames, getCircleBySlug, getCirclePlan, getMembersStats } from "@/
 import Dashboard from "../[circle]/_dashboard/dashboard"
 import { CirclePlanProvider } from "../[circle]/_context/circle-plan-context"
 import notFound from "../not-found"
+// import { DemoAnnotations } from "./demo-annotations"
 
 export default async function Demo() {
   const circle = await getCircleBySlug("demo")
@@ -19,7 +20,10 @@ export default async function Demo() {
   return (
     <div className="container mx-auto mt-4 flex h-full max-w-3xl flex-col px-8">
       <CirclePlanProvider plan={plan}>
-        <Dashboard recentGames={games} memberStats={memberStats} circleId={circle.id} />
+        <div className="relative">
+          <Dashboard recentGames={games} memberStats={memberStats} circleId={circle.id} />
+          {/* <DemoAnnotations /> */}
+        </div>
       </CirclePlanProvider>
     </div>
   )

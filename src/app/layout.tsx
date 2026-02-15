@@ -4,6 +4,12 @@ import "./globals.css"
 
 import { GeistMono } from "geist/font/mono"
 import { GeistSans } from "geist/font/sans"
+import { Caveat } from "next/font/google"
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+})
 import { cn } from "@/utils/tailwind/cn"
 import { ThemeProvider } from "next-themes"
 import { TooltipProvider } from "@/components/ui/tooltip"
