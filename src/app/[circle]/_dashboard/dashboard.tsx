@@ -38,7 +38,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
     toggleShowHidden,
     addNewlyAddedMember,
     newlyAddedMemberIds,
-  } = useMemberVisibility(memberStats)
+  } = useMemberVisibility(memberStats, pendingMemberIds)
 
   const {
     selectedGameIndex,

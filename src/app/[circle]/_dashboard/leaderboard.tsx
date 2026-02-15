@@ -156,7 +156,7 @@ function NameCell({
 function EloCell({ elo, spin }: { elo: number | undefined; spin: boolean }) {
   return (
     <TableCell className="w-10 text-right">
-      {elo ? <NumberShuffler value={elo} spin={spin} /> : ""}
+      {elo || spin ? <NumberShuffler value={elo || 1200} spin={spin} /> : ""}
     </TableCell>
   )
 }

@@ -5,7 +5,7 @@ import { MemberStats } from "@/server/types"
  * Hook to manage member visibility state and filtering logic.
  * Handles both manual visibility toggles and tracking newly added members.
  */
-export function useMemberVisibility(memberStats: MemberStats[]) {
+export function useMemberVisibility(memberStats: MemberStats[], pendingMemberIds: number[] = []) {
   const [showHidden, setShowHidden] = useState(false)
   const [newlyAddedMemberIds, setNewlyAddedMemberIds] = useState<Set<number>>(new Set())
 
@@ -13,8 +13,8 @@ export function useMemberVisibility(memberStats: MemberStats[]) {
     () =>
       showHidden
         ? memberStats
-        : memberStats.filter((m) => m.isVisible || newlyAddedMemberIds.has(m.id)),
-    [memberStats, showHidden, newlyAddedMemberIds],
+        : memberStats.filter((m) => m.isVisible || newlyAddedMemberIds.has(m.id) || pendingMemberIds.includes(m.id)),
+    [memberStats, showHidden, newlyAddedMemberIds, pendingMemberIds],
   )
 
   const hasHiddenMembers = memberStats.some((m) => !m.isVisible && !newlyAddedMemberIds.has(m.id))
