@@ -78,6 +78,7 @@ export default function AddNewMember({
             value={name}
             onChange={(e) => setName(e.target.value)}
             onBlur={onClose}
+            onKeyDown={(e) => { if (e.key === "Escape") onClose() }}
           />
           <button
             className={cn(

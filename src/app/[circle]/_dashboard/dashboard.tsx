@@ -86,6 +86,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
         onToggleShowHidden={toggleShowHidden}
         hidden={hasSpotlightGame}
         onAddMember={() => setIsAddingMember(true)}
+        memberCount={memberStats.length}
       />
       <DashboardLayout
         showChartOnMobile={!!memberStatsData}

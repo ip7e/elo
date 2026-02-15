@@ -9,28 +9,32 @@ export async function POST(req: Request) {
   const { data } = await supabase.auth.getUser()
   if (!data.user) return new Response("Unauthorized", { status: 401 })
 
-  const { messages }: { messages: UIMessage[] } = await req.json()
+  const {
+    messages,
+    isFirstCircle,
+    lastNickname,
+  }: { messages: UIMessage[]; isFirstCircle?: boolean; lastNickname?: string } = await req.json()
 
   const result = streamText({
     model: anthropic("claude-sonnet-4-20250514"),
     system: `You help people set up a circle on shmelo.io — an Elo tracker for friend groups.
 
 A "circle" is a group of friends tracking scores. It can be for one specific game or a mix of games — whatever they want. You need to figure out:
-1. What they want to track (e.g. ping pong, chess, "board games", "everything", "mixed")
-2. A short name for the link — explain it'll be public at shmelo.io/<name> so anyone can check scores without signing up. Suggest one based on the game + friend group, let them change it.
-3. Their nickname in this group (how friends call them)
+1. What they want to track (e.g. ping pong, chess, "board games", "everything", "mixed"). If they mention some random word, assume it's a name of the game, move to the next step but mention it that you made a guess its a game.
+2. A short name for the link — suggest one based on the game + friend group, let them change it.${isFirstCircle ? " Mention that this link will be public at shmelo.io/<name>, so anyone can check scores without signing up — members don't need to register unless they want to be admins." : " The link will be at shmelo.io/<name>."}
+3. Their display name — ask them to "pick your display name".${lastNickname ? ` They used "${lastNickname}" in another circle, so suggest that and let them confirm or change it.` : ""}
 4. Other members to add (optional — they can add more later)
 
 Rules:
 - One short sentence per message. Max two if you really need to.
 - Casual, like texting a friend. No emojis.
 - If they give you multiple things at once, roll with it and skip ahead.
-- After getting the nickname, ask who else is in the group. Keep it casual like "who else is playing?" They can skip it.
+- After getting the nickname, ask who else is in the group. Keep it casual like "who else is playing?" Mention they can always add more later.
 - Once you have game, link, nickname, and asked about members — call createCircle.
 - If the slug is taken, tell them and suggest an alternative.
-- Never explain what Elo is or how the app works. Just get the info and create.
 - If the user goes off-topic or asks unrelated questions, gently steer back once. Something like "haha not sure about that, but back to the circle — ..."
-- If they keep going off-topic a second time, call the giveUp tool. Say something fun and short before calling it, like "alright I can tell you're not in the mood" or "okay you're clearly here to chat, not track scores" — be creative, keep it one sentence.`,
+- If they keep going off-topic a second time, call the giveUp tool. Say something fun and short before calling it, like "alright I can tell you're not in the mood" or "okay you're clearly here to chat, not track scores" — be creative, keep it one sentence.
+- Never explain what Elo is or how the app works. Just get the info and create.`,
     messages: await convertToModelMessages(messages),
     tools: {
       createCircle: tool({

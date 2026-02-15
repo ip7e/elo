@@ -16,19 +16,28 @@ import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
 import { ArrowUp } from "lucide-react"
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 type Props = {
+  isFirstCircle?: boolean
+  lastNickname?: string
   onCreated?: (circle: Circle) => void
 }
 
-const transport = new DefaultChatTransport({ api: "/api/chat/create-circle" })
-
-export default function CreateCircleChat({ onCreated }: Props) {
+export default function CreateCircleChat({ isFirstCircle, lastNickname, onCreated }: Props) {
   const [createdCircle, setCreatedCircle] = useState<Circle | null>(null)
   const [givenUp, setGivenUp] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const [input, setInput] = useState("")
+
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat/create-circle",
+        body: { isFirstCircle, lastNickname },
+      }),
+    [isFirstCircle, lastNickname],
+  )
 
   const { messages, sendMessage, status } = useChat({
     transport,
@@ -36,7 +45,14 @@ export default function CreateCircleChat({ onCreated }: Props) {
       {
         id: "greeting",
         role: "assistant",
-        parts: [{ type: "text", text: "Hey! What game do you and your friends play?" }],
+        parts: [
+          {
+            type: "text",
+            text: isFirstCircle
+              ? "Hey! Lets set up your first scoreboard. What game is it for?"
+              : "What's this one for?",
+          },
+        ],
       },
     ],
   })
@@ -90,13 +106,26 @@ export default function CreateCircleChat({ onCreated }: Props) {
             <div
               key={message.id}
               className={cn(
-                "max-w-[85%] rounded-lg px-3 py-2 text-sm",
+                "max-w-[85%]",
                 isUser
-                  ? "self-end bg-accent text-accent-foreground"
-                  : "self-start bg-muted text-muted-foreground",
+                  ? "self-end rounded-lg bg-accent px-3 py-2 text-sm text-accent-foreground"
+                  : "self-start text-base text-muted-foreground",
               )}
             >
-              {text}
+              {isUser
+                ? text
+                : text.split(/(shmelo\.io\/[\w-]+)/g).map((segment, i) =>
+                    /^shmelo\.io\/[\w-]+$/.test(segment) ? (
+                      <span
+                        key={i}
+                        className="inline-block rounded border bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground"
+                      >
+                        {segment}
+                      </span>
+                    ) : (
+                      segment
+                    ),
+                  )}
             </div>
           )
         })}

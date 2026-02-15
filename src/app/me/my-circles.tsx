@@ -49,7 +49,11 @@ export default function MyCircles({ circles }: Props) {
               </Card>
             </DialogTrigger>
             {isNewCircleDialogOpen && (
-              <CreateCircleChat onCreated={(circle) => {}} />
+              <CreateCircleChat
+                isFirstCircle={circles.length === 0}
+                lastNickname={circles.at(-1)?.me[0]?.name ?? undefined}
+                onCreated={(circle) => {}}
+              />
             )}
           </Dialog>
         </DotGrid>

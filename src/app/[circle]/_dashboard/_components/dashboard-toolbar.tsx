@@ -7,7 +7,7 @@ import EditCircleDialogContent from "@/app/me/_components/edit-circle-dialog-con
 import HasAccess from "../../_components/has-access"
 import { useHasAccess } from "../../_context/access-context"
 import { Eye, EyeOff, Settings, UserPlus } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { cn } from "@/utils/tailwind/cn"
 
 type DashboardToolbarProps = {
@@ -16,6 +16,7 @@ type DashboardToolbarProps = {
   onToggleShowHidden: () => void
   hidden?: boolean
   onAddMember?: () => void
+  memberCount: number
 }
 
 export function DashboardToolbar({
@@ -24,25 +25,35 @@ export function DashboardToolbar({
   onToggleShowHidden,
   hidden,
   onAddMember,
+  memberCount,
 }: DashboardToolbarProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const isSoleMember = memberCount <= 1
+  const [showAddHint, setShowAddHint] = useState(isSoleMember)
   const { circle } = useHasAccess()
+
+  useEffect(() => {
+    if (isSoleMember) setShowAddHint(true)
+  }, [isSoleMember])
 
   return (
     <div className={cn("mb-2 flex w-full items-end justify-end gap-1.5 pr-4 sm:-mb-3 sm:gap-1 sm:pr-6", hidden && "invisible")}>
       <HasAccess>
-        <Tooltip delayDuration={0}>
+        <Tooltip delayDuration={0} open={showAddHint || undefined}>
           <TooltipTrigger asChild>
             <Button
               variant="outline"
               size="icon"
               className="h-8 w-8 text-muted-foreground transition-transform duration-100 ease-linear hover:bg-transparent hover:text-foreground sm:h-7 sm:w-7 sm:-rotate-2 sm:hover:-translate-y-1"
-              onClick={onAddMember}
+              onClick={() => {
+                setShowAddHint(false)
+                onAddMember?.()
+              }}
             >
               <UserPlus size={16} />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Add member</TooltipContent>
+          <TooltipContent>{isSoleMember ? "Add your friends to get started" : "Add member"}</TooltipContent>
         </Tooltip>
       </HasAccess>
       {hasHiddenMembers && (
