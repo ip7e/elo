@@ -1,6 +1,7 @@
 import { claimCircle } from "@/server/actions"
 import { MemberStats } from "@/server/types"
 import { Lock } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
 import { useServerAction } from "zsa-react"
 import HasAccess from "../../_components/has-access"
 import { Plan } from "../../_components/plan"
@@ -14,7 +15,13 @@ type GameControlsProps = {
 }
 
 function ClaimButton({ circleId }: { circleId: number }) {
-  const { isPending, execute } = useServerAction(claimCircle)
+  const router = useRouter()
+  const pathname = usePathname()
+  const { isPending, execute } = useServerAction(claimCircle, {
+    onSuccess: () => {
+      router.replace(`${pathname}?unlocked=true`, { scroll: false })
+    },
+  })
 
   return (
     <button
