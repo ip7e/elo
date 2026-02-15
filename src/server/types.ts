@@ -14,6 +14,7 @@ export type CirclePlan = {
   status: CirclePlanStatus
   gamesPlayed: number
   gamesLeft: number
+  isClaimable: boolean
 }
 
 export type MemberStats = Member & {

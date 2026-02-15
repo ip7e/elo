@@ -50,7 +50,15 @@ export default function CreateCircleChat({ isFirstCircle, lastNickname, onCreate
             type: "text",
             text: isFirstCircle
               ? "Hey! Lets set up your first scoreboard. What game is it for?"
-              : "What's this one for?",
+              : [
+                  "New circle — what are we ranking this time?",
+                  "Another one! What are we tracking this time?",
+                  "Back for more! What's the new scoreboard for?",
+                  "Another scoreboard? I like it. What's it for?",
+                  "Let's go — what are we competing in this time?",
+                  "More competition! What are we playing this time?",
+                  "Alright, new scoreboard. What's the game?",
+                ][Math.floor(Math.random() * 7)],
           },
         ],
       },

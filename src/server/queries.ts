@@ -3,7 +3,7 @@ import { createServerClient, createServerClientWithCookies } from "@/utils/supab
 import "server-only"
 import z from "zod"
 import { createServerAction, inferServerActionReturnData } from "zsa"
-import { FREE_GAME_LIMIT } from "./constants"
+import { CLAIM_PROMO_DEADLINE, FREE_GAME_LIMIT } from "./constants"
 import { authedProcedure } from "./procedures"
 import createSuperClient from "./supabase"
 
@@ -150,7 +150,7 @@ export const getMyCircles = authedProcedure.createServerAction().handler(async (
 
 export type CircleWithMyRank = inferServerActionReturnData<typeof getMyCircles>
 
-export const getCirclePlan = async (circleId: number): Promise<CirclePlan> => {
+export const getCirclePlan = async (circleId: number, userId?: string): Promise<CirclePlan> => {
   const supabase = createSuperClient()
 
   const [circleResult, gamesCountResult] = await Promise.all([
@@ -162,9 +162,21 @@ export const getCirclePlan = async (circleId: number): Promise<CirclePlan> => {
   const gamesPlayed = gamesCountResult.count ?? 0
   const status: CirclePlanStatus = isUnlocked ? "pro" : gamesPlayed >= FREE_GAME_LIMIT ? "locked" : "trial"
 
+  let isClaimable = false
+  if (!isUnlocked && userId && new Date() < CLAIM_PROMO_DEADLINE) {
+    const { count } = await supabase
+      .from("circle_members")
+      .select("circle:circles!inner(is_unlocked)", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("circle.is_unlocked", true)
+
+    isClaimable = (count ?? 0) === 0
+  }
+
   return {
     status,
     gamesPlayed,
     gamesLeft: isUnlocked ? Infinity : Math.max(0, FREE_GAME_LIMIT - gamesPlayed),
+    isClaimable,
   }
 }

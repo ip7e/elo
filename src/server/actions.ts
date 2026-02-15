@@ -7,8 +7,34 @@ import { authedProcedure, circleAdminProcedure } from "./procedures"
 import createSuperClient from "./supabase"
 import calculateElo, { DEFAULT_ELO } from "./utils/elo"
 import { createCircleForUser } from "./circle-service"
-import { reservedSlugs } from "./constants"
+import { CLAIM_PROMO_DEADLINE, reservedSlugs } from "./constants"
 import { getCirclePlan } from "./queries"
+
+export const claimCircle = circleAdminProcedure
+  .createServerAction()
+  .handler(async ({ ctx }) => {
+    if (new Date() >= CLAIM_PROMO_DEADLINE) throw "Promo has expired"
+
+    const supabase = createSuperClient()
+
+    const { count } = await supabase
+      .from("circle_members")
+      .select("circle:circles!inner(is_unlocked)", { count: "exact", head: true })
+      .eq("user_id", ctx.user.id)
+      .eq("circle.is_unlocked", true)
+
+    if ((count ?? 0) > 0) throw "You already have an unlocked circle"
+
+    const { error } = await supabase
+      .from("circles")
+      .update({ is_unlocked: true, unlocked_at: new Date().toISOString() })
+      .eq("id", ctx.member.circle_id)
+
+    if (error) throw "Failed to claim circle"
+
+    revalidatePath("/[circle]", "layout")
+    return { success: true }
+  })
 
 export const TestAdminProcedure = circleAdminProcedure
   .createServerAction()

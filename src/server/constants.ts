@@ -1,5 +1,7 @@
 export const FREE_GAME_LIMIT = 10
 
+export const CLAIM_PROMO_DEADLINE = new Date("2026-02-20T00:00:00Z")
+
 export const reservedSlugs = [
   "me",
   "new",

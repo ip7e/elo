@@ -17,10 +17,10 @@ export default async function RootLayout({
   const circle = await getCircleBySlug(circleSlug)
   if (!circle) notFound()
 
-  const [user, hasAccess, plan] = await Promise.all([
-    getCurrentUser(),
+  const user = await getCurrentUser()
+  const [hasAccess, plan] = await Promise.all([
     hasCurrentUserAccessToCircle(circle.id),
-    getCirclePlan(circle.id),
+    getCirclePlan(circle.id, user?.id),
   ])
 
   return (
