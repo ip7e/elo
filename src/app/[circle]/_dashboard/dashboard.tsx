@@ -88,6 +88,7 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
         onAddMember={() => setIsAddingMember(true)}
       />
       <DashboardLayout
+        showChartOnMobile={!!memberStatsData}
         chartSection={
           memberStatsData ? (
             <MemberStatsComponent stats={memberStatsData} />
@@ -95,7 +96,6 @@ export default function Dashboard({ recentGames, memberStats, circleId }: Props)
             <BumpChart
               data={gameSeries}
               selectedMemberId={selectedMemberId}
-              className={cn(!showChart && "hidden sm:flex")}
               selectedGameIndex={selectedGameIndex}
               onGameSelect={handleGameSelect}
             />

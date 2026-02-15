@@ -26,7 +26,7 @@ export default function Navigation({ circle }: Props) {
   ]
 
   return (
-    <div className="fixed top-0 z-50 flex w-full justify-between gap-4 p-4 py-4 font-medium text-gray-400 dark:text-gray-300">
+    <div className="flex w-full justify-between gap-4 p-4 py-4 font-medium text-gray-400 dark:text-gray-300">
       <div className="flex items-center gap-4">
         <LoggedIn>
           <Link href={"/me"}>

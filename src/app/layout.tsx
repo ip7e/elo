@@ -8,6 +8,13 @@ import { cn } from "@/utils/tailwind/cn"
 import { ThemeProvider } from "next-themes"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
 export const metadata: Metadata = {
   title: "Shmelo - Never let your friends forget who is the winner",
   description:
@@ -44,6 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `h-full w-full bg-background font-sans`,
             GeistMono.variable,
             GeistSans.variable,
+            caveat.variable,
           )}
         >
           <ThemeProvider

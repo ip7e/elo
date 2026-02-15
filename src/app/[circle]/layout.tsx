@@ -27,13 +27,17 @@ export default async function RootLayout({
     <AuthStateProvider isLoggedIn={!!user}>
       <AccessProvider circle={circle} hasAccess={hasAccess}>
         <CirclePlanProvider plan={plan}>
-          <Navigation circle={circle} />
-          <DotGrid className="flex h-full flex-col">
-            <div className="container mx-auto flex h-full max-w-3xl flex-col px-4">
-              <div className="min-h-28 flex-1"></div>
+          <DotGrid className="flex min-h-screen flex-col">
+            <Navigation circle={circle} />
+            <div className="container mx-auto flex flex-1 max-w-3xl flex-col px-4 pb-12">
+              <div className="min-h-8 flex-1"></div>
 
-              <div className="flex-[3]">{children}</div>
+              <div className="flex-1">{children}</div>
+              <div className="min-h-8 flex-1"></div>
             </div>
+            <p className="py-4 text-center text-xs text-muted-foreground sm:hidden">
+              Rotate your device to see the bump chart
+            </p>
           </DotGrid>
         </CirclePlanProvider>
       </AccessProvider>
